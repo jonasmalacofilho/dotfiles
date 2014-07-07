@@ -1,0 +1,25 @@
+" Basic
+set nocompatible  " use Vim
+set number        " show line numbers
+set ruler         " line,column of current cursor position
+
+" Indentation
+set autoindent  " autoindenting always on
+set expandtab   " use spaces, not tabs
+set tabstop=4 | set shiftwidth=4  " tab width = 3
+
+" Highlighing
+if &t_Co > 2 || has("gui_running")  " if the terminal has colors
+	syntax on  " syntax highlighting on
+	" set hlsearch  " highlight the last search pattern
+endif
+
+" Searching
+set incsearch  " do incremental searching
+
+" Pathogen
+execute pathogen#infect()
+filetype plugin indent on  " ?? (from official pathogen instructions)
+" update the help for all plugins automatically
+"call pathogen#helptags() " 
+
