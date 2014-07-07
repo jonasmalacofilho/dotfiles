@@ -7,3 +7,6 @@
 [submodule "vim/bundle/vim-sensible"]
 	path = vim/bundle/vim-sensible
 	url = git@github.com:tpope/vim-sensible
+[submodule "vim/monokai"]
+	path = vim/monokai
+	url = git@github.com:sickill/vim-monokai

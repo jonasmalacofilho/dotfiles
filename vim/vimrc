@@ -11,3 +11,6 @@ set autoindent  " autoindenting always on
 set expandtab   " use spaces, not tabs
 set tabstop=4 | set shiftwidth=4  " tab width = 3
 
+" Colors
+colorscheme monokai
+
