@@ -4,3 +4,6 @@
 [submodule "vim/bundle/vaxe"]
 	path = vim/bundle/vaxe
 	url = git@github.com:jdonaldson/vaxe
+[submodule "vim/bundle/vim-sensible"]
+	path = vim/bundle/vim-sensible
+	url = git@github.com:tpope/vim-sensible
