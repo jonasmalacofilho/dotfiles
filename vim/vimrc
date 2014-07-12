@@ -1,3 +1,6 @@
+" Use Vim, not Vi
+set nocompatible
+
 " Pathogen
 execute pathogen#infect()
 filetype plugin indent on  " ?? (from official pathogen instructions)
@@ -13,4 +16,7 @@ set tabstop=4 | set shiftwidth=4  " tab width = 3
 
 " Colors
 colorscheme monokai
+
+" Other
+set hlsearch  " highlight searh matches
 
