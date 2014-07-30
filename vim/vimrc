@@ -18,5 +18,14 @@ set tabstop=4 | set shiftwidth=4  " tab width = 3
 colorscheme monokai
 
 " Other
-set hlsearch  " highlight searh matches
+set hlsearch   " highlight searh matches
+set autowrite  " autowrite on a bunch of times including :make
+set autoread   " autoread when buffer is unchanged
+
+" CtrlP
+" CtrlP + Haxe
+nnoremap <C-O> :CtrlP /usr/lib/haxe/std<CR>
+
+" NERDTree
+nnoremap <leader>n :NERDTree<CR>
 
