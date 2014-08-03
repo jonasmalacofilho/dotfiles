@@ -26,8 +26,8 @@ set autoread   " autoread when buffer is unchanged
 :let mapleader = ','
 
 " Commands
-noremap <leader><leader> :
-noremap <leader><cr> :<c-p>
+" noremap <leader><leader> :
+nnoremap <leader><cr> :<c-p>
 
 " Haxe (Vaxe)
 nnoremap <leader>hh :call vaxe#ProjectHxml()<cr>
