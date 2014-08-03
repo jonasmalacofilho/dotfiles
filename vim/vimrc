@@ -22,10 +22,27 @@ set hlsearch   " highlight searh matches
 set autowrite  " autowrite on a bunch of times including :make
 set autoread   " autoread when buffer is unchanged
 
+" Leader
+:let mapleader = ','
+
+" Commands
+noremap <leader><leader> :
+noremap <leader><cr> :<c-p>
+
+" Haxe (Vaxe)
+nnoremap <leader>hh :call vaxe#ProjectHxml()<cr>
+nnoremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
+nnoremap <leader>ht <esc>:call vaxe#Ctags()<cr>
+
 " CtrlP
-" CtrlP + Haxe
-nnoremap <C-O> :CtrlP /usr/lib/haxe/std<CR>
+nnoremap <leader>p :CtrlPBookmarkDir<cr>
 
 " NERDTree
-nnoremap <leader>n :NERDTree<CR>
+nnoremap <leader>n :NERDTree<cr>
+
+" Make
+nnoremap <leader>m <esc>:make<cr>
+
+" Save
+nnoremap <leader>w <esc>:w<cr>
 
