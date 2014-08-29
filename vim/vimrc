@@ -46,3 +46,9 @@ nnoremap <leader>m <esc>:make<cr>
 " Save
 nnoremap <leader>w <esc>:w<cr>
 
+" Change directories automatically
+autocmd BufEnter * lcd %:p:h
+
+" Better buffer switching
+:set switchbuf=useopen,usetab
+
