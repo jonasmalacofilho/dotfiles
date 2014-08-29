@@ -1,4 +1,4 @@
-all: vim-dotfiles
+all: vim-dotfiles compiz-dotfiles
 
 # Vim
 vim-dotfiles: ~/.vim ~/.vimrc
@@ -7,5 +7,10 @@ vim-dotfiles: ~/.vim ~/.vimrc
 ~/.vimrc:
 	ln -si ~/.vim/vimrc ~/.vimrc 
 
-.PHONY: all vim-dotfiles
+# Compiz
+compiz-dotfiles: ~/.config/compiz-1/compizconfig/Default.ini
+~/.config/compiz-1/compizconfig/Default.ini: compiz/Default.ini
+	ln -si ${PWD}/compiz/Default.ini ~/.config/compiz-1/compizconfig/Default.ini
+
+.PHONY: all vim-dotfiles compiz-dotfiles
 
