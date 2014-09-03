@@ -29,10 +29,37 @@ set autoread   " autoread when buffer is unchanged
 " noremap <leader><leader> :
 nnoremap <leader><cr> :<c-p>
 
-" Haxe (Vaxe)
+" Tcomment
+" copied to enable custom definitions bellow
+if !exists('g:tcomment#replacements_c')
+    " Replacements for c filetype.
+    " :read: let g:tcomment#replacements_c = {...} "{{{2
+    let g:tcomment#replacements_c = {
+                \ '/*': '#<{(|',
+                \ '*/': '|)}>#',
+                \ }
+endif
+" override C block: cleaner
+if !exists("g:tcommentBlockC")
+    let g:tcommentBlockC = {
+                \ 'commentstring': '/*%s*/',
+                \ 'middle': '    ',
+                \ 'rxbeg': '\*\+',
+                \ 'rxend': '',
+                \ 'rxmid': '',
+                \ 'replacements': g:tcomment#replacements_c
+                \ }
+endif
+
+" Haxe
+" (vaxe)
 nnoremap <leader>hh :call vaxe#ProjectHxml()<cr>
 nnoremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
 nnoremap <leader>ht <esc>:call vaxe#Ctags()<cr>
+" (tcomment)
+call tcomment#DefineType('haxe', g:tcommentLineC)
+call tcomment#DefineType('haxe_inline', g:tcommentInlineC)
+call tcomment#DefineType('haxe_block', g:tcommentBlockC)
 
 " CtrlP
 nnoremap <leader>p :CtrlPBookmarkDir<cr>
