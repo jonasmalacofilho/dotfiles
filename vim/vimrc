@@ -53,7 +53,8 @@ endif
 
 " Haxe
 " (vaxe)
-nnoremap <leader>hh :call vaxe#ProjectHxml()<cr>
+:let g:vaxe_prefer_first_in_directory = 0
+nnoremap <leader>hh :call vaxe#DefaultHxml()<cr>
 nnoremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
 nnoremap <leader>ht <esc>:call vaxe#Ctags()<cr>
 " (tcomment)
