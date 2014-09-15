@@ -63,7 +63,8 @@ call tcomment#DefineType('haxe_inline', g:tcommentInlineC)
 call tcomment#DefineType('haxe_block', g:tcommentBlockC)
 
 " CtrlP
-nnoremap <leader>p :CtrlPBookmarkDir<cr>
+nnoremap <leader>pb :CtrlPBookmarkDir<cr>
+nnoremap <leader>pd :CtrlPDir<cr>
 
 " NERDTree
 nnoremap <leader>n :NERDTree<cr>
