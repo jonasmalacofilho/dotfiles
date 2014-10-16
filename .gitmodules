@@ -9,7 +9,7 @@
 	url = git@github.com:tpope/vim-sensible
 [submodule "vim/monokai"]
 	path = vim/monokai
-	url = git@github.com:sickill/vim-monokai
+	url = git@github.com:jonasmalacofilho/vim-monokai
 [submodule "vim/bundle/vim-airline"]
 	path = vim/bundle/vim-airline
 	url = git@github.com:bling/vim-airline
