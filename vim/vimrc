@@ -19,7 +19,10 @@ nnoremap <leader>sd :setlocal expandtab tabstop=4 shiftwidth=4<cr>
 nnoremap <leader>sk :setlocal noexpandtab tabstop=8 shiftwidth=8 softtabstop=8<cr>
 
 " Colors
-colorscheme monokai
+" Default to transparent monokai but set bindings to change
+colorscheme monokait
+nnoremap <leader>ct :colorscheme monokait<cr>
+nnoremap <leader>co :colorscheme monokai<cr>
 
 " Other
 set hlsearch   " highlight searh matches
