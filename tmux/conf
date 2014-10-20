@@ -1,0 +1,21 @@
+# 256 colors (mainly for Vim monokai)
+# not really needed (tmux -2 is enough), so disabled for now
+# set -g default-terminal "screen-256color"
+
+# Enable alternative C-a preffix
+set -g prefix C-a
+bind C-a send-prefix
+
+# Vi style bindings
+set-window-option -g mode-keys vi
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Vi-compatible resize
+bind C-h resize-pane -L 5
+bind C-j resize-pane -D 5
+bind C-k resize-pane -U 5
+bind C-l resize-pane -R 5
+
