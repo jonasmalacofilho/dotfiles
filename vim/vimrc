@@ -12,6 +12,8 @@ set number
 " Indentation
 filetype plugin indent on
 set autoindent  " autoindenting always on
+" (don't indent switch cases)
+set cinoptions+=:0
 " (default to spaces, no tabs, and width=4)
 set expandtab tabstop=4 shiftwidth=4
 nnoremap <leader>sd :setlocal expandtab tabstop=4 shiftwidth=4<cr>
