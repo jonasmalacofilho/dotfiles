@@ -3,9 +3,10 @@ set nocompatible
 
 " Pathogen
 execute pathogen#infect()
-"call pathogen#helptags() " 
+"call pathogen#helptags() "
 
 " Basic
+set mouse=a
 set number
 :let mapleader = ','
 
