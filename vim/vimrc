@@ -10,6 +10,11 @@ set mouse=a
 set number
 :let mapleader = ','
 
+" Startify
+" requires fortunes and cowsay
+let g:startify_custom_header =
+            \ map(split(system('fortune | cowsay -f tux'), '\n'), '"   ". v:val') + ['']
+
 " Indentation
 filetype plugin indent on
 set autoindent  " autoindenting always on
