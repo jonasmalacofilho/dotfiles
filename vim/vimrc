@@ -35,8 +35,8 @@ nnoremap <leader>sk :setlocal noexpandtab tabstop=8 shiftwidth=8 softtabstop=8<c
 " Colors
 " Default to transparent monokai but set bindings to change
 colorscheme monokait
-nnoremap <leader>ct :colorscheme monokait<cr>
-nnoremap <leader>co :colorscheme monokai<cr>
+noremap <leader>ct :colorscheme monokait<cr>
+noremap <leader>co :colorscheme monokai<cr>
 
 " Searching
 set incsearch
@@ -50,15 +50,14 @@ set autowrite  " autowrite on a bunch of times including :make
 set autoread   " autoread when buffer is unchanged
 
 " Commands
-" noremap <leader><leader> :
-nnoremap <leader><cr> :<c-p>
+noremap <leader><cr> :<c-p>
 
 " Haxe
 " (vaxe)
 :let g:vaxe_prefer_first_in_directory = 0
-nnoremap <leader>hh :call vaxe#DefaultHxml()<cr>
-nnoremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
-nnoremap <leader>ht <esc>:call vaxe#Ctags()<cr>
+noremap <leader>hh :call vaxe#DefaultHxml()<cr>
+noremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
+noremap <leader>ht <esc>:call vaxe#Ctags()<cr>
 " (tcomment)
 if !exists("g:tcommentBlockHx")  " Based on g:tcommentBlockC
     let g:tcommentBlockHx = {
@@ -75,18 +74,15 @@ call tcomment#DefineType('haxe_inline', g:tcommentInlineC)
 call tcomment#DefineType('haxe_block', g:tcommentBlockHx)
 
 " CtrlP
-nnoremap <leader>pb :CtrlPBookmarkDir<cr>
-nnoremap <leader>pd :CtrlPDir<cr>
+noremap <leader>pb :CtrlPBookmarkDir<cr>
+noremap <leader>pd :CtrlPDir<cr>
 
 " NERDTree
-nnoremap <leader>n :NERDTree<cr>
+noremap <leader>n :NERDTree<cr>
 
 " Make
-nnoremap <leader>m <esc>:make<cr>
-nnoremap <leader><leader>m <esc>:make!<cr>
-
-" Save
-nnoremap <leader>w <esc>:w<cr>
+noremap <leader>m <esc>:make<cr>
+noremap <leader><leader>m <esc>:make!<cr>
 
 " Change directories automatically
 autocmd BufEnter * lcd %:p:h
