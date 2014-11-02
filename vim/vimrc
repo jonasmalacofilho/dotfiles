@@ -8,7 +8,13 @@ execute pathogen#infect()
 " Basic
 set mouse=a
 set number
-:let mapleader = ','
+let mapleader = ','
+" move up/down using display lines
+" only on normal and visual modes
+nmap j gj
+vmap j gj
+nmap k gk
+vmap k gk
 
 " Startify
 " requires fortunes and cowsay
@@ -32,8 +38,14 @@ colorscheme monokait
 nnoremap <leader>ct :colorscheme monokait<cr>
 nnoremap <leader>co :colorscheme monokai<cr>
 
-" Other
+" Searching
+set incsearch
+set ignorecase
+set smartcase  " /foo matches FOO and fOo; /FOO only matches FOO
 set hlsearch   " highlight searh matches
+noremap <leader>l :nohlsearch<cr>
+
+" Other
 set autowrite  " autowrite on a bunch of times including :make
 set autoread   " autoread when buffer is unchanged
 
