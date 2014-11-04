@@ -9,10 +9,10 @@
 "   <leader>s*         spell
 "
 " Single-key mappings (for now)
-"   <leader>    recall last command
-"   <leader>l   nohlsearch
+"   <leader>           recall last command
+"   <leader>l          nohlsearch
 "   <leader>m          make
-"   <leader>n   NERDTree
+"   <leader>n          NERDTree
 
 
 " Use Vim, not Vi
