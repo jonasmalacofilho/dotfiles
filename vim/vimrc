@@ -1,3 +1,20 @@
+" Leader mapping summary
+"
+" Multi-key mappings
+"   <leader><leader>*  ! versions (like :make!)
+"   <leader>c*         colorscheme
+"   <leader>h*         Haxe
+"   <leader>i*         indentation
+"   <leader>p*         Ctrl-P
+"   <leader>s*         spell
+"
+" Single-key mappings (for now)
+"   <leader>    recall last command
+"   <leader>l   nohlsearch
+"   <leader>m          make
+"   <leader>n   NERDTree
+
+
 " Use Vim, not Vi
 set nocompatible
 
@@ -28,9 +45,9 @@ set autoindent  " autoindenting always on
 set cinoptions+=:0
 " (default to spaces, no tabs, and width=4)
 set expandtab tabstop=4 shiftwidth=4
-nnoremap <leader>sd :setlocal expandtab tabstop=4 shiftwidth=4<cr>
+nnoremap <leader>id :setlocal expandtab tabstop=4 shiftwidth=4<cr>
 " (set linux kernel style)
-nnoremap <leader>sk :setlocal noexpandtab tabstop=8 shiftwidth=8 softtabstop=8<cr>
+nnoremap <leader>ik :setlocal noexpandtab tabstop=8 shiftwidth=8 softtabstop=8<cr>
 
 " Colors
 " Default to transparent monokai but set bindings to change
