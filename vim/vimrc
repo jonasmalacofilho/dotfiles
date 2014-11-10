@@ -71,7 +71,7 @@ noremap <leader><cr> :<c-p>
 
 " Haxe
 " (vaxe)
-:let g:vaxe_prefer_first_in_directory = 0
+let g:vaxe_prefer_first_in_directory = 0
 noremap <leader>hh :call vaxe#DefaultHxml()<cr>
 noremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
 noremap <leader>ht <esc>:call vaxe#Ctags()<cr>
@@ -110,5 +110,5 @@ nnoremap <leader>sp :setlocal spell spelllang=pt_br<cr>
 autocmd BufEnter * lcd %:p:h
 
 " Better buffer switching
-:set switchbuf=useopen,usetab
+set switchbuf=useopen,usetab
 
