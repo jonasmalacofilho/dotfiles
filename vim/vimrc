@@ -7,6 +7,7 @@
 "   <leader>i*         indentation
 "   <leader>p*         Ctrl-P
 "   <leader>s*         spell
+"   <leader>u*         utilities
 "
 " Single-key mappings (for now)
 "   <leader>           recall last command
@@ -106,8 +107,11 @@ nnoremap <leader>sl :setlocal nospell<cr>
 nnoremap <leader>se :setlocal spell spelllang=en<cr>
 nnoremap <leader>sp :setlocal spell spelllang=pt_br<cr>
 
-" Change directories automatically
-autocmd BufEnter * lcd %:p:h
+" Utilities
+" current working dir
+nnoremap <leader>uc :lcd %:p:h<cr>
+nnoremap <leader>up :lcd -<cr>
+" autocmd BufEnter * lcd %:p:h  " disabled because it was breaking Gdiff
 
 " Better buffer switching
 set switchbuf=useopen,usetab
