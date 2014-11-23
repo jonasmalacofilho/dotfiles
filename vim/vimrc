@@ -38,6 +38,8 @@ vmap k gk
 " requires fortunes and cowsay
 let g:startify_custom_header =
             \ map(split(system('fortune | cowsay -f tux'), '\n'), '"   ". v:val') + ['']
+let g:startify_change_to_dir = 0
+let g:startify_files_number = 5
 
 " Indentation
 filetype plugin indent on
