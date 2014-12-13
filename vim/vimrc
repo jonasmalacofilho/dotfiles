@@ -1,8 +1,7 @@
 " Leader mapping summary
 "
 " Multi-key mappings
-"   <leader><leader>*  ! versions (like :make!)
-"   <leader>c*         colorscheme
+"   <leader><leader>*  alternative versions
 "   <leader>h*         Haxe
 "   <leader>i*         indentation
 "   <leader>p*         Ctrl-P
@@ -12,8 +11,10 @@
 " Single-key mappings (for now)
 "   <leader>           recall last command
 "   <leader>l          nohlsearch
-"   <leader>m          make
+"   <leader>m          make (alt: no !)
 "   <leader>n          NERDTree
+"   <leader>c          change to cwd (alt: local)
+"   <leader>d          change to previous dir (alt: local)
 
 
 " Use Vim, not Vi
@@ -53,11 +54,18 @@ nnoremap <leader>id :setlocal expandtab tabstop=4 shiftwidth=4<cr>
 " (set linux kernel style)
 nnoremap <leader>ik :setlocal noexpandtab tabstop=8 shiftwidth=8 softtabstop=8<cr>
 
+" Completion
+" always show the menu, insert longest match
+set completeopt=menu,longest
+inoremap <C-Space> <C-X><C-O>
+"
 " Colors
 " Default to transparent monokai but set bindings to change
 colorscheme monokait
-noremap <leader>ct :colorscheme monokait<cr>
-noremap <leader>co :colorscheme monokai<cr>
+" noremap !!! :colorscheme monokait<cr>
+" noremap !!! :colorscheme monokai<cr>
+" disable Lenghtmatters by default
+let g:lengthmatters_on_by_default=0
 
 " Searching
 set incsearch
@@ -76,7 +84,8 @@ noremap <leader><cr> :<c-p>
 " Haxe
 " (vaxe)
 let g:vaxe_prefer_first_in_directory = 0
-noremap <leader>hh :call vaxe#DefaultHxml()<cr>
+noremap <leader>hp :call vaxe#ProjectHxml()<cr>
+noremap <leader>hd :call vaxe#DefaultHxml()<cr>
 noremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
 noremap <leader>ht <esc>:call vaxe#Ctags()<cr>
 " (tcomment)
@@ -102,8 +111,8 @@ noremap <leader>pd :CtrlPDir<cr>
 noremap <leader>n :NERDTree<cr>
 
 " Make
-noremap <leader>m <esc>:make<cr>
-noremap <leader><leader>m <esc>:make!<cr>
+noremap <leader>m <esc>:make!<cr>
+noremap <leader><leader>m <esc>:make<cr>
 
 " Spell
 nnoremap <leader>sl :setlocal nospell<cr>
@@ -112,8 +121,10 @@ nnoremap <leader>sp :setlocal spell spelllang=pt_br<cr>
 
 " Utilities
 " current working dir
-nnoremap <leader>uc :lcd %:p:h<cr>
-nnoremap <leader>up :lcd -<cr>
+nnoremap <leader>d :lcd -<cr>
+nnoremap <leader><leader>d :cd -<cr>
+nnoremap <leader>c :lcd %:p:h<cr>
+nnoremap <leader><leader>c :cd %:p:h<cr>
 " autocmd BufEnter * lcd %:p:h  " disabled because it was breaking Gdiff
 
 " Better buffer switching

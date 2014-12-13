@@ -1,16 +1,7 @@
-all: vim-dotfiles compiz-dotfiles
+all: compiz tmux vim shz _phony
 
-# Vim
-vim-dotfiles: ~/.vim ~/.vimrc
-~/.vim: vim
-	ln -si ${PWD}/vim ~/.vim
-~/.vimrc:
-	ln -si ~/.vim/vimrc ~/.vimrc 
+compiz tmux vim zsh: _phony
+	make -C $@
 
-# Compiz
-compiz-dotfiles: ~/.config/compiz-1/compizconfig/Default.ini
-~/.config/compiz-1/compizconfig/Default.ini: compiz/Default.ini
-	ln -si ${PWD}/compiz/Default.ini ~/.config/compiz-1/compizconfig/Default.ini
-
-.PHONY: all vim-dotfiles compiz-dotfiles
+.PHONY: _phony
 
