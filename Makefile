@@ -1,6 +1,6 @@
-all: compiz tmux vim shz _phony
+all: compiz ssh tmux vim zsh _phony
 
-compiz tmux vim zsh: _phony
+compiz ssh tmux vim zsh: _phony
 	make -C $@
 
 .PHONY: _phony

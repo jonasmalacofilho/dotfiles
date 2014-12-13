@@ -1,3 +1,3 @@
 ~/.vim:
-	ln -si $(PWD) $@
+	ln -si $(CURDIR) $@
 

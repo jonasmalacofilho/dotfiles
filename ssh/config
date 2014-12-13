@@ -1,0 +1,7 @@
+Host github.com bitbucket.com
+StrictHostKeyChecking=yes
+
+Host *
+StrictHostKeyChecking=no
+VisualHostKey=yes
+
