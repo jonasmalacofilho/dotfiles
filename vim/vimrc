@@ -63,8 +63,6 @@ inoremap <C-Space> <C-X><C-O>
 " Colors
 " Default to transparent monokai but set bindings to change
 colorscheme monokait
-" noremap !!! :colorscheme monokait<cr>
-" noremap !!! :colorscheme monokai<cr>
 
 " Searching
 set incsearch
