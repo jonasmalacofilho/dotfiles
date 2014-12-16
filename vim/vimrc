@@ -50,10 +50,10 @@ set autoindent  " autoindenting always on
 " (don't indent switch cases)
 set cinoptions+=:0
 " (default to spaces, no tabs, and width=4)
-set expandtab tabstop=4 shiftwidth=4
-nnoremap <leader>id :setlocal expandtab tabstop=4 shiftwidth=4<cr>
+set expandtab tabstop=8 shiftwidth=4 softtabstop=4
+nnoremap <leader>id :setlocal expandtab shiftwidth=4 softtabstop=4 tabstop=8<cr>
 " (set linux kernel style)
-nnoremap <leader>ik :setlocal noexpandtab tabstop=8 shiftwidth=8 softtabstop=8<cr>
+nnoremap <leader>ik :setlocal noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
 
 " Completion
 " always show the menu, insert longest match
@@ -65,8 +65,6 @@ inoremap <C-Space> <C-X><C-O>
 colorscheme monokait
 " noremap !!! :colorscheme monokait<cr>
 " noremap !!! :colorscheme monokai<cr>
-" disable Lenghtmatters by default
-let g:lengthmatters_on_by_default=0
 
 " Searching
 set incsearch

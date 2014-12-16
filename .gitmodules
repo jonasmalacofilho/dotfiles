@@ -25,9 +25,6 @@
 [submodule "vim/bundle/loremipsum"]
 	path = vim/bundle/loremipsum
 	url = git@github.com:vim-scripts/loremipsum.git
-[submodule "vim/bundle/vim-lengthmatters"]
-	path = vim/bundle/vim-lengthmatters
-	url = git@github.com:whatyouhide/vim-lengthmatters.git
 [submodule "vim/bundle/vim-eunuch"]
 	path = vim/bundle/vim-eunuch
 	url = git@github.com:tpope/vim-eunuch.git
