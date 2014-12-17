@@ -3,7 +3,7 @@
 " Multi-key mappings
 "   <leader><leader>*  alternative versions
 "   <leader>h*         Haxe
-"   <leader>i*         indentation
+"   <leader>i*         indentation (alt: global)
 "   <leader>p*         Ctrl-P
 "   <leader>s*         spell
 "   <leader>u*         utilities
@@ -13,8 +13,8 @@
 "   <leader>l          nohlsearch
 "   <leader>m          make (alt: no !)
 "   <leader>n          NERDTree
-"   <leader>c          change to cwd (alt: local)
-"   <leader>d          change to previous dir (alt: local)
+"   <leader>c          change to cwd (alt: global)
+"   <leader>d          change to previous dir (alt: global)
 "   <leader>z          :sh
 
 
@@ -52,8 +52,12 @@ set cinoptions+=:0
 " (default to spaces, no tabs, and width=4)
 set expandtab tabstop=8 shiftwidth=4 softtabstop=4
 nnoremap <leader>id :setlocal expandtab shiftwidth=4 softtabstop=4 tabstop=8<cr>
+nnoremap <leader><leader>id :set expandtab shiftwidth=4 softtabstop=4 tabstop=8<cr>
 " (set linux kernel style)
 nnoremap <leader>ik :setlocal noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
+nnoremap <leader><leader>ik :set noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
+" shortcut to list
+nnoremap <leader>il :setlocal list<cr>
 
 " Completion
 " always show the menu, insert longest match
