@@ -1,0 +1,13 @@
+[user]
+	name = Jonas Malaco Filho
+	email = jonas@jonasmalaco.com
+	signingkey = 06af7ad0
+[color]
+	ui = true
+[push]
+	default = simple
+[alias]
+	head = log -1 --format=\\\"%H\\\"
+	lol = log --oneline --graph --decorate
+[core]
+	excludesfile = ~/.gitignore.global
