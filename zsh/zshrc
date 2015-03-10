@@ -88,3 +88,5 @@ alias pstat="perf stat -e task-clock,context-switches,cpu-migrations,page-faults
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
+

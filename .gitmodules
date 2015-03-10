@@ -31,9 +31,6 @@
 [submodule "vim/bundle/vim-startify"]
 	path = vim/bundle/vim-startify
 	url = https://github.com/mhinz/vim-startify
-[submodule "vim/bundle/vim-colorschemes"]
-	path = vim/bundle/vim-colorschemes
-	url = https://github.com/flazz/vim-colorschemes.git
 [submodule "vim/bundle/vim-bufferline"]
 	path = vim/bundle/vim-bufferline
 	url = https://github.com/bling/vim-bufferline.git
@@ -43,3 +40,6 @@
 [submodule "zsh/oh-my-zsh"]
 	path = zsh/oh-my-zsh
 	url = https://github.com/robbyrussell/oh-my-zsh.git
+[submodule "vim/bundle/gruvbox"]
+	path = vim/bundle/gruvbox
+	url = https://github.com/morhetz/gruvbox.git

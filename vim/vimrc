@@ -66,8 +66,10 @@ set completeopt=menu,longest
 inoremap <C-Space> <C-X><C-O>
 "
 " Colors
-" Default to transparent monokai but set bindings to change
+" Default to gruvbox
+" load monokait first for some unknown reason
 colorscheme monokait
+colorscheme gruvbox
 
 " Searching
 set incsearch
