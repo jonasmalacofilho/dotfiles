@@ -1,1 +1,4 @@
-set guifont=Inconsolata\ Medium\ 9
+set guifont=DejaVu\ Sans\ Mono\ 9
+set columns=132
+set lines=43
+
