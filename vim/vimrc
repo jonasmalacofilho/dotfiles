@@ -16,6 +16,9 @@
 "   <leader>c          change to cwd (alt: global)
 "   <leader>d          change to previous dir (alt: global)
 "   <leader>z          :sh
+"
+" Long names
+"   <leader>Foo        some less frequent action
 
 
 " Use Vim, not Vi
@@ -132,6 +135,8 @@ nnoremap <leader><leader>c :cd %:p:h<cr>
 " shell
 nnoremap <leader>z :sh<cr>
 " autocmd BufEnter * lcd %:p:h  " disabled because it was breaking Gdiff
+" trim trailing whitespace
+nnoremap <leader>Trim :%s/\s\+$//<cr>
 
 " Better buffer switching
 set switchbuf=useopen,usetab
