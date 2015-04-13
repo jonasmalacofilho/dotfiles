@@ -82,6 +82,8 @@ source $ZSH/oh-my-zsh.sh
 alias tmux="tmux -2"  # fix tmux->vim colors for me
 alias tx="tmux"
 alias jo="gnome-open"  # just open
+alias t="tree"
+alias m="marlin"
 alias pstat="perf stat -e task-clock,context-switches,cpu-migrations,page-faults,cpu-cycles,instructions,stalled-cycles-frontend,stalled-cycles-backend,cache-references,cache-misses,branches,branch-misses"
 
 # Example aliases
