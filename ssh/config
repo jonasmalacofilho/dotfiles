@@ -1,7 +1,7 @@
 Host github.com bitbucket.org bitbucket.com
-StrictHostKeyChecking=yes
+    StrictHostKeyChecking ask
 
 Host *
-StrictHostKeyChecking=no
-VisualHostKey=yes
+    StrictHostKeyChecking no
+    VisualHostKey yes
 
