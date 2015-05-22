@@ -54,7 +54,8 @@ plugins=(git tmux vi-mode wd)
 
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 # export MANPATH="/usr/local/man:$MANPATH"
-# Cauê: extended globbing
+
+setopt EXTENDED_GLOB
 
 source $ZSH/oh-my-zsh.sh
 
