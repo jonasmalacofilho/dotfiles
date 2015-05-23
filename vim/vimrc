@@ -125,6 +125,7 @@ noremap <leader><leader>m <esc>:make<cr>
 nnoremap <leader>sl :setlocal nospell<cr>
 nnoremap <leader>se :setlocal spell spelllang=en<cr>
 nnoremap <leader>sp :setlocal spell spelllang=pt_br<cr>
+nnoremap <leader>sf :setlocal spell spelllang=fr<cr>
 
 " Utilities
 " previous and current working dir
