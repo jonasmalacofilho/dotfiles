@@ -54,7 +54,8 @@ plugins=(git tmux vi-mode wd)
 
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 # export MANPATH="/usr/local/man:$MANPATH"
-# Cauê: extended globbing
+
+setopt EXTENDED_GLOB
 
 source $ZSH/oh-my-zsh.sh
 
@@ -78,6 +79,9 @@ source $ZSH/oh-my-zsh.sh
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
+
+alias sd="systemctl"
+alias jd="journalctl"
 
 export VISUAL=vim EDITOR=vim
 alias vi="vim"
