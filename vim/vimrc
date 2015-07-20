@@ -31,6 +31,7 @@ execute pathogen#infect()
 " Basic
 set mouse=a
 set number
+set cursorline
 let mapleader = ','
 " move up/down using display lines
 " only on normal and visual modes
@@ -53,15 +54,15 @@ set autoindent  " autoindenting always on
 " (don't indent switch cases)
 set cinoptions+=:0
 " (default to spaces, no tabs, and width=4)
-set expandtab tabstop=8 shiftwidth=4 softtabstop=4
+set expandtab tabstop=8 shiftwidth=4 softtabstop=4 list
 nnoremap <leader>id :setlocal expandtab shiftwidth=4 softtabstop=4 tabstop=8<cr>
 nnoremap <leader><leader>id :set expandtab shiftwidth=4 softtabstop=4 tabstop=8<cr>
 " (set linux kernel style)
 nnoremap <leader>ik :setlocal noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
 nnoremap <leader><leader>ik :set noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
 " (shortcut to list)
-nnoremap <leader>il :setlocal list<cr>
-nnoremap <leader><leader>il :set list<cr>
+nnoremap <leader>il :setlocal list!<cr>
+nnoremap <leader><leader>il :set list!<cr>
 
 " Completion
 " always show the menu, insert longest match
@@ -115,7 +116,7 @@ noremap <leader>pb :CtrlPBookmarkDir<cr>
 noremap <leader>pd :CtrlPDir<cr>
 
 " NERDTree
-noremap <leader>n :NERDTree<cr>
+noremap <leader>n :NERDTreeToggle<cr>
 
 " Make
 noremap <leader>m <esc>:make!<cr>
