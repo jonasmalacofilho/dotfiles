@@ -74,7 +74,13 @@ inoremap <C-Space> <C-X><C-O>
 " load monokait first for some unknown reason
 colorscheme monokait
 colorscheme gruvbox
-
+" don't highlight the entire line, just the line number
+hi clear CursorLine
+" additionally necessary: http://stackoverflow.com/a/13275419/2801377
+augroup CLClear
+    autocmd! ColorScheme * hi clear CursorLine
+augroup END
+"
 " Searching
 set incsearch
 set ignorecase
