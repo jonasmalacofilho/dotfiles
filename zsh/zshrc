@@ -89,7 +89,7 @@ alias vi="vim"
 alias tmux="tmux -2"  # fix tmux->vim colors for me
 alias tx="tmux"
 
-alias jo="gnome-open"  # just open
+alias jo="xdg-open"  # just open
 alias t="tree"
 alias m="marlin"
 alias r="ranger"
