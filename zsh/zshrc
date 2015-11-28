@@ -59,6 +59,10 @@ setopt EXTENDED_GLOB
 
 source $ZSH/oh-my-zsh.sh
 
+# vi-mode extension: bind Ctrl-r to search
+bindkey '^r' history-incremental-search-backward
+bindkey '^q' history-incremental-search-forward
+
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
