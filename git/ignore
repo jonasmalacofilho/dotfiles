@@ -1,4 +1,6 @@
 *.swp
 
 *.i/
+.haxelib/
+node_modules/
 
