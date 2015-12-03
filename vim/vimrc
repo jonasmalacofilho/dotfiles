@@ -65,16 +65,22 @@ nnoremap <leader>il :setlocal list!<cr>
 nnoremap <leader><leader>il :set list!<cr>
 
 " Completion
-" always show the menu, insert longest match
-set completeopt=menu,longest
-inoremap <C-Space> <C-X><C-O>
-"
+set completeopt=preview
+" <c-y> and <c-e> close the preview window
+inoremap <expr> <c-e> pumvisible() ? "\<c-e>\<esc>:pc<cr>a" : "\<c-e>"
+inoremap <expr> <c-y> pumvisible() ? "\<c-y>\<esc>:pc<cr>a" : "\<c-y>"
+" <c-space> opens (<c-x><c-o>) or aborts (<c-e>) the omnicompletion
+inoremap <expr> <c-space> pumvisible() ? "\<c-e>\<esc>:pc<cr>a" : "\<c-x>\<c-o>"
+inoremap <expr> <c-@> pumvisible() ? "\<c-e>\<esc>:pc<cr>a" : "\<c-x>\<c-o>"
+" <tab> (if pumvisble) accepts the omnicompletion (<c-y>)
+inoremap <expr> <tab> pumvisible() ? "\<c-y>\<esc>:pc<cr>a" : "\<tab>"
+
 " Colors
 " Default to gruvbox
 " load monokait first for some unknown reason
 colorscheme monokait
 colorscheme gruvbox
-"
+
 " Searching
 set incsearch
 set ignorecase
