@@ -66,14 +66,23 @@ nnoremap <leader><leader>il :set list!<cr>
 
 " Completion
 set completeopt=preview
-" <c-y> and <c-e> close the preview window
+" completion_<c-y>/<c-e> additionally close the preview window
 inoremap <expr> <c-e> pumvisible() ? "\<c-e>\<esc>:pc<cr>a" : "\<c-e>"
 inoremap <expr> <c-y> pumvisible() ? "\<c-y>\<esc>:pc<cr>a" : "\<c-y>"
-" <c-space> opens (<c-x><c-o>) or aborts (<c-e>) the omnicompletion
-inoremap <expr> <c-space> pumvisible() ? "\<c-e>\<esc>:pc<cr>a" : "\<c-x>\<c-o>"
-inoremap <expr> <c-@> pumvisible() ? "\<c-e>\<esc>:pc<cr>a" : "\<c-x>\<c-o>"
-" <tab> (if pumvisble) accepts the omnicompletion (<c-y>)
-inoremap <expr> <tab> pumvisible() ? "\<c-y>\<esc>:pc<cr>a" : "\<tab>"
+" completion_<esc>/<c-c> aborts the omnicompletion to normal mode
+imap <expr> <esc> pumvisible() ? "\<c-e><esc>" : "\<esc>"
+imap <expr> <c-c> pumvisible() ? "\<c-e><esc>" : "\<c-c>"
+" completion_<c-space> opens (<c-x><c-o>) or aborts (<c-e>) the omnicompletion
+imap <expr> <c-@> pumvisible() ? "\<c-e>" : "\<c-x>\<c-o>"
+" completion_<tab> (if pumvisble) accepts the omnicompletion (<c-y>)
+imap <expr> <tab> pumvisible() ? "\<c-y>" : "\<tab>"
+" <c-@> (in normal mode) opens the omnicompletion
+nmap <expr> <c-@> "a\<c-@>"
+" <c-space> to <c-@> equivalence
+imap <c-space> <c-@>
+nmap <c-space> <c-@>
+" and not really functional:
+" nmap <expr> <c-@> getline('.')[col('.') - 1] == "." ? "a\<c-@>" : "F.a\<c-@>"
 
 " Colors
 " Default to gruvbox
