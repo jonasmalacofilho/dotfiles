@@ -60,6 +60,9 @@ nnoremap <leader><leader>id :set expandtab shiftwidth=4 softtabstop=4 tabstop=8<
 " (set linux kernel style)
 nnoremap <leader>ik :setlocal noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
 nnoremap <leader><leader>ik :set noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
+" (set short indent style)
+nnoremap <leader>is :setlocal expandtab shiftwidth=2 softtabstop=2 tabstop=8<cr>
+nnoremap <leader><leader>is :set expandtab shiftwidth=2 softtabstop=2 tabstop=8<cr>
 " (shortcut to list)
 nnoremap <leader>il :setlocal list!<cr>
 nnoremap <leader><leader>il :set list!<cr>
