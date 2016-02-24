@@ -128,6 +128,9 @@ endif
 call tcomment#DefineType('haxe', '// %s')
 call tcomment#DefineType('haxe_inline', g:tcommentInlineC)
 call tcomment#DefineType('haxe_block', g:tcommentBlockHx)
+" tink template (tt)
+autocmd BufNewFile,BufRead *.tt set filetype=tinktemplate
+call tcomment#DefineType('tinktemplate', '(:* %s *:)')
 
 " CtrlP
 noremap <leader>pb :CtrlPBookmarkDir<cr>
