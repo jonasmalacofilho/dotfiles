@@ -110,6 +110,9 @@ noremap <leader><cr> :<c-p>
 " Haxe
 " (vaxe)
 let g:vaxe_prefer_first_in_directory = 0
+let g:vaxe_cache_server = 1
+let g:vaxe_cache_server_port = 6000
+let g:vaxe_cache_server_autostart = 1
 noremap <leader>hp :call vaxe#ProjectHxml()<cr>
 noremap <leader>hd :call vaxe#DefaultHxml()<cr>
 noremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
