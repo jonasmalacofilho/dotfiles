@@ -53,8 +53,8 @@ filetype plugin indent on
 set autoindent  " autoindenting always on
 " (don't indent switch cases)
 set cinoptions+=:0
-" (default to spaces, no tabs, and width=4)
-set expandtab tabstop=8 shiftwidth=4 softtabstop=4 list
+" (default to ik)
+set noexpandtab shiftwidth=8 softtabstop=8 tabstop=8
 nnoremap <leader>id :setlocal expandtab shiftwidth=4 softtabstop=4 tabstop=8<cr>
 nnoremap <leader><leader>id :set expandtab shiftwidth=4 softtabstop=4 tabstop=8<cr>
 " (set linux kernel style)
