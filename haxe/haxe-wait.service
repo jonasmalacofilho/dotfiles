@@ -1,0 +1,15 @@
+[Unit]
+Description=Haxe compilation server
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=/run/haxe-wait.pid
+ExecStart=/usr/bin/haxe --wait 6000
+TimeoutStopSec=10
+KillMode=mixed
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+
