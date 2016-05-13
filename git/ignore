@@ -2,5 +2,6 @@
 
 *.i/
 .haxelib/
+.local/
 node_modules/
 
