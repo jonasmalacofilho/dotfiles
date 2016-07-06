@@ -1,6 +1,6 @@
 [user]
-	name = Jonas Malaco Filho
-	email = jonas@jonasmalaco.com
+	name = Jonas Malaco
+	email = jonas@protocubo.io
 	signingkey = 06af7ad0
 [color]
 	ui = true
@@ -11,3 +11,7 @@
 	lol = log --oneline --graph --decorate
 [core]
 	excludesfile = ~/.gitignore.global
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	required = true
