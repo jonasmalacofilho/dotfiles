@@ -34,12 +34,9 @@ set number
 set relativenumber
 set cursorline
 let mapleader = ','
-" move up/down using display lines
-" only on normal and visual modes
-nmap j gj
-vmap j gj
-nmap k gk
-vmap k gk
+" move up/down using display lines when used without a count
+noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
+noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
 
 " Startify
 " requires fortunes and cowsay
