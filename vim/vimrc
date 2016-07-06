@@ -38,6 +38,19 @@ let mapleader = ','
 noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
 noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
 
+" Customization/extension of default Vim behavior
+" a lot based on https://blog.petrzemek.net/2016/04/06/things-about-vim-i-wish-i-knew-earlier/
+" make Y work like C and D
+noremap Y y$
+" stay in visual mode when indenting
+vnoremap < <gv
+vnoremap > >gv
+" quickly select the text that was just pasted
+noremap gV `[v`]
+" easily replace the current word and all its occurrences
+nnoremap <Leader>rc :%s/\<<C-r><C-w>\>/
+vnoremap <Leader>rc y:%s/<C-r>"/
+
 " Startify
 " requires fortunes and cowsay
 let g:startify_custom_header =
