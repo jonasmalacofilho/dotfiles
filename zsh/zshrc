@@ -106,6 +106,8 @@ alias pstat="perf stat -e task-clock,context-switches,cpu-migrations,page-faults
 
 source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
 
+# assumes .config/systemd/user/ssh-agent is running
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+# add my keys, if not already added
 ssh-add -l > /dev/null || ssh-add
 
