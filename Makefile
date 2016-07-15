@@ -1,10 +1,9 @@
-all: compiz git ssh tmux vim zsh _phony
-systemd-services: haxe _phony
+all: compiz git ssh tmux vim zsh bash _phony
 
-compiz git ssh tmux vim zsh: _phony
+compiz git ssh tmux vim zsh bash: _phony
 	make -C $@
 
-haxe: /bin/systemctl _phony
+systemd: /bin/systemctl _phony
 	make -C $@
 
 .PHONY: _phony

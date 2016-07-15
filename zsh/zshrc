@@ -106,3 +106,5 @@ alias pstat="perf stat -e task-clock,context-switches,cpu-migrations,page-faults
 
 source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
 
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
