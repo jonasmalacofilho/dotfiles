@@ -1,6 +1,6 @@
 DEST=~/.config/systemd/user
 
-$(DEST)/haxe-wait.service:
+$(DEST)/haxe.service: haxe.service
 	mkdir -p $(DEST)
-	cp $(CURDIR)/haxe-wait.service $@
+	cp haxe.service $@
 
