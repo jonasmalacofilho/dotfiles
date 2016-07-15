@@ -111,3 +111,6 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 # add my keys, if not already added
 ssh-add -l > /dev/null || ssh-add
 
+# hack to keep all aliases to sudo
+alias sudo='sudo '
+
