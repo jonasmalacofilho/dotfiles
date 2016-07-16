@@ -106,11 +106,25 @@ alias pstat="perf stat -e task-clock,context-switches,cpu-migrations,page-faults
 
 source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
 
+# SUDO
+# hack to keep all aliases to sudo
+alias sudo='sudo '
+alias _!='sudo $(fc -ln -1)'
+
+# GIT
+# switch gcl from alias to function; should lfs clone from my github
+unalias gcl
+function gcl() {
+	repo=$1
+	shift
+	git lfs clone --recursive git@github.com:/jonasmalacofilho/$repo "$@"
+}
+
+# SSH
 # assumes .config/systemd/user/ssh-agent is running
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 # add my keys, if not already added
 ssh-add -l > /dev/null || ssh-add
-
-# hack to keep all aliases to sudo
-alias sudo='sudo '
+# make the ssh-add the last thing here, so that it can
+# fail without skiping the rest
 
