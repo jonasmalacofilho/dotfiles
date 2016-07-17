@@ -136,3 +136,6 @@ ssh-add -l > /dev/null || ssh-add
 # make the ssh-add the last thing here, so that it can
 # fail without skiping the rest
 
+# remember the current dir when opening new windows or tabs
+source /etc/profile.d/vte.sh
+
