@@ -114,10 +114,18 @@ alias _!='sudo $(fc -ln -1)'
 # GIT
 # switch gcl from alias to function; should lfs clone from my github
 unalias gcl
-function gcl() {
-	repo=$1
-	shift
-	git lfs clone --recursive git@github.com:/jonasmalacofilho/$repo "$@"
+alias gcl="git lfs clone"
+function gclx() {
+	user=$1
+	repo=$2
+	shift && shift
+	git lfs clone --recursive git@github.com:/$user/$repo $@
+}
+function gclj() {
+	gclx jonasmalacofilho $@
+}
+function gclp() {
+	gclx protocubo $@
 }
 
 # SSH
