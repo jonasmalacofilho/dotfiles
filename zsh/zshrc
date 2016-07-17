@@ -119,7 +119,7 @@ function gclx() {
 	user=$1
 	repo=$2
 	shift && shift
-	git lfs clone --recursive git@github.com:/$user/$repo $@
+	git lfs clone --recursive git@github.com:$user/$repo $@
 }
 function gclj() {
 	gclx jonasmalacofilho $@
