@@ -114,8 +114,9 @@ alias _!='sudo $(fc -ln -1)'
 # GIT
 # why only gcm (master), we need a gcd too
 alias gcd="git checkout development"
-# switch gcl from alias to function; should lfs clone from my github
+# use lfs for cloning
 alias gcl="git lfs clone"
+# helpers to lfs clone from my and protocubo's github
 function gclx() {
 	user=$1
 	repo=$2
