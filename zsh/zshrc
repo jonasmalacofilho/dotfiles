@@ -112,8 +112,9 @@ alias sudo='sudo '
 alias _!='sudo $(fc -ln -1)'
 
 # GIT
+# why only gcm (master), we need a gcd too
+alias gcd="git checkout development"
 # switch gcl from alias to function; should lfs clone from my github
-unalias gcl
 alias gcl="git lfs clone"
 function gclx() {
 	user=$1
