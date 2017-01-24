@@ -1,7 +1,7 @@
-*.swp
-
 *.i/
+*.swp
 .haxelib/
 .local/
 node_modules/
+tags
 
