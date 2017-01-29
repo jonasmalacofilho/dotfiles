@@ -29,6 +29,7 @@ execute pathogen#infect()
 "call pathogen#helptags() "
 
 " Basic
+set title
 set mouse=a
 set number
 set relativenumber
