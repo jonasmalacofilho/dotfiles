@@ -129,6 +129,7 @@ noremap <leader>hp :call vaxe#ProjectHxml()<cr>
 noremap <leader>hd :call vaxe#DefaultHxml()<cr>
 noremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
 noremap <leader>ht <esc>:call vaxe#Ctags()<cr>
+nnoremap <leader>hr :! systemctl --user restart haxe<cr>
 " (tcomment)
 if !exists("g:tcommentBlockHx")  " Based on g:tcommentBlockC
     let g:tcommentBlockHx = {
