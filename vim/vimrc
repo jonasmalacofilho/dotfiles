@@ -156,6 +156,8 @@ nnoremap <leader>sl :setlocal nospell<cr>
 nnoremap <leader>se :setlocal spell spelllang=en<cr>
 nnoremap <leader>sp :setlocal spell spelllang=pt_br<cr>
 nnoremap <leader>sf :setlocal spell spelllang=fr<cr>
+autocmd FileType gitcommit setlocal spell
+autocmd FileType markdown setlocal spell
 
 " Utilities
 " previous and current working dir
