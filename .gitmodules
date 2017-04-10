@@ -28,9 +28,6 @@
 [submodule "vim/bundle/vim-eunuch"]
 	path = vim/bundle/vim-eunuch
 	url = git@github.com:tpope/vim-eunuch.git
-[submodule "vim/bundle/vim-startify"]
-	path = vim/bundle/vim-startify
-	url = https://github.com/mhinz/vim-startify
 [submodule "vim/bundle/vim-bufferline"]
 	path = vim/bundle/vim-bufferline
 	url = https://github.com/bling/vim-bufferline.git

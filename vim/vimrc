@@ -52,14 +52,6 @@ noremap gV `[v`]
 nnoremap <Leader>rc :%s/\<<C-r><C-w>\>/
 vnoremap <Leader>rc y:%s/<C-r>"/
 
-" Startify
-" requires fortunes and cowsay
-let g:startify_custom_header =
-            \ map(split(system('fortune | cowsay -f tux'), '\n'), '"   ". v:val') + ['']
-let g:startify_change_to_dir = 0
-let g:startify_files_number = 3
-let g:startify_list_order = ['dir']
-
 " Indentation
 filetype plugin indent on
 set autoindent  " autoindenting always on
