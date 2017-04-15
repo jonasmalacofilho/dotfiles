@@ -169,6 +169,8 @@ nnoremap <leader>z :sh<cr>
 " autocmd BufEnter * lcd %:p:h  " disabled because it was breaking Gdiff
 " trim trailing whitespace
 nnoremap <leader>Trim :%s/\s\+$//<cr>
+" like :only, but center it between 2 empty windows
+nnoremap <leader>o :only<cr>:vnew<cr>:vnew<cr><C-W>R<C-W>h
 
 " Better buffer switching
 set switchbuf=useopen,usetab
