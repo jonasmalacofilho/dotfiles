@@ -1,0 +1,3 @@
+~/.fonts:
+	ln -si $(CURDIR) $@
+
