@@ -145,3 +145,5 @@ ssh-add -l > /dev/null || ssh-add
 # remember the current dir when opening new windows or tabs
 source /etc/profile.d/vte.sh
 
+# OPAM configuration
+. /home/j/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
