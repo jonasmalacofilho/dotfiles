@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 PIDFile=/run/haxe.pid
-ExecStart=/usr/bin/haxe --wait 6000
+ExecStart=/usr/local/bin/haxe --wait 6000
 TimeoutStopSec=10
 KillMode=mixed
 Restart=on-failure
