@@ -95,6 +95,10 @@ alias tx="tmux"
 
 alias jo="xdg-open"  # just open
 alias t="tree"
+alias t1="tree -L 1"
+alias t2="tree -L 2"
+alias t3="tree -L 3"
+alias t4="tree -L 4"
 alias m="marlin"
 alias r="ranger"
 
@@ -142,4 +146,4 @@ ssh-add -l > /dev/null || ssh-add
 source /etc/profile.d/vte.sh
 
 # OPAM configuration
-. /home/jonas/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+. /home/j/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true

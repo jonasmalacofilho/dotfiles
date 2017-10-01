@@ -60,6 +60,7 @@ set autoindent  " autoindenting always on
 set cinoptions+=:0
 " (default to ij)
 set noexpandtab shiftwidth=2 softtabstop=2 tabstop=2 list
+autocmd FileType gitcommit setlocal noexpandtab shiftwidth=2 softtabstop=2 tabstop=2 list
 " (jonas style)
 nnoremap <leader>ij :setlocal noexpandtab shiftwidth=2 softtabstop=2 tabstop=2<cr>
 nnoremap <leader><leader>ij :set noexpandtab shiftwidth=2 softtabstop=2 tabstop=2<cr>
