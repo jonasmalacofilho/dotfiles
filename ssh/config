@@ -4,4 +4,6 @@ Host github.com bitbucket.org bitbucket.com
 Host *
     StrictHostKeyChecking no
     VisualHostKey yes
+		ServerAliveInterval 100
+		TCPKeepAlive yes
 
