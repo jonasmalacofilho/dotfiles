@@ -1,9 +1,10 @@
 Host github.com bitbucket.org bitbucket.com
-    StrictHostKeyChecking ask
+	StrictHostKeyChecking ask
 
 Host *
-    StrictHostKeyChecking no
-    VisualHostKey yes
-		ServerAliveInterval 60
-		TCPKeepAlive no
+	StrictHostKeyChecking no
+	VisualHostKey yes
+	ServerAliveInterval 15
+	ServerAliveCountMax 20
+	TCPKeepAlive no
 
