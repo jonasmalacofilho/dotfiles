@@ -76,8 +76,7 @@ set completeopt=preview
 " completion_<c-y>/<c-e> additionally close the preview window
 inoremap <expr> <c-e> pumvisible() ? "\<c-e>\<esc>:pc<cr>a" : "\<c-e>"
 inoremap <expr> <c-y> pumvisible() ? "\<c-y>\<esc>:pc<cr>a" : "\<c-y>"
-" completion_<esc>/<c-c> aborts the omnicompletion to normal mode
-imap <expr> <esc> pumvisible() ? "\<c-e><esc>" : "\<esc>"
+" imap <expr> <esc> pumvisible() ? "\<c-e><esc>" : "\<esc>"
 imap <expr> <c-c> pumvisible() ? "\<c-e><esc>" : "\<c-c>"
 " completion_<c-space> opens (<c-x><c-o>) or aborts (<c-e>) the omnicompletion
 imap <expr> <c-@> pumvisible() ? "\<c-e>" : "\<c-x>\<c-o>"
