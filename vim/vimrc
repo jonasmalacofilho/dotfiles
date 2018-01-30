@@ -1,6 +1,10 @@
 " init
 set nocompatible
 execute pathogen#infect()
+set encoding=utf-8
+set nomodeline
+set noexrc
+set secure
 
 " basic functionality
 let mapleader = ','
@@ -15,9 +19,12 @@ set number
 set relativenumber
 set cursorline
 set colorcolumn=80
+set scrolloff=3
+set sidescrolloff=3
 set termguicolors
 set background=dark
 colorscheme gruvbox
+syntax enable
 
 " extensions
 " move up/down using display lines when used without a count
