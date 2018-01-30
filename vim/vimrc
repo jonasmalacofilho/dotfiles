@@ -1,47 +1,29 @@
-" Leader mapping summary
-"
-" Multi-key mappings
-"   <leader><leader>*  alternative versions
-"   <leader>h*         Haxe
-"   <leader>i*         indentation (alt: global)
-"   <leader>p*         Ctrl-P
-"   <leader>s*         spell
-"   <leader>u*         utilities
-"
-" Single-key mappings (for now)
-"   <leader>           recall last command
-"   <leader>l          nohlsearch
-"   <leader>m          make (alt: no !)
-"   <leader>n          NERDTree
-"   <leader>c          change to cwd (alt: global)
-"   <leader>d          change to previous dir (alt: global)
-"   <leader>z          :sh
-"
-" Long names
-"   <leader>Foo        some less frequent action
-
-
-" Use Vim, not Vi
+" init
 set nocompatible
-
-" Pathogen
 execute pathogen#infect()
-"call pathogen#helptags() "
 
-" Basic
-set title
+" basic functionality
+let mapleader = ','
 set mouse=a
+set autowrite  " autowrite on a bunch of times including :make
+set autoread   " autoread when buffer is unchanged
+set switchbuf=useopen,usetab
+
+" basic appearence
+set title
 set number
 set relativenumber
 set cursorline
 set colorcolumn=80
-let mapleader = ','
+set termguicolors
+set background=dark
+colorscheme gruvbox
+
+" extensions
 " move up/down using display lines when used without a count
 noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
 noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
-
-" Customization/extension of default Vim behavior
-" a lot based on https://blog.petrzemek.net/2016/04/06/things-about-vim-i-wish-i-knew-earlier/
+" the folliwing was based on https://blog.petrzemek.net/2016/04/06/things-about-vim-i-wish-i-knew-earlier/
 " make Y work like C and D
 noremap Y y$
 " stay in visual mode when indenting
@@ -53,25 +35,83 @@ noremap gV `[v`]
 nnoremap <Leader>rc :%s/\<<C-r><C-w>\>/
 vnoremap <Leader>rc y:%s/<C-r>"/
 
-" Indentation
+" utilities
+" make mappings
+noremap <leader>m <esc>:make!<cr>
+noremap <leader><leader>m <esc>:make<cr>
+" previous and current working dir
+nnoremap <leader>d :lcd -<cr>
+nnoremap <leader><leader>d :cd -<cr>
+nnoremap <leader>c :lcd %:p:h<cr>
+nnoremap <leader><leader>c :cd %:p:h<cr>
+" shell
+nnoremap <leader>z :sh<cr>
+" autocmd BufEnter * lcd %:p:h  " disabled because it was breaking Gdiff
+" trim trailing whitespace
+nnoremap <leader>Trim :%s/\s\+$//<cr>
+" like :only, but center it between 2 empty windows
+nnoremap <leader>o :only<cr>:vnew<cr>:vnew<cr><C-W>R<C-W>h
+" last command
+noremap <leader><cr> :<c-p>
+
+" searches
+set incsearch
+set ignorecase
+set smartcase  " /foo matches FOO and fOo; /FOO only matches FOO
+set hlsearch   " highlight searh matches
+noremap <leader>l :nohlsearch<cr>
+
+" spellchecking
+nnoremap <leader>sl :setlocal nospell<cr>
+nnoremap <leader>se :setlocal spell spelllang=en<cr>
+nnoremap <leader>sp :setlocal spell spelllang=pt_br<cr>
+nnoremap <leader>sf :setlocal spell spelllang=fr<cr>
+autocmd FileType gitcommit setlocal spell
+autocmd FileType markdown setlocal spell
+
+" indentation
 filetype plugin indent on
 set autoindent  " autoindenting always on
-" (don't indent switch cases)
-set cinoptions+=:0
-" (default to ij)
-set noexpandtab shiftwidth=2 softtabstop=2 tabstop=2 list
-autocmd FileType gitcommit setlocal noexpandtab shiftwidth=2 softtabstop=2 tabstop=2 list
-" (jonas style)
+set cinoptions+=:0  " don't indent switch cases
+" jonas' style
 nnoremap <leader>ij :setlocal noexpandtab shiftwidth=2 softtabstop=2 tabstop=2<cr>
 nnoremap <leader><leader>ij :set noexpandtab shiftwidth=2 softtabstop=2 tabstop=2<cr>
-" (linux kernel style)
+" linux kernel style
 nnoremap <leader>ik :setlocal noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
 nnoremap <leader><leader>ik :set noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
-" (shortcut to list)
-nnoremap <leader>il :setlocal list!<cr>
-nnoremap <leader><leader>il :set list!<cr>
+" default to jonas's style
+set noexpandtab shiftwidth=2 softtabstop=2 tabstop=2 list
+autocmd FileType gitcommit setlocal noexpandtab shiftwidth=2 softtabstop=2 tabstop=2 list
 
-" Completion
+" haxe: vaxe
+let g:vaxe_prefer_first_in_directory = 0
+let g:vaxe_cache_server = 1
+let g:vaxe_cache_server_port = 6000
+let g:vaxe_cache_server_autostart = 1
+noremap <leader>hp :call vaxe#ProjectHxml()<cr>
+noremap <leader>hd :call vaxe#DefaultHxml()<cr>
+noremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
+noremap <leader>ht <esc>:call vaxe#Ctags()<cr>
+nnoremap <leader>hr :! systemctl --user restart haxe<cr>
+" haxe: tcomment
+if !exists("g:tcommentBlockHx")  " Based on g:tcommentBlockC
+    let g:tcommentBlockHx = {
+                \ 'commentstring': '/*%s*/',
+                \ 'middle': '    ',
+                \ 'rxbeg': '\*\+',
+                \ 'rxend': '',
+                \ 'rxmid': '',
+                \ 'replacements': g:tcomment#replacements_c
+                \ }
+endif
+call tcomment#DefineType('haxe', '// %s')
+call tcomment#DefineType('haxe_inline', g:tcommentInlineC)
+call tcomment#DefineType('haxe_block', g:tcommentBlockHx)
+" haxe: tink template files
+autocmd BufNewFile,BufRead *.tt set filetype=tinktemplate
+call tcomment#DefineType('tinktemplate', '(:* %s *:)')
+
+" completion
 set completeopt=preview
 " completion_<c-y>/<c-e> additionally close the preview window
 inoremap <expr> <c-e> pumvisible() ? "\<c-e>\<esc>:pc<cr>a" : "\<c-e>"
@@ -87,92 +127,11 @@ nmap <expr> <c-@> "a\<c-@>"
 " <c-space> to <c-@> equivalence
 imap <c-space> <c-@>
 nmap <c-space> <c-@>
-" and not really functional:
-" nmap <expr> <c-@> getline('.')[col('.') - 1] == "." ? "a\<c-@>" : "F.a\<c-@>"
 
-" Colors
-" Default to gruvbox
-" load monokait first for some unknown reason
-set termguicolors
-colorscheme monokait
-colorscheme gruvbox
-
-" Searching
-set incsearch
-set ignorecase
-set smartcase  " /foo matches FOO and fOo; /FOO only matches FOO
-set hlsearch   " highlight searh matches
-noremap <leader>l :nohlsearch<cr>
-
-" Other
-set autowrite  " autowrite on a bunch of times including :make
-set autoread   " autoread when buffer is unchanged
-
-" Commands
-noremap <leader><cr> :<c-p>
-
-" Haxe
-" (vaxe)
-let g:vaxe_prefer_first_in_directory = 0
-let g:vaxe_cache_server = 1
-let g:vaxe_cache_server_port = 6000
-let g:vaxe_cache_server_autostart = 1
-noremap <leader>hp :call vaxe#ProjectHxml()<cr>
-noremap <leader>hd :call vaxe#DefaultHxml()<cr>
-noremap <leader>hi <esc>:call vaxe#ImportClass()<cr>
-noremap <leader>ht <esc>:call vaxe#Ctags()<cr>
-nnoremap <leader>hr :! systemctl --user restart haxe<cr>
-" (tcomment)
-if !exists("g:tcommentBlockHx")  " Based on g:tcommentBlockC
-    let g:tcommentBlockHx = {
-                \ 'commentstring': '/*%s*/',
-                \ 'middle': '    ',
-                \ 'rxbeg': '\*\+',
-                \ 'rxend': '',
-                \ 'rxmid': '',
-                \ 'replacements': g:tcomment#replacements_c
-                \ }
-endif
-call tcomment#DefineType('haxe', '// %s')
-call tcomment#DefineType('haxe_inline', g:tcommentInlineC)
-call tcomment#DefineType('haxe_block', g:tcommentBlockHx)
-" tink template (tt)
-autocmd BufNewFile,BufRead *.tt set filetype=tinktemplate
-call tcomment#DefineType('tinktemplate', '(:* %s *:)')
-
+" other plugin settings
 " CtrlP
 noremap <leader>pb :CtrlPBookmarkDir<cr>
 noremap <leader>pd :CtrlPDir<cr>
-
 " NERDTree
 noremap <leader>n :NERDTreeToggle<cr>
-
-" Make
-noremap <leader>m <esc>:make!<cr>
-noremap <leader><leader>m <esc>:make<cr>
-
-" Spell
-nnoremap <leader>sl :setlocal nospell<cr>
-nnoremap <leader>se :setlocal spell spelllang=en<cr>
-nnoremap <leader>sp :setlocal spell spelllang=pt_br<cr>
-nnoremap <leader>sf :setlocal spell spelllang=fr<cr>
-autocmd FileType gitcommit setlocal spell
-autocmd FileType markdown setlocal spell
-
-" Utilities
-" previous and current working dir
-nnoremap <leader>d :lcd -<cr>
-nnoremap <leader><leader>d :cd -<cr>
-nnoremap <leader>c :lcd %:p:h<cr>
-nnoremap <leader><leader>c :cd %:p:h<cr>
-" shell
-nnoremap <leader>z :sh<cr>
-" autocmd BufEnter * lcd %:p:h  " disabled because it was breaking Gdiff
-" trim trailing whitespace
-nnoremap <leader>Trim :%s/\s\+$//<cr>
-" like :only, but center it between 2 empty windows
-nnoremap <leader>o :only<cr>:vnew<cr>:vnew<cr><C-W>R<C-W>h
-
-" Better buffer switching
-set switchbuf=useopen,usetab
 
