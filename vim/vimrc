@@ -93,6 +93,7 @@ nmap <c-space> <c-@>
 " Colors
 " Default to gruvbox
 " load monokait first for some unknown reason
+set termguicolors
 colorscheme monokait
 colorscheme gruvbox
 
