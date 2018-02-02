@@ -46,3 +46,6 @@
 [submodule "vim/bundle/vim-multipe-cursors"]
 	path = vim/bundle/vim-multipe-cursors
 	url = git@github.com:terryma/vim-multiple-cursors.git
+[submodule "vim/bundle/rust.vim"]
+	path = vim/bundle/rust.vim
+	url = https://github.com/rust-lang/rust.vim
