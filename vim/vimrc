@@ -23,6 +23,7 @@ set scrolloff=3
 set sidescrolloff=3
 set termguicolors
 set background=dark
+let g:gruvbox_guisp_fallback = "bg"
 colorscheme gruvbox
 syntax enable
 
