@@ -134,6 +134,17 @@ function gclp() {
 	gclx protocubo $@
 }
 
+# liquidctl
+alias qring='sudo liquidctl --vendor 0x1e71 --product 0x170e set ring color'
+alias qlogo='sudo liquidctl --vendor 0x1e71 --product 0x170e set logo color'
+alias qpump='sudo liquidctl --vendor 0x1e71 --product 0x170e set pump speed'
+alias qrads='sudo liquidctl --vendor 0x1e71 --product 0x170e set fan speed'
+alias qcase='sudo liquidctl --vendor 0x1e71 --product 0x1714 set led color'
+alias qfan1='sudo liquidctl --vendor 0x1e71 --product 0x1714 set fan1 speed'
+alias qfan2='sudo liquidctl --vendor 0x1e71 --product 0x1714 set fan2 speed'
+alias qfan3='sudo liquidctl --vendor 0x1e71 --product 0x1714 set fan3 speed'
+alias qs='sudo liquidctl status'
+
 # SSH
 # assumes .config/systemd/user/ssh-agent is running
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
