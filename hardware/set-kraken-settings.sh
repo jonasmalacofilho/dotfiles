@@ -21,7 +21,7 @@ liquidctl $KRAKEN set sync color off || panic
 liquidctl $KRAKEN set logo color fixed af5a2f || panic
 liquidctl $SMART_DEVICE set led color off || panic
 
-liquidctl $KRAKEN set fan speed 30 60 36 90 40 100 || panic
+liquidctl $KRAKEN set fan speed 30 60 45 100 || panic
 liquidctl $KRAKEN set pump speed 30 50 40 100 || panic
 liquidctl $SMART_DEVICE set fan1 speed 50 || panic
 liquidctl $SMART_DEVICE set fan2 speed 40 || panic
