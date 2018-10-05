@@ -24,10 +24,21 @@ liquidctl $SMART_DEVICE set led color off || panic
 liquidctl $KRAKEN set fan speed 30 60 45 100 || panic
 liquidctl $KRAKEN set pump speed 30 50 40 100 || panic
 liquidctl $SMART_DEVICE set fan1 speed 50 || panic
-liquidctl $SMART_DEVICE set fan2 speed 40 || panic
-liquidctl $SMART_DEVICE set fan3 speed 100 || panic
+liquidctl $SMART_DEVICE set fan2 speed 50 || panic
+liquidctl $SMART_DEVICE set fan3 speed 50 || panic
 
 sleep 3
 liquidctl $KRAKEN set ring color covering-marquee af5a2f --speed faster || panic
 liquidctl $SMART_DEVICE set led color covering-marquee 40260a --speed slowest || panic
+
+# liquidctl $SMART_DEVICE set led color super-fixed \
+# 	522132 871f3f 7c2519 5f3c1a 325516 \
+# 	2a401c 194f46 372e63 50259b 762264 \
+# 	522132 871f3f 7c2519 5f3c1a 325516 \
+# 	2a401c 194f46 372e63 50259b 762264 \
+# 	|| panic
+
+# http://tools.medialab.sciences-po.fr/iwanthue/
+# https://color.adobe.com/create/color-wheel
+# https://stackoverflow.com/questions/15282580/how-to-generate-a-number-of-most-distinctive-colors-in-r
 
