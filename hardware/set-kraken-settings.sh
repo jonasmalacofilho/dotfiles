@@ -18,7 +18,7 @@ function panic() {
 
 liquidctl $SMART_DEVICE initialize || panic
 liquidctl $KRAKEN set sync color off || panic
-liquidctl $KRAKEN set logo color fixed af5a2f || panic
+liquidctl $KRAKEN set logo color fixed 8c5a24 || panic
 liquidctl $SMART_DEVICE set led color off || panic
 
 liquidctl $KRAKEN set fan speed 30 60 45 100 || panic
@@ -28,7 +28,7 @@ liquidctl $SMART_DEVICE set fan2 speed 50 || panic
 liquidctl $SMART_DEVICE set fan3 speed 50 || panic
 
 sleep 3
-liquidctl $KRAKEN set ring color covering-marquee af5a2f --speed faster || panic
+liquidctl $KRAKEN set ring color covering-marquee 8c5a24 --speed faster || panic
 liquidctl $SMART_DEVICE set led color covering-marquee 40260a --speed slowest || panic
 
 # liquidctl $SMART_DEVICE set led color super-fixed \
