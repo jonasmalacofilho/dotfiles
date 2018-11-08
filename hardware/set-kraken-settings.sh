@@ -35,8 +35,8 @@ sleep 3
 
 # theme: walk at night
 liquidctl $KRAKEN set logo color fixed c02040 || panic
-liquidctl $KRAKEN set ring color covering-marquee c02040 --speed faster || panic
-liquidctl $SMART_DEVICE set led color super-fixed 40260a{,,,,,,,,,} 281868{,,,,,,,,,} || panic
+liquidctl $KRAKEN set ring color fading c02040 400b15 --speed normal || panic
+liquidctl $SMART_DEVICE set led color super-fixed 40260a{,,,,,,,,,} 074060{,,,,,,,,,} || panic
 
 # other
 # liquidctl $SMART_DEVICE set led color super-fixed \
