@@ -1,0 +1,45 @@
+#!/bin/bash -xe
+#
+# Configure my liquidctl devices.
+#
+# The Kraken ring LEDs are used to convey any eventual failures in a visual
+# way.  This is useful for unattained operation, such as automated
+# configuration during system boot.
+#
+# Once everything has been configured, the script waits a few seconds and
+# prints the current status, before finally terminating.
+
+KRAKEN="--vendor 0x1e71 --product 0x170e"
+SMART_DEVICE="--vendor 0x1e71 --product 0x1714"
+
+function panic() {
+	code=$?
+	liquidctl $KRAKEN set ring color pulse ff2608 --speed faster
+	exit $code
+}
+
+liquidctl $SMART_DEVICE initialize || panic
+
+liquidctl $KRAKEN set sync color off || panic
+liquidctl $SMART_DEVICE set led color off || panic
+
+liquidctl $KRAKEN set fan speed 30 60 45 100 || panic
+liquidctl $KRAKEN set pump speed 30 50 40 100 || panic
+for i in {1..3};
+do
+	liquidctl $SMART_DEVICE set fan$i speed 50 || panic
+done
+
+liquidctl $KRAKEN set logo color fixed c02040 || panic
+liquidctl $KRAKEN set ring color fading c02040 400b15 --speed normal || panic
+liquidctl $SMART_DEVICE set led color super-fixed 40260a{,,,,,,,,,} 074060{,,,,,,,,,} || panic
+
+sleep 10
+liquidctl status || panic
+
+# Useful links for picking colors:
+#
+#  - http://tools.medialab.sciences-po.fr/iwanthue/
+#  - https://color.adobe.com/create/color-wheel
+#  - https://stackoverflow.com/questions/15282580/how-to-generate-a-number-of-most-distinctive-colors-in-r
+

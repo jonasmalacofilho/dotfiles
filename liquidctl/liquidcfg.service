@@ -1,0 +1,10 @@
+[Unit]
+Description=liquidctl automatic configuration
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/liquidcfg
+
+[Install]
+WantedBy=default.target
+
