@@ -23,7 +23,7 @@ Once you have created and installed your own service file, you can test it by
 starting the service.
 
 ```
-# systemctl start liquidcfg
+# systemctl start krakenx-config
 ```
 
 You can then use krakenx, systemctl and journalctl to check if everything
