@@ -1,0 +1,10 @@
+[Unit]
+Description=krakenx automatic configuration
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/env colctl --mode fading --color_count 2 --color0 192,32,64 --color1 64,11,21 --fan_speed "(30, 60), (45, 100)" --pump_speed "(30, 60), (40, 100)"
+
+[Install]
+WantedBy=default.target
+
