@@ -18,6 +18,11 @@ function panic() {
 	exit $code
 }
 
+# hack
+sleep 1
+
+liquidctl list -v || panic
+
 liquidctl $SMART_DEVICE initialize || panic
 
 liquidctl $KRAKEN set sync color off || panic
