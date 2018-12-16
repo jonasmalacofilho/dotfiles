@@ -30,10 +30,10 @@ liquidctl $SMART_DEVICE set led color off || panic
 
 liquidctl $KRAKEN set fan speed 30 60 45 100 || panic
 liquidctl $KRAKEN set pump speed 30 50 40 100 || panic
-for i in {1..3};
-do
-	liquidctl $SMART_DEVICE set fan$i speed 50 || panic
-done
+
+liquidctl $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
+# liquidctl $SMART_DEVICE set fan2 speed 50 || panic  # n/c
+liquidctl $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
 
 liquidctl $KRAKEN set logo color fixed c02040 || panic
 liquidctl $KRAKEN set ring color fading c02040 400b15 --speed normal || panic
