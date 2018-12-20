@@ -35,9 +35,8 @@ liquidctl $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
 # liquidctl $SMART_DEVICE set fan2 speed 50 || panic  # n/c
 liquidctl $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
 
-liquidctl $KRAKEN set logo color fixed 225f00 || panic
-liquidctl $KRAKEN set ring color fading c20000 d0c902 --speed normal || panic
-liquidctl $SMART_DEVICE set led color covering-marquee 005100 || panic
+liquidctl $KRAKEN set sync color fading c20000 d0c902 --speed faster || panic
+liquidctl $SMART_DEVICE set led color fixed 005100 || panic
 
 sleep 10
 liquidctl status || panic
