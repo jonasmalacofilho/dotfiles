@@ -7,22 +7,6 @@ export ZSH=$HOME/.oh-my-zsh
 # time that oh-my-zsh is loaded.
 ZSH_THEME="afowler"
 # also: afowler, gentoo, lukerandall, essembeh, robbyrussell
-# Cauê: flazz
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
@@ -48,7 +32,6 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git vi-mode wd)
-# Cauê: command-not-found debian git-extras svn
 
 # User configuration
 
@@ -63,92 +46,49 @@ source $ZSH/oh-my-zsh.sh
 bindkey '^r' history-incremental-search-backward
 bindkey '^q' history-incremental-search-forward
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-
+# general aliases
 alias sd="systemctl"
 alias jd="journalctl"
-
-export VISUAL=vim EDITOR=vim
-alias vi="vim"
-
-alias tmux="tmux -2"  # fix tmux->vim colors for me
-alias tx="tmux"
-
 alias jo="xdg-open"  # just open
 alias t="tree"
 alias t1="tree -L 1"
 alias t2="tree -L 2"
 alias t3="tree -L 3"
 alias t4="tree -L 4"
-alias m="marlin"
-alias r="ranger"
 
+# always use vim
+export VISUAL=vim EDITOR=vim
+alias vi="vim"
+
+# deprecated aliases
 alias pstat="perf stat -e task-clock,context-switches,cpu-migrations,page-faults,cpu-cycles,instructions,stalled-cycles-frontend,stalled-cycles-backend,cache-references,cache-misses,branches,branch-misses"
+alias tmux="tmux -2"  # fix tmux->vim colors for me
+alias tx="tmux"
 
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
-
-# SUDO
 # hack to keep all aliases to sudo
 alias sudo='sudo '
 alias _!='sudo $(fc -ln -1)'
 
-# GIT
 # why only gcm (master), we need a gcd too
 alias gcd="git checkout development"
-# use lfs for cloning
-alias gcl="git lfs clone"
-# helpers to lfs clone from my and protocubo's github
-function gclx() {
-	user=$1
-	repo=$2
-	shift && shift
-	git lfs clone --recursive git@github.com:$user/$repo $@
-}
-function gclj() {
-	gclx jonasmalacofilho $@
-}
-function gclp() {
-	gclx protocubo $@
-}
 
 # liquidctl
 alias qs='sudo liquidctl status'
 alias qk='sudo liquidctl --vendor 0x1e71 --product 0x170e'
 alias qc='sudo liquidctl --vendor 0x1e71 --product 0x1714'
 
-# SSH
-# assumes .config/systemd/user/ssh-agent is running
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
-# add my keys, if not already added
-ssh-add -l > /dev/null || ssh-add
-# make the ssh-add the last thing here, so that it can
-# fail without skiping the rest
-
 # remember the current dir when opening new windows or tabs
 source /etc/profile.d/vte.sh
 
 # OPAM configuration
 . /home/j/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+# SSH
+# assumes .config/systemd/user/ssh-agent is running
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+# add my keys, if not already added
+ssh-add -l > /dev/null || ssh-add
+
+# IMPORTANT nothing should happen after this point!  By making ssh-add the last
+# thinghere, it can fail without skiping the rest
+
