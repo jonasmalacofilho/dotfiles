@@ -81,7 +81,7 @@ alias qc='sudo liquidctl --vendor 0x1e71 --product 0x1714'
 source /etc/profile.d/vte.sh
 
 # OPAM configuration
-. /home/j/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+test -r /home/jonas/.opam/opam-init/init.zsh && . /home/jonas/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 
 # SSH
 # assumes .config/systemd/user/ssh-agent is running
