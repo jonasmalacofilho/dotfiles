@@ -137,9 +137,6 @@ imap <c-space> <c-@>
 nmap <c-space> <c-@>
 
 " other plugin settings
-" CtrlP
-noremap <leader>pb :CtrlPBookmarkDir<cr>
-noremap <leader>pd :CtrlPDir<cr>
 " NERDTree
 noremap <leader>n :NERDTreeToggle<cr>
 
