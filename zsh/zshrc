@@ -55,6 +55,7 @@ alias t1="tree -L 1"
 alias t2="tree -L 2"
 alias t3="tree -L 3"
 alias t4="tree -L 4"
+alias updatemirrors="curl -s 'https://www.archlinux.org/mirrorlist/?country=BR&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on' | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors - | _ tee /etc/pacman.d/mirrorlist"
 
 # always use vim
 export VISUAL=vim EDITOR=vim
