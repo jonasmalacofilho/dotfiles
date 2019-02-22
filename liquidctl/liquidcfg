@@ -36,7 +36,7 @@ liquidctl $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
 liquidctl $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
 
 liquidctl $KRAKEN set sync color off || panic
-liquidctl $SMART_DEVICE set led color super-fixed 825E0C{,,,,,,,,,} E9A915{,,,,,,,,,} || panic
+liquidctl $SMART_DEVICE set led color fading 7f0000 3f3f00 007f00 003f3f 00007f 3f003f --speed slowest || panic
 
 sleep 10
 liquidctl status || panic
