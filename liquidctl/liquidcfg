@@ -32,7 +32,7 @@ liquidctl $KRAKEN set fan speed 30 60 40 100 || panic
 liquidctl $KRAKEN set pump speed 30 50 40 100 || panic
 
 liquidctl $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
-# liquidctl $SMART_DEVICE set fan2 speed 50 || panic  # n/c
+liquidctl $SMART_DEVICE set fan2 speed 100 || panic  # not connected
 liquidctl $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
 
 liquidctl $KRAKEN set sync color off || panic
