@@ -21,25 +21,25 @@ function panic() {
 # hack
 sleep 1
 
-liquidctl list -v || panic
+liquidctl $EXTRAOPTIONS list -v || panic
 
-liquidctl $SMART_DEVICE initialize || panic
+liquidctl $EXTRAOPTIONS $SMART_DEVICE initialize || panic
 
-liquidctl $KRAKEN set sync color off || panic
-liquidctl $SMART_DEVICE set led color off || panic
+liquidctl $EXTRAOPTIONS $KRAKEN set sync color off || panic
+liquidctl $EXTRAOPTIONS $SMART_DEVICE set led color off || panic
 
-liquidctl $KRAKEN set fan speed 30 60 40 100 || panic
-liquidctl $KRAKEN set pump speed 30 50 40 100 || panic
+liquidctl $EXTRAOPTIONS $KRAKEN set fan speed 30 60 40 100 || panic
+liquidctl $EXTRAOPTIONS $KRAKEN set pump speed 30 50 40 100 || panic
 
-liquidctl $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
-liquidctl $SMART_DEVICE set fan2 speed 100 || panic  # not connected
-liquidctl $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
+liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
+liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan2 speed 100 || panic  # not connected
+liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
 
-liquidctl $KRAKEN set sync color off || panic
-liquidctl $SMART_DEVICE set led color fading 7f0000 3f3f00 007f00 003f3f 00007f 3f003f --speed slowest || panic
+liquidctl $EXTRAOPTIONS $KRAKEN set sync color off || panic
+liquidctl $EXTRAOPTIONS $SMART_DEVICE set led color fading 7f0000 3f3f00 007f00 003f3f 00007f 3f003f --speed slowest || panic
 
 sleep 10
-liquidctl status || panic
+liquidctl $EXTRAOPTIONS status || panic
 
 # Useful links for picking colors:
 #

@@ -3,6 +3,7 @@ Description=liquidctl automatic configuration
 
 [Service]
 Type=simple
+Environment=EXTRAOPTIONS="--hid hidraw"
 ExecStart=/usr/local/bin/liquidcfg
 
 [Install]
