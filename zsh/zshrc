@@ -75,8 +75,9 @@ alias gcd="git checkout development"
 
 # liquidctl
 alias qs='sudo liquidctl status'
-alias qk='sudo liquidctl --vendor 0x1e71 --product 0x170e'
-alias qc='sudo liquidctl --vendor 0x1e71 --product 0x1714'
+alias qkraken='sudo liquidctl --vendor 0x1e71 --product 0x170e'
+alias qcase='sudo liquidctl --vendor 0x1e71 --product 0x1714'
+alias qclc='sudo liquidctl --vendor 0x2433 --product 0xb200'
 
 # remember the current dir when opening new windows or tabs
 source /etc/profile.d/vte.sh
