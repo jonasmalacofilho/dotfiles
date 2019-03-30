@@ -70,6 +70,9 @@ alias tx="tmux"
 alias sudo='sudo '
 alias _!='sudo $(fc -ln -1)'
 
+# glog variant using kernel style commit references
+alias gkref="git log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'"
+
 # why only gcm (master), we need a gcd too
 alias gcd="git checkout development"
 
