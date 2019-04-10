@@ -11,6 +11,7 @@
 
 KRAKEN="--vendor 0x1e71 --product 0x170e"
 SMART_DEVICE="--vendor 0x1e71 --product 0x1714"
+CLC="--vendor 0x2433 --product 0xb200"
 
 function panic() {
 	code=$?
@@ -24,19 +25,19 @@ sleep 1
 liquidctl $EXTRAOPTIONS list -v || panic
 
 liquidctl $EXTRAOPTIONS $SMART_DEVICE initialize || panic
-
-liquidctl $EXTRAOPTIONS $KRAKEN set sync color off || panic
-liquidctl $EXTRAOPTIONS $SMART_DEVICE set led color off || panic
+liquidctl $EXTRAOPTIONS $CLC initialize || true
 
 liquidctl $EXTRAOPTIONS $KRAKEN set fan speed 30 60 40 100 || panic
 liquidctl $EXTRAOPTIONS $KRAKEN set pump speed 30 50 40 100 || panic
-
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan2 speed 100 || panic  # not connected
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
+liquidctl $EXTRAOPTIONS $CLC set fan speed 20 || true
+liquidctl $EXTRAOPTIONS $CLC set pump speed 50 || true
 
 liquidctl $EXTRAOPTIONS $KRAKEN set sync color off || panic
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set led color fading 7f0000 3f3f00 007f00 003f3f 00007f 3f003f --speed slowest || panic
+liquidctl $EXTRAOPTIONS $CLC set led color rainbow --speed 1 || true
 
 sleep 10
 liquidctl $EXTRAOPTIONS status || panic
@@ -46,4 +47,3 @@ liquidctl $EXTRAOPTIONS status || panic
 #  - http://tools.medialab.sciences-po.fr/iwanthue/
 #  - https://color.adobe.com/create/color-wheel
 #  - https://stackoverflow.com/questions/15282580/how-to-generate-a-number-of-most-distinctive-colors-in-r
-
