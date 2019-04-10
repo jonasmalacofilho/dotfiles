@@ -27,8 +27,8 @@ liquidctl $EXTRAOPTIONS list -v || panic
 liquidctl $EXTRAOPTIONS $SMART_DEVICE initialize || panic
 liquidctl $EXTRAOPTIONS $CLC initialize || true
 
-liquidctl $EXTRAOPTIONS $KRAKEN set fan speed 30 60 40 100 || panic
-liquidctl $EXTRAOPTIONS $KRAKEN set pump speed 30 50 40 100 || panic
+liquidctl $EXTRAOPTIONS $KRAKEN set fan speed 28 60 34 100 || panic
+liquidctl $EXTRAOPTIONS $KRAKEN set pump speed 28 50 36 100 || panic
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan2 speed 100 || panic  # not connected
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
