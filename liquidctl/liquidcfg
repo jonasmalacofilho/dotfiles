@@ -35,9 +35,11 @@ liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan3 speed 50 || panic  # 3 front inta
 liquidctl $EXTRAOPTIONS $CLC set fan speed 20 || true
 liquidctl $EXTRAOPTIONS $CLC set pump speed 50 || true
 
-liquidctl $EXTRAOPTIONS $KRAKEN set sync color off || panic
-liquidctl $EXTRAOPTIONS $SMART_DEVICE set led color fading 7f0000 3f3f00 007f00 003f3f 00007f 3f003f --speed slowest || panic
+liquidctl $EXTRAOPTIONS $KRAKEN set sync color fixed ffffff || panic
+liquidctl $EXTRAOPTIONS $SMART_DEVICE set led color super-fixed 825e0c{,,,,,,,,,} 3f5f5f{,,,,,,,,,} || panic
 liquidctl $EXTRAOPTIONS $CLC set led color rainbow --speed 1 || true
+# ram: static rgb(10, 14, 12)
+# gpu: static rgb(65, 50, 50)
 
 sleep 10
 liquidctl $EXTRAOPTIONS status || panic
