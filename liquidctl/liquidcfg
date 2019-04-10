@@ -15,8 +15,13 @@ CLC="--vendor 0x2433 --product 0xb200"
 
 function panic() {
 	code=$?
-	liquidctl $KRAKEN set ring color pulse ff2608 --speed faster
+	liquidctl $KRAKEN set ring color pulse ff2608 --speed faster || true
+	liquidctl $SMART_DEVICE set led color pulse 500804 --speed fastest || true
 	exit $code
+}
+
+function soft_panic() {
+	liquidctl $CLC set led color blinking ff0010 || true
 }
 
 # hack
@@ -25,19 +30,19 @@ sleep 1
 liquidctl $EXTRAOPTIONS list -v || panic
 
 liquidctl $EXTRAOPTIONS $SMART_DEVICE initialize || panic
-liquidctl $EXTRAOPTIONS $CLC initialize || true
+liquidctl $EXTRAOPTIONS $CLC initialize || soft_panic
 
 liquidctl $EXTRAOPTIONS $KRAKEN set fan speed 28 60 34 100 || panic
 liquidctl $EXTRAOPTIONS $KRAKEN set pump speed 28 50 36 100 || panic
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan2 speed 100 || panic  # not connected
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
-liquidctl $EXTRAOPTIONS $CLC set fan speed 20 || true
-liquidctl $EXTRAOPTIONS $CLC set pump speed 50 || true
+liquidctl $EXTRAOPTIONS $CLC set fan speed 20 || soft_panic
+liquidctl $EXTRAOPTIONS $CLC set pump speed 50 || soft_panic
 
 liquidctl $EXTRAOPTIONS $KRAKEN set sync color fixed ffffff || panic
 liquidctl $EXTRAOPTIONS $SMART_DEVICE set led color super-fixed 825e0c{,,,,,,,,,} 3f5f5f{,,,,,,,,,} || panic
-liquidctl $EXTRAOPTIONS $CLC set led color rainbow --speed 1 || true
+liquidctl $EXTRAOPTIONS $CLC set led color rainbow --speed 1 || soft_panic
 # ram: static rgb(10, 14, 12)
 # gpu: static rgb(65, 50, 50)
 
