@@ -27,6 +27,7 @@ function soft_panic() {
 # hack
 sleep 1
 
+liquidctl --version || panic
 liquidctl $EXTRAOPTIONS list -v || panic
 
 liquidctl $EXTRAOPTIONS $SMART_DEVICE initialize || panic
