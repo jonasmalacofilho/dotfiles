@@ -2,12 +2,12 @@
 #
 # Configure my liquidctl devices.
 #
-# The Kraken ring LEDs are used to convey any eventual failures in a visual
-# way.  This is useful for unattained operation, such as automated
-# configuration during system boot.
+# The LEDs are used to convey any eventual failures in a visual way.  This is
+# useful for unattained operation, such as automated configuration during
+# system boot.
 #
 # Once everything has been configured, the script waits a few seconds and
-# prints the current status, before finally terminating.
+# prints the current status (for logging), before finally terminating.
 
 KRAKEN="--vendor 0x1e71 --product 0x170e"
 SMART_DEVICE="--vendor 0x1e71 --product 0x1714"
