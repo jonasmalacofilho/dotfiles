@@ -81,15 +81,9 @@ autocmd FileType markdown setlocal spell
 filetype plugin indent on
 set autoindent  " autoindenting always on
 set cinoptions+=:0  " don't indent switch cases
-" jonas' style
-nnoremap <leader>ij :setlocal noexpandtab shiftwidth=2 softtabstop=2 tabstop=2<cr>
-nnoremap <leader><leader>ij :set noexpandtab shiftwidth=2 softtabstop=2 tabstop=2<cr>
-" linux kernel style
-nnoremap <leader>ik :setlocal noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
-nnoremap <leader><leader>ik :set noexpandtab shiftwidth=8 softtabstop=8 tabstop=8<cr>
-" default to jonas's style
-set noexpandtab shiftwidth=2 softtabstop=2 tabstop=2 list
-autocmd FileType gitcommit setlocal noexpandtab shiftwidth=2 softtabstop=2 tabstop=2 list
+" default to kernel style
+set noexpandtab shiftwidth=8 softtabstop=8 tabstop=8 list
+autocmd FileType gitcommit setlocal noexpandtab shiftwidth=8 softtabstop=8 tabstop=8 list
 
 " haxe: vaxe
 let g:vaxe_prefer_first_in_directory = 0
