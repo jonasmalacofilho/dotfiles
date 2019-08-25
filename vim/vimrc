@@ -110,7 +110,7 @@ call tcomment#DefineType('haxe_inline', g:tcommentInlineC)
 call tcomment#DefineType('haxe_block', g:tcommentBlockHx)
 " haxe: tink template files
 autocmd BufNewFile,BufRead *.tt set filetype=tinktemplate
-autocmd FileType haxe setlocal textwidth=99
+autocmd FileType haxe setlocal textwidth=100
 call tcomment#DefineType('tinktemplate', '(:* %s *:)')
 
 " completion
