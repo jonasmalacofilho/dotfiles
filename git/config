@@ -11,7 +11,7 @@
 	lol = log --oneline --graph --decorate
 [core]
 	excludesfile = ~/.gitignore.global
-	pager = less -x2
+	pager = less
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
