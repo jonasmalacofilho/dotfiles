@@ -80,9 +80,9 @@ autocmd FileType markdown setlocal spell
 " indentation
 filetype plugin indent on
 set autoindent  " autoindenting always on
-set cinoptions+=:0  " don't indent switch cases
-" default to kernel style
-set noexpandtab shiftwidth=8 softtabstop=8 tabstop=8 list
+set cinoptions+=:0,#0s  " don't indent switch cases, don't threat # as special
+set cinkeys-=0#  " don't thread # as special
+set noexpandtab shiftwidth=8 softtabstop=8 tabstop=8 list  " use kernel style
 
 " haxe: vaxe
 let g:vaxe_prefer_first_in_directory = 0
