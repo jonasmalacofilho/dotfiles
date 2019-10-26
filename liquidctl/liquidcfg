@@ -48,9 +48,6 @@ liquidctl $EXTRAOPTIONS $CLC set led color rainbow --speed 1 || soft_panic
 # ram: static rgb(10, 14, 12)
 # gpu: static rgb(65, 50, 50)
 
-sleep 10
-liquidctl $EXTRAOPTIONS status || panic
-
 # Useful links for picking colors:
 #
 #  - http://tools.medialab.sciences-po.fr/iwanthue/

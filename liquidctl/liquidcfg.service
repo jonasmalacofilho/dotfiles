@@ -2,9 +2,10 @@
 Description=liquidctl automatic configuration
 
 [Service]
-Type=simple
-Environment=EXTRAOPTIONS="--hid hidraw"
+Type=oneshot
 ExecStart=/usr/local/bin/liquidcfg
+ExecStart=/usr/bin/sleep 10
+ExecStart=/usr/bin/liquidctl status
 
 [Install]
 WantedBy=default.target
