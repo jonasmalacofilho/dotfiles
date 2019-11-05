@@ -28,24 +28,26 @@ function soft_panic() {
 # hack
 sleep 1
 
-$LL --version || panic
-$LL $EXTRAOPTIONS list -v || panic
+liquidctl --version || panic
+$LL list -v || panic
 
 # don't initialize SMART_DEVICE, recent grdp3 kernel driver already does that
-# $LL $EXTRAOPTIONS $SMART_DEVICE initialize || panic  # FIXME make liquidctl aware of grdp3
-$LL $EXTRAOPTIONS $CLC initialize || soft_panic
+# $LL $SMART_DEVICE initialize || panic  # FIXME make liquidctl aware of grdp3
 
-$LL $EXTRAOPTIONS $KRAKEN set fan speed 28 60 34 100 || panic
-$LL $EXTRAOPTIONS $KRAKEN set pump speed 28 50 36 100 || panic
-$LL $EXTRAOPTIONS $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
-$LL $EXTRAOPTIONS $SMART_DEVICE set fan2 speed 100 || panic  # not connected
-$LL $EXTRAOPTIONS $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
-$LL $EXTRAOPTIONS $CLC set fan speed 20 || soft_panic
-$LL $EXTRAOPTIONS $CLC set pump speed 50 || soft_panic
+$LL $KRAKEN set fan speed 28 60 34 100 || panic
+$LL $KRAKEN set pump speed 28 50 36 100 || panic
+$LL $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
+$LL $SMART_DEVICE set fan2 speed 100 || panic  # not connected
+$LL $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
+$LL $KRAKEN set sync color fixed ffffff || panic
+$LL $SMART_DEVICE set led color super-fixed {,,,,,,,,,}100703 {,,,,,,,,,}400030  || panic
 
-$LL $EXTRAOPTIONS $KRAKEN set sync color fixed ffffff || panic
-$LL $EXTRAOPTIONS $SMART_DEVICE set led color super-fixed {,,,,,,,,,}100703 {,,,,,,,,,}400030  || panic
-$LL $EXTRAOPTIONS $CLC set led color rainbow --speed 1 || soft_panic
+# requires $SMART_DEVICE fan2 to be set to 100% (12V)
+$LL $CLC initialize || soft_panic
+$LL $CLC set fan speed 20 || soft_panic
+$LL $CLC set pump speed 50 || soft_panic
+$LL $CLC set led color fixed 400030 || soft_panic
+
 # ram: static rgb(10, 14, 12)
 # gpu: static rgb(65, 50, 50)
 
