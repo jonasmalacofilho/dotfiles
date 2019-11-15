@@ -88,6 +88,16 @@ function sysecho() {
 	echo "$2" | sudo tee "$1"
 }
 
+function switch-haxe-to() {
+	haxepath="/opt/haxe/haxe-$1"
+	if [ ! -d "$haxepath" ]; then
+		echo "No binaries available for Haxe $1"
+		return 2
+	fi
+	export PATH=$haxepath:$PATH
+	export HAXE_STD_PATH=$haxepath/std
+}
+
 # remember the current dir when opening new windows or tabs
 source /etc/profile.d/vte.sh
 
@@ -96,7 +106,5 @@ source /etc/profile.d/vte.sh
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 # add my keys, if not already added
 ssh-add -l > /dev/null || ssh-add
-
 # IMPORTANT nothing should happen after this point!  By making ssh-add the last
 # thinghere, it can fail without skiping the rest
-
