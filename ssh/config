@@ -1,6 +1,11 @@
 AddKeysToAgent yes
 
-Host github.com bitbucket.org bitbucket.com
+Host github.com bitbucket.org bitbucket.com gitlab.com
+	User git
+	StrictHostKeyChecking ask
+
+Host aur.archlinux.org
+	User aur
 	StrictHostKeyChecking ask
 
 Host *
@@ -9,4 +14,3 @@ Host *
 	ServerAliveInterval 15
 	ServerAliveCountMax 20
 	TCPKeepAlive no
-
