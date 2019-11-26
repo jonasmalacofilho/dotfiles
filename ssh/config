@@ -1,3 +1,5 @@
+AddKeysToAgent yes
+
 Host github.com bitbucket.org bitbucket.com
 	StrictHostKeyChecking ask
 

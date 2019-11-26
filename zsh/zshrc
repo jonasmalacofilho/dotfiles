@@ -100,11 +100,3 @@ function switch-haxe-to() {
 
 # remember the current dir when opening new windows or tabs
 source /etc/profile.d/vte.sh
-
-# SSH
-# assumes .config/systemd/user/ssh-agent is running
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
-# add my keys, if not already added
-ssh-add -l > /dev/null || ssh-add
-# IMPORTANT nothing should happen after this point!  By making ssh-add the last
-# thinghere, it can fail without skiping the rest
