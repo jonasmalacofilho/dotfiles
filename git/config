@@ -17,3 +17,9 @@
 	smudge = git-lfs smudge -- %f
 	required = true
 	process = git-lfs filter-process
+[sendemail]
+	smtpencryption = tls
+	smtpserver = smtp.gmail.com
+	smtpuser = jonas@protocubo.io
+	smtpserverport = 587
+	suppresscc = self
