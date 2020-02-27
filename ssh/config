@@ -8,6 +8,12 @@ Host aur.archlinux.org
 	User aur
 	StrictHostKeyChecking ask
 
+Host *.ngrok.io
+	StrictHostKeyChecking no
+	CheckHostIP no
+	UserKnownHostsFile /dev/null
+	LogLevel ERROR
+
 Host *
 	StrictHostKeyChecking no
 	VisualHostKey yes
