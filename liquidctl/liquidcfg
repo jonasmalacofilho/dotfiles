@@ -36,9 +36,9 @@ $LL list -v || panic
 
 $LL $KRAKEN set fan speed 20 25 34 100 || panic
 $LL $KRAKEN set pump speed 24 50 34 100 || panic
-$LL $SMART_DEVICE set fan1 speed 50 || panic  # back exhaust fan
+$LL $SMART_DEVICE set fan1 speed 20 || panic  # back exhaust fan
 $LL $SMART_DEVICE set fan2 speed 100 || panic  # not connected
-$LL $SMART_DEVICE set fan3 speed 50 || panic  # 3 front intake fan
+$LL $SMART_DEVICE set fan3 speed 60 || panic  # 3 front intake fan
 $LL $KRAKEN set sync color fixed ffffff || panic
 $LL $SMART_DEVICE set led color super-fixed {,,,,,,,,,}100703 {,,,,,,,,,}400030  || panic
 
