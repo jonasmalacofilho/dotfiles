@@ -1,0 +1,22 @@
+#!/bin/bash -xe
+#
+# Dynamically adjust case/cooler lights according to the time of the day.
+
+time_offset=$(( -3 * 3600 ))
+hue_offset=-90
+saturation=85
+value=50
+
+if [ ! -z "$1" ]; then
+	at_date=$(date --date="$1" +%s)
+else
+	at_date=$(date +%s)
+fi
+
+hue=$(python <<< "print((($at_date + $time_offset) % 86400 / 86400 * 360 + $hue_offset) % 360)")
+color="hsv($hue, $saturation, $value)"
+darker="hsv($hue, $saturation, $(( value / 20 + 1 )))"
+
+liquidctl -m kraken set sync color fixed "$color" &
+liquidctl -m smart set led color super-fixed {,,,,,,,,,}"$darker" {,,,,,,,,,}"$color" &
+wait

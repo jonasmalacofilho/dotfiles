@@ -1,5 +1,5 @@
 [Unit]
-Description=liquidctl automatic configuration
+Description=Static liquidctl configuration
 
 [Service]
 Type=oneshot
@@ -9,4 +9,3 @@ ExecStart=/usr/bin/liquidctl status
 
 [Install]
 WantedBy=default.target
-

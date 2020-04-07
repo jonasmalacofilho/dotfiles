@@ -39,8 +39,10 @@ $LL $KRAKEN set pump speed 24 50 32 100 || panic
 $LL $SMART_DEVICE set fan1 speed 20 || panic  # back exhaust fan
 $LL $SMART_DEVICE set fan2 speed 100 || panic  # not connected
 $LL $SMART_DEVICE set fan3 speed 60 || panic  # 3 front intake fan
-$LL $KRAKEN set sync color off || panic
-$LL $SMART_DEVICE set led color super-fixed {,,,,,,,,,}"hsv(18,75,3)" {,,,,,,,,,}"hsv(22,85,30)" || panic
+
+# disabled (controlled by liquiddyncfg):
+# $LL $KRAKEN set sync color off || panic
+# $LL $SMART_DEVICE set led color super-fixed {,,,,,,,,,}"hsv(18,75,3)" {,,,,,,,,,}"hsv(22,85,30)" || panic
 
 # requires $SMART_DEVICE fan2 to be set to 100% (12V)
 $LL $CLC initialize || soft_panic

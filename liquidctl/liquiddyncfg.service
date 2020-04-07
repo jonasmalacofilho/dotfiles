@@ -1,0 +1,9 @@
+[Unit]
+Description=Dynamic liquidctl adjustments
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/liquiddyncfg
+
+[Install]
+WantedBy=default.target

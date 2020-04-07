@@ -1,0 +1,10 @@
+[Unit]
+Description=Time-based liquidctl adjustments
+
+[Timer]
+OnBootSec=0min
+OnCalendar=*:0,15,30,45:0
+Persistent=true
+
+[Install]
+WantedBy=default.target
