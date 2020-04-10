@@ -16,7 +16,9 @@ fi
 hue=$(python <<< "print((($at_date + $time_offset) % 86400 / 86400 * 360 + $hue_offset) % 360)")
 color="hsv($hue, $saturation, $value)"
 darker="hsv($hue, $saturation, $(( value / 20 + 1 )))"
+lighter="hsv($hue, $saturation, $(( value + 20 )))"
 
-liquidctl -m kraken set sync color fixed "$color" &
+liquidctl -m kraken set logo color breathing --speed slowest "$lighter" &
+liquidctl -m kraken set ring color fixed "$color" &
 liquidctl -m smart set led color super-fixed {,,,,,,,,,}"$darker" {,,,,,,,,,}"$color" &
 wait
