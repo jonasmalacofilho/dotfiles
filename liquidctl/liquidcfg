@@ -34,11 +34,11 @@ $LL list -v || panic
 # don't initialize SMART_DEVICE, recent grdp3 kernel driver already does that
 # $LL $SMART_DEVICE initialize || panic  # FIXME make liquidctl aware of grdp3
 
-$LL $KRAKEN set fan speed 20 25 32 100 || panic
-$LL $KRAKEN set pump speed 24 50 32 100 || panic
+$LL $KRAKEN set fan speed 20 25 35 95 39 95 40 100 || panic
+$LL $KRAKEN set pump speed 24 50 35 80 39 80 40 100 || panic
 $LL $SMART_DEVICE set fan1 speed 20 || panic  # back exhaust fan
 $LL $SMART_DEVICE set fan2 speed 100 || panic  # not connected
-$LL $SMART_DEVICE set fan3 speed 60 || panic  # 3 front intake fan
+$LL $SMART_DEVICE set fan3 speed 55 || panic  # 3 front intake fan
 
 # disabled (controlled by liquiddyncfg):
 # $LL $KRAKEN set sync color off || panic
