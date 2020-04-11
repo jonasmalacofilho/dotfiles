@@ -1,11 +1,20 @@
 #!/bin/bash -e
 #
 # Dynamically adjust case/cooler lights according to the time of the day.
+#
+# Usage:
+#     liquiddyncfg [time]
+#
+# Examples:
+#     liquiddyncfg
+#     liquiddyncfg 13:54:27
 
-time_offset=$(( -3 * 3600 ))
-hue_offset=-90
-saturation=85
-value=50
+time_offset=$(( -3 * 3600 ))  # (hack) manually compensate for timzeone
+hue_offset=-90                # start at hue other than 0°
+saturation=85                 # base saturation
+value=50                      # base value
+_darker=3                     # value for darker color
+_lighter=70                   # value for lighter color
 
 if [ ! -z "$1" ]; then
 	at_date=$(date --date="$1" +%s)
@@ -15,10 +24,13 @@ fi
 
 hue=$(python <<< "print((($at_date + $time_offset) % 86400 / 86400 * 360 + $hue_offset) % 360)")
 color="hsv($hue, $saturation, $value)"
-darker="hsv($hue, $saturation, $(( value / 20 + 1 )))"
-lighter="hsv($hue, $saturation, $(( value + 20 )))"
+darker="hsv($hue, $saturation, $_darker)"
+lighter="hsv($hue, $saturation, $_lighter)"
 
-liquidctl -m kraken set logo color breathing --speed slowest "$lighter" &
-liquidctl -m kraken set ring color fixed "$color" &
-liquidctl -m smart set led color super-fixed {,,,,,,,,,}"$darker" {,,,,,,,,,}"$color" &
+# issue color changes in parallel (manually adjust modes and colors)
+liquidctl --match kraken set logo color breathing --speed slowest "$lighter" &
+liquidctl --match kraken set ring color fixed "$color" &
+liquidctl --match smart set led color super-fixed {,,,,,,,,,}"$darker" {,,,,,,,,,}"$color" &
+
+# wait for all changes to complete
 wait
