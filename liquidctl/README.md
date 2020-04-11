@@ -1,5 +1,8 @@
-Automatic liquidctl configuration at boot
-=========================================
+Automatic liquidctl configuration
+=================================
+
+At boot
+-------
 
 For day to day usage is it desirable to have the system automatically run
 liquidctl and configure each device by itself.
@@ -61,3 +64,16 @@ automatically.
 # systemctl enable liquidcfg
 ```
 
+Dynamic adjustment of lights
+----------------------------
+
+This folder also includes `liquiddyncfg` (and associated service and timer
+files), which I use to dynamically configuration my cooler and case lights
+throughout the day.
+
+This is similar to the boot-time setup, except that a timer is used to have it
+run at period intervals.
+
+For more information see:
+[Trick: changing cooler and case lighting according to time of day (Linux&macOS)](https://www.reddit.com/r/NZXT/comments/fz3o4t/trick_changing_cooler_and_case_lighting_according/)
+on r/NZXT.
