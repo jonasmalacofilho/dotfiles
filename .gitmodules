@@ -49,3 +49,6 @@
 [submodule "vim/bundle/rust.vim"]
 	path = vim/bundle/rust.vim
 	url = https://github.com/rust-lang/rust.vim
+[submodule "vim/bundle/pest.vim"]
+	path = vim/bundle/pest.vim
+	url = https://github.com/pest-parser/pest.vim
