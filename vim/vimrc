@@ -131,8 +131,6 @@ imap <c-space> <c-@>
 nmap <c-space> <c-@>
 
 " other plugin settings
-" NERDTree
-noremap <leader>n :NERDTreeToggle<cr>
 let g:ranger_replace_netrw = 1
 
 " fix airline issues with fonts
