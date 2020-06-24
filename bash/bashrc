@@ -7,9 +7,3 @@
 
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
-
-# assumes .config/systemd/user/ssh-agent is running
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
-# add my keys, if not already added
-ssh-add -l > /dev/null || ssh-add
-
