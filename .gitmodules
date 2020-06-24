@@ -52,3 +52,6 @@
 [submodule "vim/bundle/pest.vim"]
 	path = vim/bundle/pest.vim
 	url = https://github.com/pest-parser/pest.vim
+[submodule "vim/bundle/ranger.vim"]
+	path = vim/bundle/ranger.vim
+	url = https://github.com/francoiscabrol/ranger.vim
