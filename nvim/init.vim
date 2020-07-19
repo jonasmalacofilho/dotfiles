@@ -16,22 +16,34 @@ endif
 
 
 " Appearance is less important than behvior, but these are essentials too
-colorscheme default              " (temporary)
 set colorcolumn=80,100           " highlight 80 and 100 column thresholds
 set cursorline                   " make it easier to find where the cursor is
 set list                         " show tabs, trailling space and nbsp
 set relativenumber number        " use relative numbers on all but current line
 set scrolloff=3 sidescrolloff=3  " ensure there's always some context visible
-set notermguicolors              " DON'T use 24-bit colors (temporary)
+set signcolumn=yes               " avoid distracting popping of signcolumns
+set termguicolors                " enable 24-bit color
 set title                        " filename on window title
 
 
 " Load plugins
 call plug#begin('~/.config/nvim/plugged')
-  Plug 'mattn/vim-lsp-settings'
-  Plug 'prabirshrestha/vim-lsp'
   Plug 'rust-lang/rust.vim', { 'for': 'rust' }
   Plug 'tpope/vim-commentary'
+
+  let g:lsp_signs_error = {'text': '✗'}
+  let g:lsp_signs_hint = {'text': '✎'}
+  let g:lsp_signs_information = {'text': 'ℹ'}
+  let g:lsp_signs_warning = {'text': '⚠'}
+  let g:lsp_virtual_text_prefix = 'ᐊ '
+  Plug 'mattn/vim-lsp-settings'
+  Plug 'prabirshrestha/vim-lsp'
+
+  let g:gruvbox_italic = 1
+  let g:gruvbox_sign_column = 'bg0'
+  let g:gruvbox_invert_signs = 1
+  Plug '~/Code/gruvbox'  " fixes for vim-lsp, upstream is morhetz/gruvbox
+  autocmd VimEnter * colorscheme gruvbox
 
   if executable('ranger')
     " file explorer that supports Miller Columns
@@ -48,35 +60,34 @@ call plug#begin('~/.config/nvim/plugged')
   endif
 
   " under evaluation:
+  " <empty>
 call plug#end()
 
 
 " Language server protocol client
 function! s:on_lsp_buffer_enabled() abort
-  setlocal omnifunc=lsp#complete
-  setlocal signcolumn=yes
-  if exists('+tagfunc')
-    setlocal tagfunc=lsp#tagfunc
-  endif
-  nmap <buffer> gd <Plug>(lsp-definition)
-  nmap <buffer> gr <Plug>(lsp-references)
-  nmap <buffer> gi <Plug>(lsp-implementation)
-  nmap <buffer> gt <Plug>(lsp-type-definition)
-  nmap <buffer> <leader>rn <Plug>(lsp-rename)
-  nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-  nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
-  nmap <buffer> K <Plug>(lsp-hover)
-endfunction
-augroup LspInstall
-  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
+  nmap <Leader>rn <Plug>(lsp-rename)
+  nmap K <Plug>(lsp-hover)
+  nmap [g <Plug>(lsp-previous-diagnostic)
+  nmap ]g <Plug>(lsp-next-diagnostic)
+  nmap gd <Plug>(lsp-definition)
 
+  " disable markdown syntax in lsp-hovers since rendering it is currently broken
+  autocmd FileType markdown.lsp-hover setlocal filetype=text.lsp-hover
+
+  " let g:lsp_highlight_references_enabled = 1  " distracting
+  " set omnifunc=lsp#complete                   " not in use yet
+  " nmap gi <Plug>(lsp-implementation)          " conflicts with Vim mappings
+  " nmap gr <Plug>(lsp-references)              " conflicts with Vim mappings
+  " nmap gt <Plug>(lsp-type-definition)         " conflicts with Vim mappings
+endfunction
+autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 
 " Utilities that overload or extend existing Vim features
-nnoremap Y y$      |" yank from cursor to EOL, like C and D
-nnoremap gV `[v`]  |" select text that was just pasted
-vnoremap < <gv     |" restore visual mode after indenting
-vnoremap > >gv     |" restore visual mode after indenting
+nnoremap Y y$|      " yank from cursor to EOL, like C and D
+nnoremap gV `[v`]|  " select text that was just pasted
+vnoremap < <gv|     " restore visual mode after indenting
+vnoremap > >gv|     " restore visual mode after indenting
 
 
 " FileType-dependent indentation
@@ -111,6 +122,7 @@ nmap <Leader>mt :make test<CR>
 autocmd FileType rust nmap <Leader>mD :make doc --open<CR>
 autocmd FileType rust nmap <Leader>mT :RustTest<CR>
 autocmd FileType rust nmap <Leader>mm :make build<CR>
+autocmd FileType rust nmap <Leader>mf :make fmt<CR>
 " note: building from Cargo.toml is currently broken
 
 
