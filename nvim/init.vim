@@ -27,9 +27,25 @@ set termguicolors                " use 24-bit colors
 set title                        " filename on window title
 
 
+" Load plugins
 call plug#begin('~/.config/nvim/plugged')
-Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+	Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+	Plug 'tpope/vim-commentary'
+
+	if executable('ranger')
+		" file explorer that supports Miller Columns
+		let g:ranger_map_keys = 0
+		let g:ranger_replace_netrw = 1
+		if has('nvim')
+			let g:bclose_no_plugin_maps = 0
+			Plug 'rbgrouleff/bclose.vim'
+		endif
+		Plug 'francoiscabrol/ranger.vim'
+	else
+		" noop, just use netrw like a savage
+	endif
 call plug#end()
+
 
 " Utilities that overload or extend existing Vim features
 nnoremap Y y$      |" yank from cursor to EOL, like C and D
@@ -40,32 +56,37 @@ vnoremap > >gv     |" restore visual mode after indenting
 
 " Leader space
 let mapleader = "\<Space>"
-nnoremap <Leader>b :b#<CR>
-nnoremap <Leader>l :nohlsearch<CR>
-nnoremap <Leader>w :w<CR>
-" + common build targets (assumes makeprg has been set by plugin or user)
-nnoremap <Leader>0 :make clean<CR>
-nnoremap <Leader>k :make check<CR>
-nnoremap <Leader>m :make<CR>
-nnoremap <Leader>o :make doc<CR>
-nnoremap <Leader>u :make build<CR>
-nnoremap <Leader>y :make test<CR>
+map <Leader>c :Commentary<CR>
+nmap <Leader>b :b#<CR>
+nmap <Leader>f :Ranger<CR>
+nmap <Leader>l :nohlsearch<CR>
+nmap <Leader>q :q<CR>
+nmap <Leader>s :sp<CR>
+nmap <Leader>t :tabe<CR>
+nmap <Leader>v :vsp<CR>
+nmap <Leader>w :w<CR>
+" common :[m]ake build targets
+nmap <Leader>m0 :make clean<CR>
+nmap <Leader>mc :make check<CR>
+nmap <Leader>md :make doc<CR>
+nmap <Leader>mm :make<CR>
+nmap <Leader>mt :make test<CR>
 if has('nvim')
-	nnoremap <Leader>` :source ~/.config/nvim/init.vim<CR>
+	nmap <Leader>` :source ~/.config/nvim/init.vim<CR>
 else
-	nnoremap <Leader>` :source ~/.config/nvim/init.vim<CR>
+	nmap <Leader>` :source ~/.config/nvim/init.vim<CR>
 endif
-" + [r]ust (assumes rust.vim)
-autocmd FileType rust nnoremap <Leader>Y :RustTest<CR>
-autocmd FileType rust nnoremap <Leader>O :make doc --open<CR>
+" rust (assumes rust.vim)
+" (note: building from Cargo.toml is currently broken)
+autocmd FileType rust nmap <Leader>mD :make doc --open<CR>
+autocmd FileType rust nmap <Leader>mT :RustTest<CR>
+autocmd FileType rust nmap <Leader>mm :make build<CR>
 
 
 " TO-DO list
-" - comments (tcomment?)
-" - file explorer (ranger.vim?)
-" - language server (nvim-lsp)
-" - rust (rust.vim + rls)
-" - haxe (vaxe? lsp client?)
+" - lsp server (nvim-lsp, vim-lsp, coc-vim?)
+" - rust lsp client (rust-analyzer)
+" - haxe (vaxe, hls?)
 " - decent colorscheme
 " - jumping into files (CtrlP?)
 " - other useful features or plugins from the old setup
