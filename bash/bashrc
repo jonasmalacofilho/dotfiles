@@ -7,3 +7,4 @@
 
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
+[ -r /home/jonas/.byobu/prompt ] && . /home/jonas/.byobu/prompt   #byobu-prompt#

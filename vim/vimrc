@@ -5,6 +5,7 @@ set encoding=utf-8
 set nomodeline
 set noexrc
 set secure
+" refresh: ready
 
 " basic functionality
 let mapleader = ','
@@ -12,6 +13,7 @@ set mouse=a
 set autowrite  " autowrite on a bunch of times including :make
 set autoread   " autoread when buffer is unchanged
 set switchbuf=useopen,usetab
+" refresh: ready
 
 " basic appearence
 set title
@@ -26,6 +28,7 @@ set background=dark
 let g:gruvbox_guisp_fallback = "bg"
 colorscheme gruvbox
 syntax enable
+" refresh: ready
 
 " extensions
 " move up/down using display lines when used without a count
@@ -42,6 +45,7 @@ noremap gV `[v`]
 " easily replace the current word and all its occurrences
 nnoremap <Leader>rc :%s/\<<C-r><C-w>\>/
 vnoremap <Leader>rc y:%s/<C-r>"/
+" refresh: ready
 
 " utilities
 " make mappings
@@ -61,6 +65,7 @@ nnoremap <leader>Trim :%s/\s\+$//<cr>
 nnoremap <leader>o :only<cr>:vnew<cr>:vnew<cr><C-W>R<C-W>h
 " last command
 noremap <leader><cr> :<c-p>
+" refresh: todo (missing useful things)
 
 " searches
 set incsearch
@@ -68,6 +73,7 @@ set ignorecase
 set smartcase  " /foo matches FOO and fOo; /FOO only matches FOO
 set hlsearch   " highlight searh matches
 noremap <leader>l :nohlsearch<cr>
+" refresh: ready
 
 " spellchecking
 nnoremap <leader>sl :setlocal nospell<cr>
@@ -76,6 +82,7 @@ nnoremap <leader>sp :setlocal spell spelllang=pt_br<cr>
 nnoremap <leader>sf :setlocal spell spelllang=fr<cr>
 autocmd FileType gitcommit setlocal spell
 autocmd FileType markdown setlocal spell
+" refresh: todo
 
 " indentation
 filetype plugin indent on
@@ -83,6 +90,7 @@ set autoindent  " autoindenting always on
 set cinoptions+=:0,#0s  " don't indent switch cases, don't threat # as special
 set cinkeys-=0#  " don't thread # as special
 set noexpandtab shiftwidth=8 softtabstop=8 tabstop=8 list  " use kernel style
+" refresh: done
 
 " haxe: vaxe
 let g:vaxe_prefer_first_in_directory = 0
@@ -112,6 +120,7 @@ call tcomment#DefineType('haxe_block', g:tcommentBlockHx)
 autocmd BufNewFile,BufRead *.tt set filetype=tinktemplate
 autocmd FileType haxe setlocal textwidth=100
 call tcomment#DefineType('tinktemplate', '(:* %s *:)')
+" refresh: todo
 
 " completion
 set completeopt=preview
@@ -129,6 +138,7 @@ nmap <expr> <c-@> "a\<c-@>"
 " <c-space> to <c-@> equivalence
 imap <c-space> <c-@>
 nmap <c-space> <c-@>
+" refresh: todo
 
 " other plugin settings
 let g:ranger_replace_netrw = 1
@@ -142,3 +152,4 @@ let g:airline_powerline_fonts = 1
 let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.linenr = ''
 let g:airline_symbols.whitespace = 'Ξ'
+" refresh todo
