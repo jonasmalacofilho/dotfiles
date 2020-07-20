@@ -1,11 +1,13 @@
 " Essential behavior
+set autowrite              " write the buffer before :make, :! and others
 set ignorecase smartcase   " ignore case in all-lowercase patterns
 set mouse=nvi              " enable mouse support on selected modes
 set nomodeline             " don't honor vim modelines in files
+set spell spl=en_us,pt_br  " spell by default (assumes undercurls are available)
 set splitbelow splitright  " threat splits as auxiliary
-set autowrite              " write the buffer before :make, :! and others
 if !has('nvim')
   " ensure bare minimum sanity/security in vim
+  set autoread        " don't work on outdate files
   set encoding=utf-8  " ensure sane encoding
   set nocompatible    " don't break vim for vi
   set noexrc          " don't source rc files in current directory
@@ -15,13 +17,13 @@ if !has('nvim')
 endif
 
 
-" Appearance is less important than behvior, but these are essentials too
+" Appearance is less important than behavior, but these are essentials too
 set colorcolumn=80,100           " highlight 80 and 100 column thresholds
 set cursorline                   " make it easier to find where the cursor is
-set list                         " show tabs, trailling space and nbsp
+set list                         " show tabs, trailing space and nbsp
 set relativenumber number        " use relative numbers on all but current line
 set scrolloff=3 sidescrolloff=3  " ensure there's always some context visible
-set signcolumn=yes               " avoid distracting popping of signcolumns
+set signcolumn=yes               " avoid distracting popping of the sign column
 set termguicolors                " enable 24-bit color
 set title                        " filename on window title
 
@@ -42,7 +44,7 @@ call plug#begin('~/.config/nvim/plugged')
   let g:gruvbox_italic = 1
   let g:gruvbox_sign_column = 'bg0'
   let g:gruvbox_invert_signs = 1
-  Plug '~/Code/gruvbox'  " fixes for vim-lsp, upstream is morhetz/gruvbox
+  Plug '~/Code/gruvbox'  " jonasmalacofilho/gruvbox (fixes; upstream is morhetz)
   autocmd VimEnter * colorscheme gruvbox
 
   if executable('ranger')
@@ -83,18 +85,25 @@ function! s:on_lsp_buffer_enabled() abort
 endfunction
 autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 
+
 " Utilities that overload or extend existing Vim features
 nnoremap Y y$|      " yank from cursor to EOL, like C and D
 nnoremap gV `[v`]|  " select text that was just pasted
 vnoremap < <gv|     " restore visual mode after indenting
 vnoremap > >gv|     " restore visual mode after indenting
+" note: the pipe terminates the map command; the comments are empty commands
 
 
-" FileType-dependent indentation
-autocmd FileType vim set expandtab shiftwidth=2
+" FileType-dependent settings (the bad way?)
+autocmd FileType vim setlocal expandtab shiftwidth=2
+if !&spell
+  " enable spell for these files if I've doing it globally already
+  autocmd FileType gitcommit setlocal spell spelllang=en_us
+  autocmd FileType markdown setlocal spell spelllang=en_us
+endif
 
 
-" Toplevel <Leader> space
+" Topleve <Leader> space
 let mapleader = "\<Space>"
 map <Leader>o :Commentary<CR>
 nmap <Leader>b :b#<CR>
@@ -113,6 +122,13 @@ else
 endif
 
 
+" <Leader> [a]spell space
+nmap <Leader>ae :setlocal spell spelllang=en_us<CR>
+nmap <Leader>ap :setlocal spell spelllang=pt_br<CR>
+nmap <Leader>aa :setlocal spell spelllang=en_us,pt_br<CR>
+nmap <Leader>al :setlocal nospell<CR>
+
+
 " <Leader> [m]ake space
 nmap <Leader>m0 :make clean<CR>
 nmap <Leader>mc :make check<CR>
@@ -126,13 +142,12 @@ autocmd FileType rust nmap <Leader>mf :make fmt<CR>
 " note: building from Cargo.toml is currently broken
 
 
+
 " TO-DO list
 " - haxe (vaxe, hls?)
-" - decent colorscheme
 " - jumping into files (CtrlP?)
 " - other useful features or plugins from the old setup
 " - use ripgrep in :grep
-" - spell checking
 " - window size/placement shortcuts (2/3? center, only)
 " - auto breaklines in certain formats (markdown? git?)
 
