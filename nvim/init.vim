@@ -124,8 +124,8 @@ nmap <Leader>q :q<CR>
 nmap <Leader>s :sp<CR>
 nmap <Leader>t :tabe<CR>
 nmap <Leader>v :vsp<CR>
-nmap <Leader>w :w<CR>
-nmap <Leader>x :x<CR>
+nmap <Leader>w :update<CR>|           " :write only if the buffer was modified
+nmap <Leader>x :exit<CR>|             " :update | quit
 vmap <Leader>A :'<,'>sort<CR>|        " sort visual selection asceding
 vmap <Leader>D :'<,'>sort!<CR>|       " sort visual selection descending
 if has('nvim')
