@@ -4,6 +4,7 @@ set ignorecase smartcase   " ignore case in all-lowercase patterns
 set mouse=nvi              " enable mouse support on selected modes
 set nomodeline             " don't honor vim modelines in files
 set spell spl=en_us,pt_br  " spell by default (assumes undercurls are available)
+set spellfile=~/.config/nvim/spell/personal.utf-8.add
 set splitbelow splitright  " threat splits as auxiliary
 if !has('nvim')
   " ensure bare minimum sanity/security in vim
@@ -140,7 +141,6 @@ autocmd FileType rust nmap <Leader>mT :RustTest<CR>
 autocmd FileType rust nmap <Leader>mm :make build<CR>
 autocmd FileType rust nmap <Leader>mf :make fmt<CR>
 " note: building from Cargo.toml is currently broken
-
 
 
 " TO-DO list
