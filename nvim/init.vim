@@ -52,7 +52,6 @@ call plug#begin('~/.config/nvim/plugged')
 
   let g:gruvbox_italic = 1
   let g:gruvbox_sign_column = 'bg0'
-  let g:gruvbox_invert_signs = 1
   Plug '~/Code/gruvbox'  " jonasmalacofilho/gruvbox (fixes; upstream is morhetz)
   autocmd VimEnter * colorscheme gruvbox
 
