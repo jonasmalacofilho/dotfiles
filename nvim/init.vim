@@ -6,6 +6,7 @@ set nomodeline             " don't honor vim modelines in files
 set spell spl=en_us,pt_br  " spell by default (assumes undercurls are available)
 set spellfile=~/.config/nvim/spell/personal.utf-8.add
 set splitbelow splitright  " threat splits as auxiliary
+set switchbuf=useopen,usetab  " reuse existing window or tab with target buffer
 if !has('nvim')
   " ensure bare minimum sanity/security in vim
   set autoread        " don't work on outdate files
@@ -34,6 +35,13 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'rust-lang/rust.vim', { 'for': 'rust' }
   Plug 'tpope/vim-commentary'
 
+  if executable('rg')
+    " use ripgrep to skip vcs and ignored files, if available
+    let g:ctrlp_user_command = 'rg --files %s'
+  endif
+  let g:ctrlp_working_path_mode = 'a'  " start from cwd or this files' directory
+  Plug 'ctrlpvim/ctrlp.vim'
+
   let g:lsp_signs_error = {'text': '✗'}
   let g:lsp_signs_hint = {'text': '✎'}
   let g:lsp_signs_information = {'text': 'ℹ'}
@@ -49,7 +57,7 @@ call plug#begin('~/.config/nvim/plugged')
   autocmd VimEnter * colorscheme gruvbox
 
   if executable('ranger')
-    " file explorer that supports Miller Columns
+    " use a file explorer that supports Miller Columns, if available
     let g:ranger_map_keys = 0  " let me do this myself
     let g:ranger_replace_netrw = 1
     if has('nvim')
@@ -59,7 +67,7 @@ call plug#begin('~/.config/nvim/plugged')
     endif
     Plug 'francoiscabrol/ranger.vim'
   else
-    " noop, just use netrw like a savage
+    " (no-op) otherwise just use netrw like a savage
   endif
 
   " under evaluation:
@@ -104,9 +112,11 @@ if !&spell
 endif
 
 
-" Topleve <Leader> space
+" Top level <Leader> space
 let mapleader = "\<Space>"
 map <Leader>o :Commentary<CR>
+nmap <Leader>$ :%s/\s\+$//<CR>|       " trim trailing whitespace
+nmap <Leader>C :tcd %:h<CR>:pwd<CR>|  " change window/tab cwd to current file's
 nmap <Leader>b :b#<CR>
 nmap <Leader>f :Ranger<CR>
 nmap <Leader>l :nohlsearch<CR>
@@ -116,6 +126,8 @@ nmap <Leader>t :tabe<CR>
 nmap <Leader>v :vsp<CR>
 nmap <Leader>w :w<CR>
 nmap <Leader>x :x<CR>
+vmap <Leader>A :'<,'>sort<CR>|        " sort visual selection asceding
+vmap <Leader>D :'<,'>sort!<CR>|       " sort visual selection descending
 if has('nvim')
   nmap <Leader>` :source ~/.config/nvim/init.vim<CR>
 else
@@ -144,12 +156,16 @@ autocmd FileType rust nmap <Leader>mf :make fmt<CR>
 
 
 " TO-DO list
-" - haxe (vaxe, hls?)
-" - jumping into files (CtrlP?)
-" - other useful features or plugins from the old setup
+" - informative status bar with airline or similar
+" - git information on the status bar with fugitive or similar
+" - haxe syntax (vaxe) and lsp server (hls)
+" - enuch?
+" - bufferline?
+" - multiple-cursors?
 " - use ripgrep in :grep
 " - window size/placement shortcuts (2/3? center, only)
 " - auto breaklines in certain formats (markdown? git?)
+" - faster way to run previous commands
 
 
 " Left out for now
