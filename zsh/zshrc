@@ -63,8 +63,8 @@ alias t4="tree -L 4"
 alias updatemirrors="curl -s 'https://www.archlinux.org/mirrorlist/?country=BR&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on' | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors - | _ tee /etc/pacman.d/mirrorlist"
 
 # always use vim
-export VISUAL=vim EDITOR=vim
-alias vi="vim"
+export VISUAL=nvim EDITOR=nvim
+alias vi="nvim"
 
 # deprecated aliases
 alias pstat="perf stat -e task-clock,context-switches,cpu-migrations,page-faults,cpu-cycles,instructions,stalled-cycles-frontend,stalled-cycles-backend,cache-references,cache-misses,branches,branch-misses"
