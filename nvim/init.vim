@@ -3,7 +3,7 @@ set autowrite              " write the buffer before :make, :! and others
 set ignorecase smartcase   " ignore case in all-lowercase patterns
 set mouse=nvi              " enable mouse support on selected modes
 set nomodeline             " don't honor vim modelines in files
-set spell spl=en_us,pt_br  " spell by default (assumes undercurls are available)
+set spell spelllang=en_us  " spell by default (assumes undercurls are available)
 set spellfile=~/.config/nvim/spell/personal.utf-8.add
 set splitbelow splitright  " threat splits as auxiliary
 set switchbuf=useopen,usetab  " reuse existing window or tab with target buffer
