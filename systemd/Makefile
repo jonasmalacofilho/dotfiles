@@ -1,13 +1,12 @@
 DEST=~/.config/systemd/user
 
-all: $(DEST)/haxe.service $(DEST)/ssh-agent.service reload _phony
+all: $(DEST)/haxe.service reload
 
-reload: _phony
+reload:
 	systemctl --user daemon-reload
 
-$(DEST)/%.service: %.service
+$(DEST)/%.service: %.service /usr/bin/systemctl
 	mkdir -p $(DEST)
 	cp $? $@
 
-.PHONY: _phony
-
+.PHONY: all reload
