@@ -147,10 +147,11 @@ nmap <Leader>mc :make check<CR>
 nmap <Leader>md :make doc<CR>
 nmap <Leader>mm :make<CR>
 nmap <Leader>mt :make test<CR>
+autocmd FileType rust nmap <Leader>mC :make clippy<CR>
 autocmd FileType rust nmap <Leader>mD :make doc --open<CR>
 autocmd FileType rust nmap <Leader>mT :RustTest<CR>
-autocmd FileType rust nmap <Leader>mm :make build<CR>
 autocmd FileType rust nmap <Leader>mf :make fmt<CR>
+autocmd FileType rust nmap <Leader>mm :make build<CR>
 " note: building from Cargo.toml is currently broken
 
 
