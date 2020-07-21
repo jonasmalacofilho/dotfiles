@@ -1,107 +1,95 @@
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
-
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="afowler"
-# also: afowler, gentoo, lukerandall, essembeh, robbyrussell
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git vi-mode wd)
-
-# User configuration
-
+# Essential behavior
 export PATH=$HOME/bin:/usr/local/bin:$PATH
-# export MANPATH="/usr/local/man:$MANPATH"
+export VISUAL=nvim EDITOR=nvim          # use nvim everywhere
+alias sudo='sudo '                      # keep all aliases when sudo
 
-setopt EXTENDED_GLOB
 
+# Start Oh My Zsh
+COMPLETION_WAITING_DOTS="true"          # indicate when waiting on completion
+DISABLE_AUTO_UPDATE="true"              # let me update oh-my-zsh
+DISABLE_UNTRACKED_FILES_DIRTY="true"    # make vcs status check much faster
+HIST_STAMPS="yyy-mm-dd"                 # use unambiguous timestamps
+plugins=(
+	git                             # useful git aliases (!completion)
+	wd                              # warp to frequent directories
+)
+ZSH_THEME="afowler"
+export ZSH=$HOME/.oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 
-# vi-mode extension: bind Ctrl-r to search
-bindkey '^r' history-incremental-search-backward
-bindkey '^q' history-incremental-search-forward
 
-# general aliases
-alias sd="systemctl"
-alias jd="journalctl"
-alias jo="xdg-open"  # just open
-alias t="tree"
-alias r="ranger"
-alias vg="vgrep"
-alias vgi="vgrep --interactive"
-alias vgs="vgrep --show"
-alias vgis="vgrep --interactive --show"
-alias t1="tree -L 1"
-alias t2="tree -L 2"
-alias t3="tree -L 3"
-alias t4="tree -L 4"
-alias updatemirrors="curl -s 'https://www.archlinux.org/mirrorlist/?country=BR&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on' | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors - | _ tee /etc/pacman.d/mirrorlist"
-
-# always use vim
-export VISUAL=nvim EDITOR=nvim
-alias vi="nvim"
-
-# deprecated aliases
-alias pstat="perf stat -e task-clock,context-switches,cpu-migrations,page-faults,cpu-cycles,instructions,stalled-cycles-frontend,stalled-cycles-backend,cache-references,cache-misses,branches,branch-misses"
-alias tmux="tmux -2"  # fix tmux->vim colors for me
-alias tx="tmux"
-
-# hack to keep all aliases to sudo
-alias sudo='sudo '
-alias _!='sudo $(fc -ln -1)'
-
-# glog variant using kernel style commit references
-alias gkref="git log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'"
-
-# why only gcm (master), we need a gcd too
-alias gcd="git checkout development"
-
-# liquidctl
-alias qs='sudo liquidctl status'
-alias qkraken='sudo liquidctl --vendor 0x1e71 --product 0x170e'
-alias qcase='sudo liquidctl --vendor 0x1e71 --product 0x1714'
-alias qclc='sudo liquidctl --vendor 0x2433 --product 0xb200'
+# Enable completion from --help for more commands
 compdef _gnu_generic liquidctl
 
-# working with sysfs
-function sysecho() {
-	echo "$2" | sudo tee "$1"
+
+# Ungrouped aliases
+alias _!='sudo $(fc -ln -1)'            # sudo last command
+alias f='fg'
+alias jd='journalctl'
+alias jo='xdg-open'                     # [j]ust [o]pen with default handler
+alias r='ranger'
+alias sd='systemctl'
+alias vi='nvim'
+
+
+# More [g]it
+alias gcd='git checkout development'
+alias gkref="git log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'"
+
+
+# Aliases for [t]ree
+alias t1='tree -L 1'
+alias t2='tree -L 2'
+alias t3='tree -L 3'
+alias t4='tree -L 4'
+alias ta='tree'
+
+
+# Aliases for [vg]rep
+alias vg='vgrep'
+alias vgi='vgrep --interactive'
+alias vgis='vgrep --interactive --show'
+alias vgs='vgrep --show'
+
+
+# Utilities for ArchLinux
+function update_pacman_mirrors() {
+	country=${1:-BR}
+	echo "Getting ranked and up-to-day pacman mirrorlist for ${country}"
+	curl -s "https://www.archlinux.org/mirrorlist/?country=${country}&use_mirror_status=on" |
+		sed -e 's/^#Server/Server/' -e '/^#/d' |
+		rankmirrors - |
+		sudo tee /etc/pacman.d/mirrorlist &&
 }
 
-function switch-haxe-to() {
+
+# Utilities for the Linux Kernel
+function unbind_device() {
+	[ $# -ne 3 ] && { echo "Usage: unbind_device <dev> <bus> <drv>"; return 1; }
+	echo "Unbinding $1 from /sys/$2/drivers/$3"
+	echo $1 | sudo tee "/sys/bus/$2/drivers/$3/unbind" >/dev/null
+}
+function bind_device() {
+	[ $# -ne 3 ] && { echo "Usage: bind_device <dev> <bus> <drv>"; return 1; }
+	echo "Binding $1 from /sys/$2/drivers/$3"
+	echo $1 | sudo tee "/sys/bus/$2/drivers/$3/bind" >/dev/null
+}
+function rebind_device() {
+	[ $# -ne 3 ] && { echo "Usage: rebind_device <dev> <bus> <drv>"; return 1; }
+	unbind_device "$@"
+	bind_device "$@"
+}
+
+
+# Utilities for Haxe
+function switch_haxe_to() {
+	[ $# -ne 1 ] && { echo "Usage: switch_haxe_to <version>"; return 1; }
 	haxepath="/opt/haxe/haxe-$1"
 	if [ ! -d "$haxepath" ]; then
 		echo "No binaries available for Haxe $1"
 		return 2
 	fi
+	echo "Setting Haxe to $1 in this shell"
 	export PATH=$haxepath:$PATH
 	export HAXE_STD_PATH=$haxepath/std
 }
-
-# remember the current dir when opening new windows or tabs
-source /etc/profile.d/vte.sh
