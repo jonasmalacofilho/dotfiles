@@ -6,3 +6,4 @@ all: ~/.gitconfig ~/.gitignore.global
 ~/.gitignore.global:
 	ln -si $(CURDIR)/ignore $@
 
+.PHONY: all

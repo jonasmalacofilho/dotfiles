@@ -6,11 +6,9 @@
 	ui = true
 [push]
 	default = simple
-[alias]
-	head = log -1 --format=\\\"%H\\\"
-	lol = log --oneline --graph --decorate
 [core]
 	excludesfile = ~/.gitignore.global
+	abbrev = 12
 	pager = less
 [filter "lfs"]
 	clean = git-lfs clean -- %f
