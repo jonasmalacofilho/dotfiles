@@ -1,9 +1,4 @@
-#
-# ~/.bashrc
-#
+# ~/.bashrc for interactive shells that are *not* login shells
 
-# If not running interactively, don't do anything
+# If not running interactively, stop here
 [[ $- != *i* ]] && return
-
-alias ls='ls --color=auto'
-PS1='[\u@\h \W]\$ '

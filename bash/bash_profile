@@ -1,7 +1,4 @@
-#
-# ~/.bash_profile
-#
+# ~/.bash_profile for login shells
 
+# keep everything in ~/.bashrc
 [[ -f ~/.bashrc ]] && . ~/.bashrc
-
-export PATH="$HOME/.cargo/bin:$PATH"

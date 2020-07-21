@@ -1,7 +1,6 @@
-all: ~/.bash_profile ~/.bashrc _phony
+all: ~/.bash_profile ~/.bashrc
 
 ~/.%: %
 	ln -si $(CURDIR)/$* $@
 
-.PHONY: _phony
-
+.PHONY: all
