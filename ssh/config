@@ -1,22 +1,22 @@
 AddKeysToAgent yes
 
 Host github.com bitbucket.org bitbucket.com gitlab.com
-	User git
 	StrictHostKeyChecking ask
+	User git
 
 Host aur.archlinux.org
-	User aur
 	StrictHostKeyChecking ask
+	User aur
 
 Host *.ngrok.io
-	StrictHostKeyChecking no
 	CheckHostIP no
-	UserKnownHostsFile /dev/null
 	LogLevel ERROR
+	StrictHostKeyChecking no
+	UserKnownHostsFile /dev/null
 
 Host *
-	StrictHostKeyChecking no
-	VisualHostKey yes
-	ServerAliveInterval 15
 	ServerAliveCountMax 20
+	ServerAliveInterval 15
+	StrictHostKeyChecking no
 	TCPKeepAlive no
+	VisualHostKey yes
