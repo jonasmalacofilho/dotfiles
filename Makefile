@@ -1,9 +1,6 @@
-all: ctags fonts git ssh vim nvim zsh bash _phony
+common: bash git nvim ssh zsh
 
-ctags fonts git ssh vim nvim zsh bash: _phony
+bash git krakenx liquidctl nvim ssh systemd vim zsh: _phony
 	make -C $@
 
-systemd liquidctl krakenx: /bin/systemctl _phony
-	make -C $@
-
-.PHONY: _phony
+.PHONY: common _phony
