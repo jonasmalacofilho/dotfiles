@@ -48,6 +48,8 @@ call plug#begin('~/.config/nvim/plugged')
   let g:lsp_signs_warning = {'text': '⚠'}
   let g:lsp_virtual_text_prefix = 'ᐊ '
   Plug 'mattn/vim-lsp-settings'
+  Plug 'prabirshrestha/asyncomplete-lsp.vim'
+  Plug 'prabirshrestha/asyncomplete.vim'
   Plug 'prabirshrestha/vim-lsp'
 
   let g:gruvbox_italic = 1
@@ -86,12 +88,20 @@ function! s:on_lsp_buffer_enabled() abort
   autocmd FileType markdown.lsp-hover setlocal filetype=text.lsp-hover
 
   " let g:lsp_highlight_references_enabled = 1  " distracting
-  " set omnifunc=lsp#complete                   " not in use yet
   " nmap gi <Plug>(lsp-implementation)          " conflicts with Vim mappings
   " nmap gr <Plug>(lsp-references)              " conflicts with Vim mappings
   " nmap gt <Plug>(lsp-type-definition)         " conflicts with Vim mappings
 endfunction
 autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+
+
+" Auto completion
+imap <c-space> <Plug>(asyncomplete_force_refresh)
+inoremap <expr> <C-E>   pumvisible() ? asyncomplete#cancel_popup() : "\<C-E>"
+inoremap <expr> <CR>    pumvisible() ? "\<C-Y>\<cr>" : "\<CR>"
+inoremap <expr> <ESC>   pumvisible() ? asyncomplete#cancel_popup() : "\<ESC>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-P>" : "\<S-Tab>"
+inoremap <expr> <Tab>   pumvisible() ? "\<C-N>" : "\<Tab>"
 
 
 " Utilities that overload or extend existing Vim features
