@@ -1,8 +1,11 @@
-Automatic krakenx configuration at boot
-=========================================
+> See [`../liquidctl`](../liquidctl) for a similar setup for the more general
+> [liquidctl](https://github.com/jonasmalacofilho/liquidctl).
 
-This is just an example of how to use Systemd to have the system automatically
-run krakenx and configure a Kraken cooler by itself.
+Automatic krakenx configuration at boot
+=======================================
+
+This is an example of how to use Systemd to have the system automatically run
+krakenx and configure a Kraken X42/X52/X62/X72 cooler by itself.
 
 The most straightforward setup is to add a new system
 [service](https://www.freedesktop.org/software/systemd/man/systemd.service.html).
@@ -17,7 +20,7 @@ already run as the root user.
 Unit files for system services should be installed inside
 `/etc/systemd/system`.  It is also necessary to run `systemctl daemon-reload`
 every time a change is been made to them.  I also added a simple
-[`Makefile`](./Makefile) to automate the installation.  procedure.
+[`Makefile`](./Makefile) to automate the installation.
 
 Once you have created and installed your own service file, you can test it by
 starting the service.
@@ -41,4 +44,3 @@ automatically.
 ```
 # systemctl enable krakenx-config
 ```
-

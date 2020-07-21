@@ -7,4 +7,3 @@ ExecStart=/usr/bin/env colctl --mode fading --color_count 2 --color0 192,32,64 -
 
 [Install]
 WantedBy=default.target
-
