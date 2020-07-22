@@ -54,7 +54,7 @@ call plug#begin('~/.config/nvim/plugged')
 
   let g:gruvbox_italic = 1
   let g:gruvbox_sign_column = 'bg0'
-  Plug '~/Code/gruvbox'  " jonasmalacofilho/gruvbox (fixes; upstream is morhetz)
+  Plug 'jonasmalacofilho/gruvbox'  " upstream is morhetz/gruvbox
   autocmd VimEnter * colorscheme gruvbox
 
   if executable('ranger')
