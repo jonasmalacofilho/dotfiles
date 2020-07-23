@@ -114,6 +114,7 @@ vnoremap > >gv|     " restore visual mode after indenting
 
 " FileType-dependent settings (the bad way?)
 autocmd FileType vim setlocal expandtab shiftwidth=2
+autocmd FileType yaml setlocal expandtab shiftwidth=2
 if !&spell
   " enable spell for these files if I've doing it globally already
   autocmd FileType gitcommit setlocal spell spelllang=en_us
