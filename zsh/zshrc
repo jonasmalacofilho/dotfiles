@@ -93,3 +93,9 @@ function switch_haxe_to() {
 	export PATH=$haxepath:$PATH
 	export HAXE_STD_PATH=$haxepath/std
 }
+
+
+# Communicate the current directory (among, possibly, other things) when
+# splitting Gnome Terminal instances
+# (see: https://gnunn1.github.io/tilix-web/manual/vteconfig/)
+source /etc/profile.d/vte.sh
