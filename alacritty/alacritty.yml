@@ -1,0 +1,66 @@
+window:
+  dimensions:
+    columns: 104
+    lines: 28
+
+font:
+  normal:
+    family: DejaVu Sans Mono
+    style: Book
+  bold:
+    family: DejaVu Sans Mono
+    style: Bold
+  italic:
+    family: DejaVu Sans Mono
+    style: Oblique
+  bold_italic:
+    family: DejaVu Sans Mono
+    style: Bold Oblique
+  size: 8
+  offset:
+    y: 2
+
+colors:
+  # gruvbox dark
+  # (see: https://github.com/alacritty/alacritty/wiki/Color-schemes#gruvbox)
+
+  # Default colors
+  primary:
+    # hard contrast: background = '#1d2021'
+    background: '#282828'
+    # soft contrast: background = '#32302f'
+    foreground: '#ebdbb2'
+
+  # Normal colors
+  normal:
+    black:   '#282828'
+    red:     '#cc241d'
+    green:   '#98971a'
+    yellow:  '#d79921'
+    blue:    '#458588'
+    magenta: '#b16286'
+    cyan:    '#689d6a'
+    white:   '#a89984'
+
+  # Bright colors
+  bright:
+    black:   '#928374'
+    red:     '#fb4934'
+    green:   '#b8bb26'
+    yellow:  '#fabd2f'
+    blue:    '#83a598'
+    magenta: '#d3869b'
+    cyan:    '#8ec07c'
+    white:   '#ebdbb2'
+
+background_opacity: 1.0
+# (if < 1, set `hi Normal guibg=NONE ctermbg=NONE` in nvim after colorscheme)
+
+url:
+  lanuncher:
+    program: xdg-open
+    args: []
+  modifiers: Control
+
+key_bindings:
+  - { key: N, mods: Control|Shift, action: SpawnNewInstance }
