@@ -18,7 +18,7 @@ font:
     style: Bold Oblique
   size: 8
   offset:
-    y: 2
+    y: 3
 
 colors:
   # gruvbox dark
