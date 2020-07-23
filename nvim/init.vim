@@ -110,6 +110,13 @@ nnoremap gV `[v`]|  " select text that was just pasted
 vnoremap < <gv|     " restore visual mode after indenting
 vnoremap > >gv|     " restore visual mode after indenting
 " note: the pipe terminates the map command; the comments are empty commands
+if $TERM == 'alacritty'
+  " Alacritty doesn't currently support Ctrl+Shift+u for Unicode input (see:
+  " alacritty/alacritty#866); since I have significant muscular memory from
+  " using this feature on libvte based terminals, map CTRL-U to Vim's native
+  " i_CTRL-V_digit feature in alacritty sessions and insert or command modes
+  map! <C-U> <C-V>u
+endif
 
 
 " FileType-dependent settings (the bad way?)
