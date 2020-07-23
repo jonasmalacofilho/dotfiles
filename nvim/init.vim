@@ -9,7 +9,7 @@ set splitbelow splitright  " threat splits as auxiliary
 set switchbuf=useopen,usetab  " reuse existing window or tab with target buffer
 if !has('nvim')
   " ensure bare minimum sanity/security in vim
-  set autoread        " don't work on outdate files
+  set autoread        " don't work on outdated files
   set encoding=utf-8  " ensure sane encoding
   set nocompatible    " don't break vim for vi
   set noexrc          " don't source rc files in current directory
