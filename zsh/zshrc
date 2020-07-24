@@ -55,7 +55,7 @@ alias vgs='vgrep --show'
 # Utilities for ArchLinux
 function update_pacman_mirrors() {
 	country=${1:-BR}
-	echo "Getting ranked and up-to-day pacman mirrorlist for ${country}"
+	echo "Getting ranked and up-to-date pacman mirrorlist for ${country}"
 	curl -s "https://www.archlinux.org/mirrorlist/?country=${country}&use_mirror_status=on" |
 		sed -e 's/^#Server/Server/' -e '/^#/d' |
 		rankmirrors - |
