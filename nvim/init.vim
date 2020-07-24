@@ -34,6 +34,7 @@ set title                        " filename on window title
 call plug#begin('~/.config/nvim/plugged')
   Plug 'rust-lang/rust.vim', { 'for': 'rust' }
   Plug 'tpope/vim-commentary'
+  Plug 'tpope/vim-eunuch'
 
   if executable('rg')
     " use ripgrep to skip vcs and ignored files, if available
@@ -177,7 +178,6 @@ autocmd FileType rust nmap <Leader>mm :make build<CR>
 " - informative status bar with airline or similar
 " - git information on the status bar with fugitive or similar
 " - haxe syntax (vaxe) and lsp server (hls)
-" - enuch?
 " - bufferline?
 " - multiple-cursors?
 " - use ripgrep in :grep
