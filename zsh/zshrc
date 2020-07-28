@@ -30,6 +30,7 @@ alias jo='xdg-open'                     # [j]ust [o]pen with default handler
 alias r='ranger'
 alias sd='systemctl'
 alias vi='nvim'
+alias v='nvim'
 
 
 # More [g]it
