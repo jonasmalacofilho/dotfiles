@@ -34,7 +34,7 @@ alias vi='nvim'
 
 # More [g]it
 alias gcd='git checkout development'
-alias gkref="git log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'"
+alias ghcl="git clone --recurse-submodules git@github.com:"
 
 
 # Aliases for [t]ree
