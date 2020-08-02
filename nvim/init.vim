@@ -36,6 +36,9 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'tpope/vim-commentary'
   Plug 'tpope/vim-eunuch'
 
+  let g:markdown_syntax_minlines = 100
+  Plug 'tpope/vim-markdown'
+
   if executable('rg')
     " use ripgrep to skip vcs and ignored files, if available
     let g:ctrlp_user_command = 'rg --files %s'
