@@ -48,7 +48,7 @@ $LL $SMART_DEVICE set fan3 speed 55 || panic  # 3 front intake fan
 $LL $CLC initialize || soft_panic
 $LL $CLC set fan speed 20 || soft_panic
 $LL $CLC set pump speed 50 || soft_panic
-$LL $CLC set led color off || soft_panic
+$LL $CLC set led color blackout || soft_panic
 
 # ram: off (previously static rgb(130, 8, 8)
 # gpu: off (previously unknown/matching ram)
