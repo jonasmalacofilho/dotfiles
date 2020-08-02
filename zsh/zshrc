@@ -35,7 +35,7 @@ alias v='nvim'
 
 # More [g]it
 alias gcd='git checkout development'
-alias ghcl="git clone --recurse-submodules git@github.com:"
+# TODO ghcl
 
 
 # Aliases for [t]ree
