@@ -121,6 +121,8 @@ if $TERM == 'alacritty'
   " i_CTRL-V_digit feature in alacritty sessions and insert or command modes
   map! <C-U> <C-V>u
 endif
+noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')|  " default to display/gj
+noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')|  " default to display/gk
 
 
 " FileType-dependent settings (the bad way?)
@@ -187,8 +189,3 @@ autocmd FileType rust nmap <Leader>mm :make build<CR>
 " - window size/placement shortcuts (2/3? center, only)
 " - auto breaklines in certain formats (markdown? git?)
 " - faster way to run previous commands
-
-
-" Left out for now
-" noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
-" noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
