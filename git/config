@@ -24,3 +24,5 @@
 [alias]
 	klog = log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'
 	head = !git --no-pager log --abbrev=12 --oneline --format='%h' -1
+[pull]
+	rebase = false
