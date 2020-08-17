@@ -46,11 +46,10 @@ alias t4='tree -L 4'
 alias ta='tree'
 
 
-# Aliases for [vg]rep
-alias vg='vgrep'
-alias vgi='vgrep --interactive'
-alias vgis='vgrep --interactive --show'
-alias vgs='vgrep --show'
+# Interactive-by-default alias to vgrep
+function vg() {
+	vgrep "$@" && vgrep --interactive --print
+}
 
 
 # Utilities for ArchLinux
