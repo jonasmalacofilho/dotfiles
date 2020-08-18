@@ -48,7 +48,7 @@ alias ta='tree'
 
 # Interactive-by-default alias to vgrep
 function vg() {
-	vgrep "$@" && vgrep --interactive --print
+	vgrep "$@" && vgrep --interactive
 }
 
 
