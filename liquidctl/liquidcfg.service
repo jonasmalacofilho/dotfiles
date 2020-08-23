@@ -3,7 +3,7 @@ Description=Static liquidctl configuration
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/liquidcfg --trace
+ExecStart=/usr/local/bin/liquidcfg --verbose
 ExecStart=/usr/bin/sleep 10
 ExecStart=/usr/bin/liquidctl status
 

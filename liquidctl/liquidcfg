@@ -30,42 +30,39 @@ function show_help() {
 	echo
 	echo "Options:"
 	echo "--profile <profile>  Set cooling profile [default: balanced]"
-	echo "--trace	           Trace commands and their arguments."
+	echo "--verbose	           List all devices and commands."
 	echo "--help	           Show this help"
 }
 
-trace=0
+verbose=0
 profile="balanced"
 
-OPTS=$(getopt -o ab:Cd:f:h:l:i:p:svw:x --long profile:,trace,help -n "$0" -- "$@")
+OPTS=$(getopt -o ab:Cd:f:h:l:i:p:svw:x --long profile:,verbose,help -n "$0" -- "$@")
 eval set -- "$OPTS"
 
 while true; do
 	case "$1" in
 		--profile ) profile="$2"; shift 2;;
-		--trace ) trace=1; shift;;
+		--verbose ) verbose=1; shift;;
 		--help ) show_help; exit;;
 		-- ) shift; break;;
 		* ) echo "Unrecognized option: $1" ; show_help; exit 1 ;;
 	esac
 done
 
-if [ "$trace" -ne 0 ]; then
+if [ "$verbose" -ne 0 ]; then
 	set -x
+	$LL --version
+	$LL list --verbose
 fi
 
-echo "Using $(liquidctl --version || panic)"
-
-echo "Listing available devices"
-$LL list -v || panic
-
-echo "Initializing all devices"
+echo "Initializing Kraken"
 $LL $KRAKEN initialize || panic
 # don't initialize SMART_DEVICE, recent grdp3 kernel driver already does that
 # $LL $SMART_DEVICE initialize || panic
 $LL $SMART_DEVICE set fan2 speed 100 || panic  # powers the CLC
 
-echo "Applying $profile profile"
+echo "Applying $profile profile to Kraken and Smart Device"
 if [ "$profile" = balanced ]; then
 	$LL $KRAKEN set fan speed 20 25 35 95 39 95 40 100 || panic
 	$LL $KRAKEN set pump speed 24 50 35 80 39 80 40 100 || panic
@@ -84,6 +81,7 @@ MISSING_EVGA_CLC=$?
 set -e
 
 if [ "$MISSING_EVGA_CLC" -eq 0 ]; then
+	echo "Applying EVGA CLC settings"
 	$LL $CLC initialize || panic
 	$LL $CLC set fan speed 20 || panic
 	$LL $CLC set pump speed 50 || panic
@@ -91,4 +89,3 @@ if [ "$MISSING_EVGA_CLC" -eq 0 ]; then
 else
 	echo "Skipping EVGA CLC configuration (reason: not present)"
 fi
-
