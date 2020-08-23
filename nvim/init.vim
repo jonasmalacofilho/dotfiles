@@ -142,6 +142,7 @@ nmap <Leader>$ :%s/\s\+$//<CR>|       " trim trailing whitespace
 nmap <Leader>C :tcd %:h<CR>:pwd<CR>|  " change window/tab cwd to current file's
 nmap <Leader>b :b#<CR>
 nmap <Leader>f :Ranger<CR>
+nmap <Leader>h :let @/ = '\V\<'.escape(expand('<cword>'), '\').'\>' <bar> :set hlsearch<CR>
 nmap <Leader>l :nohlsearch<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>s :sp<CR>
