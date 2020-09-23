@@ -46,6 +46,12 @@ alias t4='tree -L 4'
 alias ta='tree'
 
 
+# Utilities for conferencing
+alias mutemic='pactl set-source-mute @DEFAULT_SOURCE@ 0'
+alias unmutemic='pactl set-source-mute @DEFAULT_SOURCE@ 0'
+alias videochat='unmutemic && V4L2_OPTS=exclusive_caps=1 run-videochat -p 9009 -w 1280 -h 720 -C -s -v && mutemic'
+
+
 # Interactive-by-default alias to vgrep
 function vg() {
 	vgrep "$@" && vgrep --interactive
@@ -92,15 +98,6 @@ function switch_haxe_to() {
 	echo "Setting Haxe to $1 in this shell"
 	export PATH=$haxepath:$PATH
 	export HAXE_STD_PATH=$haxepath/std
-}
-
-
-# Utilities for conferencing
-function video_conference() {
-	pactl set-source-mute @DEFAULT_SOURCE@ 0
-	V4L2_OPTS=exclusive_caps=1 run-videochat -p 9009 -w 1280 -h 720 -C -s -v
-
-	pactl set-source-mute @DEFAULT_SOURCE@ 1
 }
 
 
