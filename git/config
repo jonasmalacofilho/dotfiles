@@ -24,5 +24,7 @@
 [alias]
 	klog = log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'
 	head = !git --no-pager log --abbrev=12 --oneline --format='%h' -1
+	pulls = fetch origin "+refs/pull/*:refs/origin/pull/*"
+	upulls = fetch upstream "+refs/pull/*:refs/upstream/pull/*"
 [pull]
 	rebase = false
