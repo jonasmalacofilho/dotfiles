@@ -58,6 +58,43 @@ function vg() {
 }
 
 
+# Utilities for consistency
+_CONSIST=(broccoli plan)
+function begin_session() {
+	for task in "${_CONSIST[@]}"; do
+		echo "Updating ${task}"
+
+		wd "$task" || continue
+
+		git pull
+
+		cd - >/dev/null
+	done
+}
+function end_session() {
+	dirty=()
+	for task in "${_CONSIST[@]}"; do
+		echo "Checking ${task}"
+
+		wd "$task" || continue
+
+		git status --short
+		if [ -n "$(parse_git_dirty)" ]; then
+			dirty+=("$task")
+		else
+			git push
+		fi
+
+		cd - >/dev/null
+	done
+	if [ ${#dirty[*]} -gt 0 ]; then
+		echo "Summary: commits needed in: ${dirty}"
+	else
+		echo "Summary: everything appears to be ok"
+	fi
+}
+
+
 # Utilities for ArchLinux
 function update_pacman_mirrors() {
 	country=${1:-BR}
