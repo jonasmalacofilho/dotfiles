@@ -35,6 +35,7 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'rust-lang/rust.vim', { 'for': 'rust' }
   Plug 'tpope/vim-commentary'
   Plug 'tpope/vim-eunuch'
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
   let g:markdown_syntax_minlines = 100
   Plug 'tpope/vim-markdown'
@@ -45,16 +46,6 @@ call plug#begin('~/.config/nvim/plugged')
   endif
   let g:ctrlp_working_path_mode = 'a'  " start from cwd or this files' directory
   Plug 'ctrlpvim/ctrlp.vim'
-
-  let g:lsp_signs_error = {'text': '✗'}
-  let g:lsp_signs_hint = {'text': '✎'}
-  let g:lsp_signs_information = {'text': 'ℹ'}
-  let g:lsp_signs_warning = {'text': '⚠'}
-  let g:lsp_virtual_text_prefix = 'ᐊ '
-  Plug 'mattn/vim-lsp-settings'
-  Plug 'prabirshrestha/asyncomplete-lsp.vim'
-  Plug 'prabirshrestha/asyncomplete.vim'
-  Plug 'prabirshrestha/vim-lsp'
 
   let g:gruvbox_italic = 1
   let g:gruvbox_sign_column = 'bg0'
@@ -80,30 +71,36 @@ call plug#begin('~/.config/nvim/plugged')
 call plug#end()
 
 
-" Language server protocol client
-function! s:on_lsp_buffer_enabled() abort
-  nmap <Leader>rn <Plug>(lsp-rename)
-  nmap K <Plug>(lsp-hover)
-  nmap [g <Plug>(lsp-previous-diagnostic)
-  nmap ]g <Plug>(lsp-next-diagnostic)
-  nmap gd <Plug>(lsp-definition)
-
-  " disable markdown syntax in lsp-hovers since rendering it is currently broken
-  autocmd FileType markdown.lsp-hover setlocal filetype=text.lsp-hover
-
-  " let g:lsp_highlight_references_enabled = 1  " distracting
-  " nmap gi <Plug>(lsp-implementation)          " conflicts with Vim mappings
-  " nmap gr <Plug>(lsp-references)              " conflicts with Vim mappings
-  " nmap gt <Plug>(lsp-type-definition)         " conflicts with Vim mappings
+" Language server protocol client: coc.nvim
+" CocInstall coc-rust-analyzer
+set updatetime=300  " minimize delays
+set shortmess+=c    " don't pass messages to |ins-completion-menu|
+nmap <Leader>rn <Plug>(coc-rename)
+nmap [g <Plug>(coc-diagnostic-prev)
+nmap ]g <Plug>(coc-diagnostic-next)
+nmap gd <Plug>(coc-definition)
+nmap gi <Plug>(coc-implementation)
+nmap gr <Plug>(coc-references)
+nmap gy <Plug>(coc-type-definition)
+nnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+nnoremap <nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+inoremap <nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+inoremap <nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+nnoremap K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
 endfunction
-autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 
 
 " Auto completion
-imap <c-space> <Plug>(asyncomplete_force_refresh)
-inoremap <expr> <C-E>   pumvisible() ? asyncomplete#cancel_popup() : "\<C-E>"
-inoremap <expr> <CR>    pumvisible() ? "\<C-Y>\<cr>" : "\<CR>"
-inoremap <expr> <ESC>   pumvisible() ? asyncomplete#cancel_popup() : "\<ESC>"
+inoremap <expr> <C-Space> coc#refresh()
+inoremap <expr> <CR>    pumvisible() ? "\<C-Y>" : "\<C-g>u\<CR>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-P>" : "\<S-Tab>"
 inoremap <expr> <Tab>   pumvisible() ? "\<C-N>" : "\<Tab>"
 
