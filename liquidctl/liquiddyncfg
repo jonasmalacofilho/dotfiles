@@ -27,9 +27,13 @@ color="hsv($hue, $saturation, $value)"
 darker="hsv($hue, $saturation, $_darker)"
 lighter="hsv($hue, $saturation, $_lighter)"
 
+# o-e-m-s fixed color theme
+cpu="hsv(210, 100, 100)"
+gpu="hsv(110, 100, 100)"
+mem="hsv(5, 100, 67)"
+
 # issue color changes in parallel (manually adjust modes and colors)
-liquidctl --match kraken set logo color breathing --speed slowest "$lighter" &
-liquidctl --match kraken set ring color fixed "$color" &
+liquidctl --match kraken set sync color fixed "$cpu" &
 liquidctl --match smart set led color super-fixed {,,,,,,,,,}"$darker" {,,,,,,,,,}"$color" &
 
 # wait for all changes to complete
