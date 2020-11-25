@@ -35,6 +35,7 @@ mem="hsv(5, 100, 67)"
 # issue color changes in parallel (manually adjust modes and colors)
 liquidctl --match kraken set sync color fixed "$cpu" &
 liquidctl --match smart set led color super-fixed {,,,,,,,,,}"$darker" {,,,,,,,,,}"$color" &
+liquidctl --match 1080 set led color fixed "$gpu" --unsafe smbus,evga_pascal &
 
 # wait for all changes to complete
 wait
