@@ -59,7 +59,7 @@ function vg() {
 
 
 # Utilities for consistency
-_CONSIST=(broccoli plan)
+_CONSIST=(broccoli)
 function begin_session() {
 	for task in "${_CONSIST[@]}"; do
 		echo "Updating ${task}"
