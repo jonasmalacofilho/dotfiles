@@ -63,15 +63,15 @@ $LL $KRAKEN initialize || panic
 
 echo "Applying $profile profile to Kraken and Smart Device"
 if [ "$profile" = balanced ]; then
+	$LL $KRAKEN set fan speed 25 60 35 90 40 100 || panic
+	$LL $KRAKEN set pump speed 25 60 35 90 40 100 || panic
+	$LL $SMART_DEVICE set fan1 speed 45 || panic
+	$LL $SMART_DEVICE set fan2 speed 40 || panic
+	$LL $SMART_DEVICE set fan3 speed 50 || panic
+elif [ "$profile" = silent ]; then
 	$LL $KRAKEN set fan speed 20 25 35 85 39 85 40 100 || panic
 	$LL $KRAKEN set pump speed 24 50 35 85 39 85 40 100 || panic
-	$LL $SMART_DEVICE set fan1 speed 40 || panic
-	$LL $SMART_DEVICE set fan2 speed 35 || panic
-	$LL $SMART_DEVICE set fan3 speed 45 || panic
-elif [ "$profile" = silent ]; then
-	$LL $KRAKEN set fan speed 39 60 40 100 || panic
-	$LL $KRAKEN set pump speed 39 60 40 100 || panic
-	$LL $SMART_DEVICE set sync speed 35 || panic
+	$LL $SMART_DEVICE set sync speed 40 || panic
 elif [ "$profile" = extreme ]; then
 	$LL $KRAKEN set fan speed 39 90 40 100 || panic
 	$LL $KRAKEN set pump speed 39 90 40 100 || panic
