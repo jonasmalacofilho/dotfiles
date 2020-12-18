@@ -8,9 +8,11 @@
 set -e
 
 LL="liquidctl $EXTRAOPTIONS"
-KRAKEN="--vendor 0x1e71 --product 0x170e"
-SMART_DEVICE="--vendor 0x1e71 --product 0x1714"
-CLC="--vendor 0x2433 --product 0xb200"
+KRAKEN="--match kraken"
+SMART_DEVICE="--match smart"
+GPU="--match 1080 --unsafe smbus"
+RAM="--match vengeance --unsafe smbus,vengeance_rgb"
+TEST_CLC120="--vendor 0x2433 --product 0xb200"
 
 function panic() {
 	set +ex
@@ -61,7 +63,7 @@ $LL $KRAKEN initialize || panic
 # don't initialize SMART_DEVICE, recent grdp3 kernel driver already does that
 # $LL $SMART_DEVICE initialize || panic
 
-echo "Applying $profile profile to Kraken and Smart Device"
+echo "Applying $profile cooling profile to Kraken and Smart Device"
 if [ "$profile" = balanced ]; then
 	$LL $KRAKEN set fan speed 25 60 35 90 40 100 || panic
 	$LL $KRAKEN set pump speed 25 60 35 90 40 100 || panic
@@ -78,17 +80,19 @@ elif [ "$profile" = extreme ]; then
 	$LL $SMART_DEVICE set sync speed 55 || panic
 fi
 
-set +e
-liquidctl list $CLC 1>/dev/null 2>/dev/null | grep "Asetek 690LC"
-MISSING_EVGA_CLC=$?
-set -e
+echo "Applying lighting profile to all devices"
+$LL $KRAKEN set sync color fixed "hsv(210, 100, 100)"
+$LL $GPU set led color fixed "hsv(110, 100, 100)"
+# $LL $RAM --pick 1 set led color fixed "hsv(5, 100, 67)"  # persisted
+# $LL $RAM --pick 2 set led color fixed "hsv(5, 100, 67)"  # persisted
+$LL $SMART_DEVICE set led color moving-alternating 'hsv(30,98,100)' 'hsv(30,98,10)' --speed slower  # xmas
 
-if [ "$MISSING_EVGA_CLC" -eq 0 ]; then
+if liquidctl list $TEST_CLC120 2>/dev/null | grep "Asetek 690LC"; then
 	echo "Applying EVGA CLC settings"
-	$LL $CLC initialize || panic
-	$LL $CLC set fan speed 20 || panic
-	$LL $CLC set pump speed 50 || panic
-	$LL $CLC set led color blackout || panic
+	$LL $TEST_CLC120 initialize || panic
+	$LL $TEST_CLC120 set fan speed 20 || panic
+	$LL $TEST_CLC120 set pump speed 50 || panic
+	$LL $TEST_CLC120 set led color blackout || panic
 else
 	echo "Skipping EVGA CLC configuration (reason: not present)"
 fi
