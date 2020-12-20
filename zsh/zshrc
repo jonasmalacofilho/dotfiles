@@ -99,10 +99,10 @@ function end_session() {
 function update_pacman_mirrors() {
 	country=${1:-BR}
 	echo "Getting ranked and up-to-date pacman mirrorlist for ${country}"
-	curl -s "https://www.archlinux.org/mirrorlist/?country=${country}&use_mirror_status=on" |
+	curl -s "https://archlinux.org/mirrorlist/?country=${country}&use_mirror_status=on" |
 		sed -e 's/^#Server/Server/' -e '/^#/d' |
 		rankmirrors - |
-		sudo tee /etc/pacman.d/mirrorlist &&
+		sudo tee /etc/pacman.d/mirrorlist
 }
 function list_packages_by_size() {
 	# from: https://bbs.archlinux.org/viewtopic.php?pid=1585788#p1585788
