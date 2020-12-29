@@ -154,6 +154,7 @@ if has('nvim')
 else
   nmap <Leader>` :source ~/.vim/vimrc<CR>
 endif
+autocmd FileType rust nmap <Leader>i :CocCommand rust-analyzer.toggleInlayHints<CR>
 
 
 " <Leader> [a]spell space
