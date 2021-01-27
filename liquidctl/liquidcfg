@@ -8,8 +8,8 @@
 set -e
 
 LL="liquidctl $EXTRAOPTIONS"
-KRAKEN="--match kraken"
-SMART_DEVICE="--match smart"
+KRAKEN="--bus hid --match kraken"
+SMART_DEVICE="--bus hid --match smart"
 GPU="--match 1080 --unsafe smbus"
 RAM="--match vengeance --unsafe smbus,vengeance_rgb"
 TEST_CLC120="--vendor 0x2433 --product 0xb200"
