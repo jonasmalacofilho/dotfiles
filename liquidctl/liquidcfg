@@ -83,8 +83,8 @@ fi
 echo "Applying lighting profile to all devices"
 $LL $KRAKEN set sync color fixed "hsv(210, 100, 100)"
 $LL $GPU set led color fixed "hsv(110, 100, 100)"
+# $LL $RAM --pick 0 set led color fixed "hsv(5, 100, 67)"  # persisted
 # $LL $RAM --pick 1 set led color fixed "hsv(5, 100, 67)"  # persisted
-# $LL $RAM --pick 2 set led color fixed "hsv(5, 100, 67)"  # persisted
 $LL $SMART_DEVICE set led color moving-alternating 'hsv(30,98,100)' 'hsv(30,98,10)' --speed slower  # xmas
 
 if liquidctl list $TEST_CLC120 2>/dev/null | grep "Asetek 690LC"; then
