@@ -96,6 +96,7 @@ function! s:show_documentation()
     execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
+autocmd FileType rust nnoremap <M-K> :CocCommand rust-analyzer.openDocs<CR>
 
 
 " Auto completion
