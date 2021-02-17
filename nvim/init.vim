@@ -16,6 +16,13 @@ if !has('nvim')
   " to make this configuration properly usable on vim:
   " - check `:h vim-differences` in nvim
   " - check vim-sensible by Tim Pope
+else
+  " hack around currently broken autoread in nvim
+  " https://stackoverflow.com/questions/62100785
+  " https://www.reddit.com/r/neovim/comments/f0qx2y
+  set autoread
+  autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * 
+      \ if mode() != 'c' | checktime | endif
 endif
 
 
