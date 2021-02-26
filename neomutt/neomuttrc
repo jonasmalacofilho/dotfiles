@@ -1,0 +1,87 @@
+set send_charset="utf-8"
+
+source colors-gruvbox-shuber.muttrc
+source colors-gruvbox-shuber-extended.muttrc
+
+###############
+# Identity
+#
+set realname = "Jonas Malaco"
+set from = "jonas@protocubo.io"
+
+# If you have another address:
+alternates "^root@protocubo\.io$"
+
+
+###############
+# Google over IMAP + SMTP
+#
+set imap_user = "jonas@protocubo.io"
+
+# To avoid storing the password in the .neomuttrc:
+# echo -n "$(read -s;echo -n "$REPLY")" | gpg --encrypt -r 0x5841AF7406AF7AD0 > ~/.local/jonasmalaco_com.gpg
+set imap_pass = "`gpg --batch -q --decrypt ~/.local/jonasmalaco_com.gpg`"
+
+set smtp_pass = $imap_pass
+set smtp_url=smtps://$imap_user@smtp.gmail.com
+set ssl_force_tls = yes
+set ssl_starttls = yes
+unset ssl_starttls
+
+set folder=imaps://jonas@protocubo.io@imap.gmail.com/
+set spoolfile = "+INBOX"
+set imap_check_subscribed
+
+set postponed = "+[Gmail].Drafts"
+set mail_check = 60
+
+unset imap_passive  # Allow Mutt to open a new IMAP connection automatically
+
+unset record  # Gmail auto-stores in "+[Gmail].Sent Mail"
+unset trash   # Unset, deletion will remove labels
+
+
+###############
+# Pager settings
+#
+ignore *
+unignore From Message-ID Date To Cc Bcc Subject
+
+set pager_stop
+unset markers
+
+# Prefer plain text to html.
+# However, for brain dead clients that bundle attachments inside a
+# multipart/alternative, prefer that alternative.
+alternative_order multipart/mixed multipart/related text/plain
+
+# Consult mime.types for determining types of these attachments
+mime_lookup application/octet-stream
+
+# This requires a ~/.mailcap entry with the copiousoutput flag, such as:
+# text/html; lynx -dump -width ${COLUMNS:-80} %s; nametemplate=%s.html; copiousoutput
+auto_view text/html
+
+
+###############
+# Index settings
+#
+set quit = ask-yes
+set sort = threads
+
+set header_cache= "~/.cache/neomutt/"
+set message_cachedir = "~/.cache/neomutt"
+
+
+###############
+# Message composition settings
+#
+set edit_headers
+
+set editor = "nvim"
+
+set mime_type_query_command = "xdg-mime query filetype"
+
+# lbdb is a versatile contact query tool.
+# Invoke via ctrl-t in an address prompt
+set query_command = "/usr/bin/lbdbq"
