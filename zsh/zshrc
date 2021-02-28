@@ -29,7 +29,8 @@ alias jd='journalctl'
 alias jo='xdg-open'                     # [j]ust [o]pen with default handler
 alias r='ranger'
 alias sd='systemctl'
-alias vi='nvim'
+alias vim='vi'
+alias vi='v'
 alias v='nvim'
 
 
