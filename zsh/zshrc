@@ -98,17 +98,22 @@ function end_session() {
 # Utilities for ArchLinux
 function update_pacman_mirrors() {
 	country=${1:-BR}
+	limit_to=${2:-3}
+	timeout=${3:-2}
 	echo ":: Getting ranked and up-to-date pacman mirrorlist for ${country}..."
-	curl -s "https://archlinux.org/mirrorlist/?country=${country}&use_mirror_status=on" |
+	curl -s "https://archlinux.org/mirrorlist/?country=${country}&protocol=http&use_mirror_status=on" |
 		sed -e 's/^#Server/Server/' -e '/^#/d' |
-		rankmirrors - |
+		rankmirrors -n "$limit_to" -m "$timeout" -v - |
 		sudo tee /etc/pacman.d/mirrorlist
 }
 function list_packages_by_size() {
 	# from: https://bbs.archlinux.org/viewtopic.php?pid=1585788#p1585788
 	pacman -Qi | egrep '^(Name|Installed)' | cut -f2 -d':' | paste - - | column -t | sort -nrk 2 | grep MiB | less
 }
-alias pacupdate='update_pacman_mirrors && sudo pacman -Syu'
+function pacupdate {
+	update_pacman_mirrors "$@"
+	sudo pacman -Syu
+}
 
 
 # Utilities for the Linux Kernel
