@@ -104,7 +104,7 @@ function update_pacman_mirrors() {
 	echo ":: Getting ranked and up-to-date pacman mirrorlist for ${country}..."
 	curl -s "https://archlinux.org/mirrorlist/?country=${country}&protocol=http&use_mirror_status=on" |
 		sed -e 's/^#Server/Server/' -e '/^#/d' |
-		rankmirrors -n "$limit_to" -m "$timeout" -v - |
+		rankmirrors -n "$limit_to" -m "$timeout" -r "extra" -v - |
 		sudo tee /etc/pacman.d/mirrorlist
 }
 function list_packages_by_size() {
