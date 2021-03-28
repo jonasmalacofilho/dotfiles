@@ -80,6 +80,8 @@ call plug#end()
 
 " Language server protocol client: coc.nvim
 " CocInstall coc-rust-analyzer
+" CocInstall coc-cland
+" CocInstall coc-pyright
 set updatetime=300  " minimize delays
 set shortmess+=c    " don't pass messages to |ins-completion-menu|
 nmap <Leader>rn <Plug>(coc-rename)
