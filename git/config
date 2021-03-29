@@ -20,7 +20,9 @@
 	smtpserver = smtp.gmail.com
 	smtpuser = jonas@protocubo.io
 	smtpserverport = 587
-	suppresscc = self
+	annotate = true
+	confirm = always
+	suppressfrom = false
 [alias]
 	klog = log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'
 	head = !git --no-pager log --abbrev=12 --oneline --format='%h' -1
