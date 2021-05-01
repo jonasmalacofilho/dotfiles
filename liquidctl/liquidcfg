@@ -32,19 +32,22 @@ function show_help() {
 	echo
 	echo "Options:"
 	echo "--profile <profile>  Set cooling profile [default: balanced]"
+	echo "--flush              Run the pump at 100% for a few seconds"
 	echo "--verbose	           List all devices and commands."
 	echo "--help	           Show this help"
 }
 
+flush=0
 verbose=0
 profile="balanced"
 
-OPTS=$(getopt -o ab:Cd:f:h:l:i:p:svw:x --long profile:,verbose,help -n "$0" -- "$@")
+OPTS=$(getopt -o ab:Cd:f:h:l:i:p:svw:x --long profile:,flush,verbose,help -n "$0" -- "$@")
 eval set -- "$OPTS"
 
 while true; do
 	case "$1" in
 		--profile ) profile="$2"; shift 2;;
+		--flush ) flush=1; shift;;
 		--verbose ) verbose=1; shift;;
 		--help ) show_help; exit;;
 		-- ) shift; break;;
@@ -62,6 +65,12 @@ echo "Initializing Kraken"
 $LL $KRAKEN initialize || panic
 # don't initialize SMART_DEVICE, recent grdp3 kernel driver already does that
 # $LL $SMART_DEVICE initialize || panic
+
+if [ "$flush" -ne 0 ]; then
+	echo "Flushing the pump for 10 seconds"
+	$LL $KRAKEN set pump speed 100
+	sleep 10
+fi
 
 echo "Applying $profile cooling profile to Kraken and Smart Device"
 if [ "$profile" = balanced ]; then
