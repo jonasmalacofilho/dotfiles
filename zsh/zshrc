@@ -32,6 +32,7 @@ alias sd='systemctl'
 alias vim='vi'
 alias vi='v'
 alias v='nvim'
+alias icat='kitty +kitten icat'
 
 
 # More [g]it
