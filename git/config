@@ -12,9 +12,9 @@
 	pager = less
 [filter "lfs"]
 	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
+	smudge = git-lfs smudge --skip -- %f
 	required = true
-	process = git-lfs filter-process
+	process = git-lfs filter-process --skip
 [sendemail]
 	smtpencryption = tls
 	smtpserver = smtp.gmail.com
