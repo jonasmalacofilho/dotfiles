@@ -31,7 +31,6 @@ function show_help() {
 	echo "Apply static settings to my liquidctl devices."
 	echo
 	echo "Options:"
-	echo "--profile <profile>  Set cooling profile [default: balanced]"
 	echo "--flush              Run the pump at 100% for a few seconds"
 	echo "--verbose	           List all devices and commands."
 	echo "--help	           Show this help"
@@ -39,14 +38,12 @@ function show_help() {
 
 flush=0
 verbose=0
-profile="balanced"
 
-OPTS=$(getopt -o ab:Cd:f:h:l:i:p:svw:x --long profile:,flush,verbose,help -n "$0" -- "$@")
+OPTS=$(getopt -o ab:Cd:f:h:l:i:p:svw:x --long flush,verbose,help -n "$0" -- "$@")
 eval set -- "$OPTS"
 
 while true; do
 	case "$1" in
-		--profile ) profile="$2"; shift 2;;
 		--flush ) flush=1; shift;;
 		--verbose ) verbose=1; shift;;
 		--help ) show_help; exit;;
@@ -72,22 +69,12 @@ if [ "$flush" -ne 0 ]; then
 	sleep 10
 fi
 
-echo "Applying $profile cooling profile to Kraken and Smart Device"
-if [ "$profile" = balanced ]; then
-	$LL $KRAKEN set fan speed 25 60 35 90 40 100 || panic
-	$LL $KRAKEN set pump speed 25 60 35 90 40 100 || panic
-	$LL $SMART_DEVICE set fan1 speed 45 || panic
-	$LL $SMART_DEVICE set fan2 speed 40 || panic
-	$LL $SMART_DEVICE set fan3 speed 50 || panic
-elif [ "$profile" = silent ]; then
-	$LL $KRAKEN set fan speed 20 25 35 85 39 85 40 100 || panic
-	$LL $KRAKEN set pump speed 24 50 35 85 39 85 40 100 || panic
-	$LL $SMART_DEVICE set sync speed 40 || panic
-elif [ "$profile" = extreme ]; then
-	$LL $KRAKEN set fan speed 39 90 40 100 || panic
-	$LL $KRAKEN set pump speed 39 90 40 100 || panic
-	$LL $SMART_DEVICE set sync speed 55 || panic
-fi
+echo "Applying a balanced cooling profile to Kraken and Smart Device"
+$LL $KRAKEN set fan speed 25 60 35 90 40 100 || panic
+$LL $KRAKEN set pump speed 25 60 35 90 40 100 || panic
+$LL $SMART_DEVICE set fan1 speed 45 || panic
+$LL $SMART_DEVICE set fan2 speed 40 || panic
+$LL $SMART_DEVICE set fan3 speed 50 || panic
 
 echo "Applying lighting profile to all devices"
 $LL $KRAKEN set sync color fixed "hsv(210, 100, 100)"
