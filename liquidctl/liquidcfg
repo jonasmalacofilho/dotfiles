@@ -80,7 +80,7 @@ echo "Applying lighting profile to all devices"
 $LL $KRAKEN set sync color fixed "hsv(210, 100, 100)"
 
 # persisted
-# $LL $GPU set led color fixed "hsv(110, 100, 100)" --non-volatile
+# $LL $GPU set led color fixed led color fixed "hsv(110, 100, 100)" --non-volatile
 # $LL $RAM --pick 0 set led color fixed "hsv(5, 100, 67)"
 # $LL $RAM --pick 1 set led color fixed "hsv(5, 100, 67)"
 
