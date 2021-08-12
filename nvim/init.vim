@@ -105,6 +105,7 @@ function! s:show_documentation()
     execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
+vnoremap <silent> K <cmd>call CocActionAsync('doHover')<CR>|  " Rust Hover Range (coc-rust-analyzer#256)
 autocmd FileType rust nnoremap <M-K> :CocCommand rust-analyzer.openDocs<CR>
 
 
