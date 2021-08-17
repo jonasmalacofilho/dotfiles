@@ -115,6 +115,7 @@ function list_packages_by_size() {
 function pacupdate {
 	update_pacman_mirrors "$@"
 	sudo pacman -Syu
+	sudo pacdiff
 }
 
 
