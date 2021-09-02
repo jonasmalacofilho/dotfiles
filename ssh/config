@@ -2,10 +2,12 @@ AddKeysToAgent yes
 
 Host github.com bitbucket.org bitbucket.com gitlab.com
 	StrictHostKeyChecking ask
+	UpdateHostKeys ask
 	User git
 
 Host aur.archlinux.org
 	StrictHostKeyChecking ask
+	UpdateHostKeys ask
 	User aur
 
 Host *.ngrok.io
