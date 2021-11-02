@@ -34,3 +34,5 @@
 	defaultBranch = main
 [url "git@github.com:"]
 	insteadOf = "gh:"
+[url "git@gitlab.com:"]
+	insteadOf = "gl:"
