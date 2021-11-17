@@ -41,6 +41,7 @@ set title                        " filename on window title
 call plug#begin('~/.config/nvim/plugged')
   Plug 'rust-lang/rust.vim', { 'for': 'rust' }
   Plug 'tpope/vim-commentary'
+  Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-eunuch'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -192,7 +193,6 @@ autocmd FileType rust nmap <Leader>mm :make build<CR>
 
 " TO-DO list
 " - informative status bar with airline or similar
-" - git information on the status bar with fugitive or similar
 " - haxe syntax (vaxe) and lsp server (hls)
 " - bufferline?
 " - multiple-cursors?
