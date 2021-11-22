@@ -182,6 +182,7 @@ nmap <Leader>mc :make check<CR>
 nmap <Leader>md :make doc<CR>
 nmap <Leader>mm :make<CR>
 nmap <Leader>mt :make test<CR>
+nmap <Leader>mr :make run<CR>
 autocmd FileType rust nmap <Leader>mC :make clippy<CR>
 autocmd FileType rust nmap <Leader>mD :make doc --open<CR>
 autocmd FileType rust nmap <Leader>mT :RustTest<CR>
