@@ -1,4 +1,5 @@
 {
+	"rust-analyzer.assist.importGranularity": "module",
 	"rust-analyzer.checkOnSave.command": "clippy",
 	"rust-analyzer.hoverActions.linksInHover": true,
 	"rust-analyzer.inlayHints.refreshOnInsertMode": true,
