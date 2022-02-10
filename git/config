@@ -36,3 +36,5 @@
 	insteadOf = "gh:"
 [url "git@gitlab.com:"]
 	insteadOf = "gl:"
+[format]
+	signOff = true
