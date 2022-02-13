@@ -39,11 +39,11 @@ set title                        " filename on window title
 
 " Load plugins
 call plug#begin('~/.config/nvim/plugged')
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'rust-lang/rust.vim', { 'for': 'rust' }
   Plug 'tpope/vim-commentary'
-  Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-eunuch'
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'tpope/vim-fugitive'
 
   let g:markdown_syntax_minlines = 100
   Plug 'tpope/vim-markdown'
