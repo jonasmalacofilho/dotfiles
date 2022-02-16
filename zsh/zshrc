@@ -37,7 +37,7 @@ alias icat='kitty +kitten icat'
 
 # More [g]it
 alias gcd='git checkout development'
-# TODO ghcl
+alias gcds='git checkout staging'
 
 
 # Aliases for [t]ree
