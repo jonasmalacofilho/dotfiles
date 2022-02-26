@@ -58,10 +58,8 @@ if [ "$verbose" -ne 0 ]; then
 	$LL list --verbose
 fi
 
-echo "Initializing Kraken"
-$LL $KRAKEN initialize || panic
-# don't initialize SMART_DEVICE, recent grdp3 kernel driver already does that
-# $LL $SMART_DEVICE initialize || panic
+echo "Initializing all devices"
+$LL initialize all || panic
 
 if [ "$flush" -ne 0 ]; then
 	echo "Flushing the pump for 10 seconds"
