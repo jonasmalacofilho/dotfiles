@@ -39,6 +39,7 @@ function show_help() {
 flush=0
 verbose=0
 
+
 OPTS=$(getopt -o ab:Cd:f:h:l:i:p:svw:x --long flush,verbose,help -n "$0" -- "$@")
 eval set -- "$OPTS"
 
@@ -52,11 +53,15 @@ while true; do
 	esac
 done
 
+
 if [ "$verbose" -ne 0 ]; then
 	set -x
-	$LL --version
-	$LL list --verbose
+	echo "liquidctl version"
+	liquidctl --version
+	echo "Available devices"
+	liquidctl list --verbose
 fi
+
 
 echo "Initializing all devices"
 $LL initialize all || panic
