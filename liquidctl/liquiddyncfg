@@ -26,7 +26,7 @@ hue=$(python <<< "print((($at_date + $time_offset) % 86400 / 86400 * 360 + $hue_
 dark="hsv($hue, $saturation, $dark_value)"
 light="hsv($hue, $saturation, $light_value)"
 
-liquidctl --bus hid --match smart set led color super-fixed {,,,,,,,,,}"$dark" {,,,,,,,,,}"$light"
+liquidctl --bus hid --match smart set led color super-fixed {,,,,,,,,,}"$light" {,,,,,,,,,}"$dark"
 
 # wait for any changes made in parallel (with &) to complete
 wait
