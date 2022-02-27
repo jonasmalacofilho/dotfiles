@@ -90,8 +90,8 @@ $LL $KRAKEN set sync color fixed "hsv(211,100,100)"
 $LL $SMART_DEVICE set led color super-fixed {,,,,,,,,,}"hsv(51,100,100)" {,,,,,,,,,}"hsv(211,100,24)"
 # non-volatile, apply only once:
 # $LL $GPU set led color fixed "hsv(35,100,100)" --non-volatile
-# $LL $RAM --pick 0 set led color fixed "hsv(211,100,72)"
-# $LL $RAM --pick 1 set led color fixed "hsv(211,100,72)"
+# $LL $RAM --pick 0 set led color fixed "hsv(211,100,24)"
+# $LL $RAM --pick 1 set led color fixed "hsv(211,100,24)"
 
 # default ("vendors' colors")
 # $LL $KRAKEN set sync color fixed "hsv(210, 100, 100)"
