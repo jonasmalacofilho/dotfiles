@@ -51,7 +51,7 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'vim-airline/vim-airline'
 
   let g:markdown_syntax_minlines = 100
-  Plug 'tpope/vim-markdown'
+  Plug 'tpope/vim-markdown', { 'for': 'markdown' }
 
   if executable('rg')
     " use ripgrep to skip vcs and ignored files, if available
