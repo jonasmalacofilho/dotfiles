@@ -47,6 +47,9 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-fugitive'
 
+  let g:airline_powerline_fonts = 1
+  Plug 'vim-airline/vim-airline'
+
   let g:markdown_syntax_minlines = 100
   Plug 'tpope/vim-markdown'
 
