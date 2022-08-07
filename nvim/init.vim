@@ -64,6 +64,7 @@ call plug#begin('~/.config/nvim/plugged')
   let g:gruvbox_sign_column = 'bg0'
   Plug 'jonasmalacofilho/gruvbox'  " upstream is morhetz/gruvbox
   autocmd VimEnter * colorscheme gruvbox
+  autocmd VimEnter * :AirlineTheme gruvbox
 
   if executable('ranger')
     " use a file explorer that supports Miller Columns, if available
