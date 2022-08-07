@@ -40,7 +40,7 @@ set title                        " filename on window title
 " Load plugins
 call plug#begin('~/.config/nvim/plugged')
   Plug 'jdonaldson/vaxe', { 'for': 'haxe' }
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'neoclide/coc.nvim', {'tag': 'v0.0.81'}
   Plug 'pest-parser/pest.vim', { 'for': 'pest' }
   Plug 'rust-lang/rust.vim', { 'for': 'rust' }
   Plug 'tpope/vim-commentary'
