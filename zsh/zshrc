@@ -100,7 +100,7 @@ function end_session() {
 # Utilities for ArchLinux
 function update_pacman_mirrors() {
 	country=${1:-BR}
-	limit_to=${2:-3}
+	limit_to=${2:-4}
 	timeout=${3:-2}
 	echo ":: Getting ranked and up-to-date pacman mirrorlist for ${country}..."
 	curl -s "https://archlinux.org/mirrorlist/?country=${country}&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" |
