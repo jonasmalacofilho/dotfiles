@@ -113,7 +113,7 @@ function list_packages_by_size() {
 	pacman -Qi | egrep '^(Name|Installed)' | cut -f2 -d':' | paste - - | column -t | sort -nrk 2 | grep MiB | less
 }
 function pacupdate {
-	update_pacman_mirrors "$@" && sudo pacman -Syu && sudo pacdiff
+	sudo pacman -Syu && sudo pacdiff
 }
 
 
