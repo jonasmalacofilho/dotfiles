@@ -2,7 +2,7 @@ help:
 	@echo "Usage: make <target>..."
 	@echo ""
 	@echo "essential: bash git nvim ssh zsh"
-	@echo "other targets: alacritty kitty liquidctl neomutt systemd vim"
+	@echo "other targets: kitty liquidctl neomutt systemd vim"
 
 essential: bash git nvim ssh zsh
 
