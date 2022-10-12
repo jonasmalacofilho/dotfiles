@@ -98,12 +98,23 @@ function end_session() {
 
 
 # Utilities for ArchLinux
-function update_pacman_mirrors() {
+function pacmirrors() {
 	country=${1:-BR}
 	limit_to=${2:-4}
 	timeout=${3:-2}
+
+	ignoremirrors="/etc/pacman.d/ignoremirrors"
+	if [ ! -f "$ignoremirrors" ]; then
+		echo ":: No ignoremirrors file found"
+		ignoremirrors="/dev/null"
+	else
+		echo ":: Ignoring the following mirror patterns:"
+		cat "$ignoremirrors"
+	fi
+
 	echo ":: Getting ranked and up-to-date pacman mirrorlist for ${country}..."
 	curl -s "https://archlinux.org/mirrorlist/?country=${country}&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" |
+		grep -v -f "$ignoremirrors" |
 		sed -e 's/^#Server/Server/' -e '/^#/d' |
 		rankmirrors -n "$limit_to" -m "$timeout" -r "extra" -v - |
 		sudo tee /etc/pacman.d/mirrorlist
