@@ -49,10 +49,30 @@ alias t4='tree -L 4'
 alias ta='tree'
 
 
-# Utilities for conferencing
-alias mutemic='pactl set-source-mute @DEFAULT_SOURCE@ 0'
-alias unmutemic='pactl set-source-mute @DEFAULT_SOURCE@ 0'
-alias videochat='unmutemic && V4L2_OPTS=exclusive_caps=1 run-videochat -p 9009 -w 1280 -h 720 -C -s -v && mutemic'
+# Utilities for videoconferencing
+function camstart() {
+	set -x
+
+	# Connect to the phone.
+	adb start-server
+	adb forward tcp:9009 tcp:9009
+
+	# Set up v4l2loopback
+	sudo modprobe v4l2loopback exclusive_caps=1
+	ffmpeg -i http://localhost:9009/video -vf format=yuv420p -f v4l2 /dev/video0
+
+	set +x
+}
+function camclean() {
+	set -x
+
+	# Cleanup
+	adb forward --remove tcp:9009
+	sudo modprobe -r v4l2loopback
+	adb kill-server
+
+	set +x
+}
 
 
 # Interactive-by-default alias to vgrep
