@@ -14,7 +14,7 @@ if status is-interactive
     abbr -a t2 tree -L 2
     abbr -a t3 tree -L 3
     abbr -a v nvim
-    # FIXME abbr -a vg vgrep "$@" && vgrep --interactive
+    abbr -a --set-cursor vg "vgrep % && vgrep --interactive"
 
     abbr -a ga git add
     abbr -a gc git commit --verbose
