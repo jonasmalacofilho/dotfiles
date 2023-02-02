@@ -1,4 +1,7 @@
 " Essential behavior
+if &shell =~# 'fish$'
+  set shell=bash
+endif
 set autowrite              " write the buffer before :make, :! and others
 set ignorecase smartcase   " ignore case in all-lowercase patterns
 set mouse=nvi              " enable mouse support on selected modes

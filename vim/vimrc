@@ -2,6 +2,9 @@
 " See ../nvim/init.vim for current Nvim setup.
 
 " init
+if &shell =~# 'fish$'
+  set shell=bash
+endif
 set nocompatible
 execute pathogen#infect()
 set encoding=utf-8
