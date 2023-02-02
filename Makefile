@@ -6,7 +6,7 @@ help:
 
 essential: bash git nvim ssh zsh
 
-alacritty bash git kitty liquidctl neomutt nvim ssh systemd vim zsh: _phony
+alacritty bash fish git kitty liquidctl neomutt nvim ssh systemd vim zsh: _phony
 	make -C $@
 
 .PHONY: help essential _phony
