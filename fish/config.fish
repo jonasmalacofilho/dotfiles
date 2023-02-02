@@ -22,6 +22,7 @@ if status is-interactive
     abbr -a gcm git checkout "(git_main_branch)"
     abbr -a gco git checkout
     abbr -a gd git diff
+    abbr -a gdt GIT_EXTERNAL_DIFF=difft git diff
     abbr -a gf git fetch
     abbr -a gl git pull
     abbr -a glog git log --oneline --decorate --graph
