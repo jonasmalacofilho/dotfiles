@@ -29,6 +29,7 @@ if status is-interactive
     abbr -a glok git log --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)("%s")%C(reset)'
     abbr -a glop git log --patch --stat
     abbr -a gp git push
+    abbr -a gsh git show
     abbr -a gst git status
 
 end
