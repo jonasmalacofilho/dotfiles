@@ -7,6 +7,7 @@ set -x EDITOR nvim
 if status is-interactive
     # Commands to run in interactive sessions can go here
 
+    abbr -a _ sudo
     abbr -a f fg
     abbr -a icat kitty +kitten icat
     abbr -a jo xdg-open
