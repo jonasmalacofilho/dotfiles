@@ -11,6 +11,7 @@ if status is-interactive
     abbr -a f fg
     abbr -a icat kitty +kitten icat
     abbr -a jo xdg-open
+    abbr -a l ls -lah
     abbr -a md mkdir -p
     abbr -a t1 tree -L 1
     abbr -a t2 tree -L 2
