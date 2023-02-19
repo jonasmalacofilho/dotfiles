@@ -40,6 +40,11 @@ vim.opt.splitright = true
 -- Reuse existing window or tab with target buffer.
 vim.opt.switchbuf = { "useopen", "usetab" }
 
+-- Make hardcopies with line numbers and roughly 100 columns; disable syntax highlight since it
+-- doesn't seem to work with my printer.
+vim.opt.printfont = "courier:h08"
+vim.opt.printoptions = "left:5pc,number:y,syntax:n"
+
 --[[
 Options that affect appearance.
 --]]
