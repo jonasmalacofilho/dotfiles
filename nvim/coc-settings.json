@@ -1,9 +1,0 @@
-{
-	"rust-analyzer.assist.importGranularity": "module",
-	"rust-analyzer.checkOnSave.command": "clippy",
-	"rust-analyzer.hoverActions.linksInHover": true,
-	"rust-analyzer.inlayHints.refreshOnInsertMode": true,
-	"rust-analyzer.serverPath": "rust-analyzer",
-
-	"phony.phony": "previous lines can all be comma-terminated"
-}
