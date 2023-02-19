@@ -20,6 +20,7 @@ if status is-interactive
     abbr -a --set-cursor vg "vgrep % && vgrep --interactive"
 
     abbr -a ga git add
+    abbr -a gb git branch
     abbr -a gc git commit --verbose
     abbr -a gca git commit --all --verbose
     abbr -a gcm git checkout "(git_main_branch)"
