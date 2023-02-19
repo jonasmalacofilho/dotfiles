@@ -49,7 +49,8 @@ vim.opt.printoptions = "left:5pc,number:y,syntax:n"
 Options that affect appearance.
 --]]
 
--- Highlight 80 and 100 column thresholds.
+-- Highlight common column threshold(s). In 2023, 80 columns is rarely relevant, even the Linux
+-- kernel has been using 100 columns for a while.
 vim.opt.colorcolumn = { 100 }
 
 -- Show tabs, trailing space and nbsp.
