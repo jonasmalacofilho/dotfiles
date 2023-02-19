@@ -38,6 +38,7 @@ vim.keymap.set("n", "<leader>$", [[:%s/\s\+$//<CR>]], { desc = "Trim trailing wh
 -- Buffer, window and tab manipulation.
 vim.keymap.set("n", "<leader>b", ":b#<CR>", { desc = "Switch to previous buffer" })
 vim.keymap.set("n", "<leader>q", ":q<CR>", { desc = "Close window" })
+vim.keymap.set("n", "<leader>Q", ":cq<CR>", { desc = "Close all window" })
 vim.keymap.set("n", "<leader>s", ":sp<CR>", { desc = "Split window horizontally" })
 vim.keymap.set("n", "<leader>v", ":vsp<CR>", { desc = "Split window vertically" })
 vim.keymap.set("n", "<leader>t", ":tabe<CR>", { desc = "Open a new, empty, tab page" })
