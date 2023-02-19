@@ -45,6 +45,9 @@ vim.opt.switchbuf = { "useopen", "usetab" }
 vim.opt.printfont = "courier:h08"
 vim.opt.printoptions = "left:5pc,number:y,syntax:n"
 
+-- Set the default text width to reasonable values (in 2023).
+vim.opt.textwidth = 100
+
 --[[
 Options that affect appearance.
 --]]
