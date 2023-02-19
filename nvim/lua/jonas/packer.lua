@@ -54,6 +54,7 @@ return require('packer').startup(function(use)
   -- TODO (maybe): use 'tpope/vim-rhubarb'
 
   -- Statusline.
+  -- REQUIRES: patched Nerd Fonts.
   use {
     'nvim-lualine/lualine.nvim',
     requires = { 'kyazdani42/nvim-web-devicons', opt = true }
