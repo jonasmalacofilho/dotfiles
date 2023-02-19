@@ -7,13 +7,6 @@ vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move lines down" })
 vim.keymap.set("v", "<", "<gv", { desc = "Shift lines leftwards" })
 vim.keymap.set("v", ">", ">gv", { desc = "Shift lines rightwards" })
 
--- Keep the cursor fixed and/or in the middle of the window during some operations.
-vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines" })
-vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Move down half a page" })
-vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Move up half a page" })
-vim.keymap.set("n", "n", "nzzzv", { desc = "Next match" })
-vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous match" })
-
 -- Override Y to yank from cursor to EOL, like C and D.
 vim.keymap.set("n", "Y", "y$", { desc = "Yank from cursor to EOL" })
 
