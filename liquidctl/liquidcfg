@@ -87,7 +87,7 @@ echo "Applying a lighting profile to all devices"
 # a blue sky: #0057b7 / hsv(211,100,72)
 # a field of wheat: #ffd700 / hsv(51,100,100)
 $LL $KRAKEN set sync color fixed "hsv(211,100,100)"
-$LL $SMART_DEVICE set led color super-fixed {,,,,,,,,,}"hsv(51,100,100)" {,,,,,,,,,}"hsv(211,100,24)"
+# $LL $SMART_DEVICE set led color super-fixed {,,,,,,,,,}"hsv(51,100,100)" {,,,,,,,,,}"hsv(211,100,24)"
 # non-volatile, apply only once:
 # $LL $GPU set led color fixed "hsv(35,100,100)" --non-volatile
 # $LL $RAM --pick 0 set led color fixed "hsv(211,100,24)"
@@ -104,6 +104,8 @@ $LL $SMART_DEVICE set led color super-fixed {,,,,,,,,,}"hsv(51,100,100)" {,,,,,,
 # for xmas only
 # $LL $SMART_DEVICE set led color moving-alternating 'hsv(30,98,100)' 'hsv(30,98,10)' --speed slower  # xmas
 
+# low glare scheme
+$LL $SMART_DEVICE set led color fixed 0A0000
 
 if liquidctl list $TEST_CLC120 2>/dev/null | grep "Asetek 690LC"; then
 	echo "Applying EVGA CLC settings"
