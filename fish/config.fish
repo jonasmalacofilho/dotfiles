@@ -3,7 +3,11 @@ set -x VISUAL nvim
 set -x EDITOR nvim
 
 if status is-interactive
-    # Commands to run in interactive sessions can go here
+    # Commands to run in interactive sessions can go here.
+
+    # To have abbreviations expand anywhere in the command line, e.g. after
+    # `sudo`, use `--position anywhere`. This achieves a similar result as 
+    # aliasing `sudo = 'sudo '` in bash and zsh.
 
     abbr -a _ sudo
     abbr -a f fg

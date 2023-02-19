@@ -1,8 +1,8 @@
 # Essential behavior
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export VISUAL=nvim EDITOR=nvim          # use nvim everywhere
-alias sudo='sudo '                      # keep all aliases when sudo
-                                        # (see: https://askubuntu.com/a/22043)
+alias sudo='sudo '                      # expand the second alias as well when using sudo
+                                        # (see: https://askubuntu.com/a/22043 or man bash)
 
 
 # Start Oh My Zsh
