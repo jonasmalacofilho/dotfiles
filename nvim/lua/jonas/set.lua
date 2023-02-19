@@ -22,9 +22,6 @@ vim.opt.expandtab = true
 vim.cmd [[autocmd FileType lua,vim,yaml setlocal tabstop=2]]
 vim.cmd [[autocmd FileType c setlocal tabstop=8 softtabstop=8 noexpandtab]]
 
--- Try smart indent again.
-vim.opt.smartindent = true
-
 -- Enable mouse support on some modes.
 vim.opt.mouse =  { n = true, v = true, i = true }
 
