@@ -63,11 +63,15 @@ return require('packer').startup(function(use)
   -- Commenting code.
   use 'numToStr/Comment.nvim'
 
-  -- Ranger file manager integration (requires ranger, pynvim and ueberzug).
+  -- Ranger file manager integration.
+  --
+  -- REQUIRES: ranger, pynvim and ueberzug.
   --
   -- As the latest release of ranger is missing a couple of important fixes:
+  --
   -- - ranger/ranger@2241cac89953 ("xdg-open is not compatible with the -- convention")
   -- - ranger/ranger@f65e6f08bcf6 ("Fix crashes when deleting to trash")
+  --
   -- it's probably best to install it from git.
   use 'kevinhwang91/rnvimr'
 
