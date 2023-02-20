@@ -76,6 +76,11 @@ return require('packer').startup(function(use)
   use 'kevinhwang91/rnvimr'
 
   -- Convenience functions for common file management actions.
+  --
+  -- A sudo askpass helper is necessary for :SudoEdit/:SudoWrite and should be specified in
+  -- /etc/sudo.conf. For example:
+  --
+  --   Path askpass /usr/lib/git-core/git-gui--askpass
   use 'tpope/vim-eunuch'
 
   -- Basic LSP setup. Also installs mason.
