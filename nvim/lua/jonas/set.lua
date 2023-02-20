@@ -53,9 +53,9 @@ vim.opt.textwidth = 100
 Options that affect appearance.
 --]]
 
--- Highlight common column threshold(s). In 2023, 80 columns is rarely relevant, even the Linux
--- kernel has been using 100 columns for a while.
-vim.opt.colorcolumn = { 100 }
+-- Highlight (after) common column threshold(s). In 2023, 80 columns is rarely relevant, even the
+-- Linux kernel has been using 100 columns for a while.
+vim.opt.colorcolumn = { 101 }
 
 -- Show tabs, trailing space and nbsp.
 vim.opt.list = true
