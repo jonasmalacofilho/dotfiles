@@ -32,8 +32,8 @@ local rust_lsp = lsp.build_options("rust_analyzer", {
       },
     }
   },
-  -- Set up rust_analyzer without Mason, using the system-provided version.
-  force_setup = true,
+  -- Manage the rust-analyzer binary with rustup, not Mason.
+  cmd = { "rustup", "run", "stable", "rust-analyzer" },
 })
 
 rust_tools.setup({
