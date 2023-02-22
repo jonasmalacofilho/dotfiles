@@ -3,14 +3,14 @@ require("Comment").setup({
     ---Line-comment toggle keymap
     line = '<leader>cc',
     ---Block-comment toggle keymap
-    block = '<leader>bc',
+    block = '<leader><S-c><S-c>',
   },
   ---LHS of operator-pending mappings in NORMAL and VISUAL mode
   opleader = {
     ---Line-comment keymap
     line = '<leader>c',
     ---Block-comment keymap
-    block = '<leader>b',
+    block = '<leader><S-c>',
   },
   ---LHS of extra mappings
   extra = {
