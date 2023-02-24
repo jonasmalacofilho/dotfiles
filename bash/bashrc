@@ -1,4 +1,15 @@
 # ~/.bashrc for interactive shells that are *not* login shells
 
-# If not running interactively, stop here
+export SHELL=/bin/fish
+export EDITOR=nvim
+export VISUAL=nvim
+
+# If not running interactively, stop here.
 [[ $- != *i* ]] && return
+
+# Use fish as the interactive shell.
+# See: <https://wiki.archlinux.org/title/Fish#Setting_fish_as_interactive_shell_only>.
+if [[ $(ps --no-header --pid=$PPID --format=comm) != "fish" && -z ${BASH_EXECUTION_STRING} ]]
+then
+    exec fish
+fi
