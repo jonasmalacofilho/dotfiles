@@ -25,11 +25,13 @@ return require('packer').startup(function(use)
   -- Make the package manager manage the package manager.
   use 'wbthomason/packer.nvim'
 
-  -- Fuzzy find everything.
+  -- Fuzzy find everything...
   use {
     'nvim-telescope/telescope.nvim', branch = '0.1.x',
-    requires = { {'nvim-lua/plenary.nvim'} }
+    requires = { 'nvim-lua/plenary.nvim' }
   }
+  -- ... quidckly and with support for fzf syntax.
+  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
   -- Select a color scheme.
   use {
