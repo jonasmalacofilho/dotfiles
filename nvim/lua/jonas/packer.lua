@@ -63,7 +63,7 @@ return require('packer').startup(function(use)
   -- Commenting code.
   use 'numToStr/Comment.nvim'
 
-  -- Ranger file manager integration.
+  -- Ranger file manager integration, replacing Netrw.
   --
   -- REQUIRES: ranger, pynvim and ueberzug.
   --
@@ -73,7 +73,13 @@ return require('packer').startup(function(use)
   -- - ranger/ranger@f65e6f08bcf6 ("Fix crashes when deleting to trash")
   --
   -- it's probably best to install it from git.
-  use 'kevinhwang91/rnvimr'
+  --
+  -- To replace Netrw, we need to set g:rnvimr_enable_ex *before* the rnvimr loads. But 
+  -- a `setup` function with packer implies `opt = true`, which wont work with rnvimr.
+  vim.g.rnvimr_enable_ex = 1
+  use {
+    'kevinhwang91/rnvimr',
+  }
 
   -- Convenience functions for common file management actions.
   --
