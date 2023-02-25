@@ -1,3 +1,0 @@
-~/.vim:
-	ln -si $(CURDIR) $@
-
