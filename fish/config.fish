@@ -1,7 +1,7 @@
 fish_add_path /usr/local/bin
 
 if status is-interactive
-    # Commands to run in interactive sessions can go here.
+    # Commands to run in interactive sessions go here.
 
     # To have abbreviations expand anywhere in the command line, e.g. after
     # `sudo`, use `--position anywhere`. This achieves a similar result as 
@@ -39,12 +39,11 @@ if status is-interactive
     abbr -a gsh git show
     abbr -a gst git status
 
-end
-
-# Manual kitty integration, since from its (and the system's) perspective my default shell is bash,
-# so that /etc/profile.d/* gets sourced.
-if set -q KITTY_INSTALLATION_DIR
-    set --global KITTY_SHELL_INTEGRATION enabled
-    source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
-    set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
+    # Manual kitty integration, since from its (and the system's) perspective my default shell is bash,
+    # so that /etc/profile.d/* gets sourced.
+    if set -q KITTY_INSTALLATION_DIR
+        set --global KITTY_SHELL_INTEGRATION enabled
+        source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
+        set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
+    end
 end
