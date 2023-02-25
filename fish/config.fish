@@ -40,3 +40,11 @@ if status is-interactive
     abbr -a gst git status
 
 end
+
+# Manual kitty integration, since from its (and the system's) perspective my default shell is bash,
+# so that /etc/profile.d/* gets sourced.
+if set -q KITTY_INSTALLATION_DIR
+    set --global KITTY_SHELL_INTEGRATION enabled
+    source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
+    set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
+end
