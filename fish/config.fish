@@ -18,6 +18,7 @@ if status is-interactive
     abbr -a t2 tree -L 2
     abbr -a t3 tree -L 3
     abbr -a v nvim
+    abbr -a n nvim # because abbrs visibly expand, I now keep trying to start [n]vim with n
 
     abbr -a --set-cursor vg "vgrep % && vgrep --interactive"
 
