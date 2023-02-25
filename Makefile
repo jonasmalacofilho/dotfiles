@@ -1,12 +1,12 @@
 help:
 	@echo "Usage: make <target>..."
 	@echo ""
-	@echo "essential: bash git nvim ssh zsh"
-	@echo "other targets: kitty liquidctl neomutt systemd"
+	@echo "essential: bash fish git kitty nvim ssh"
+	@echo "other targets: liquidctl neomutt systemd zsh"
 
-essential: bash git nvim ssh zsh
+essential: bash fish git kitty nvim ssh
 
-alacritty bash fish git kitty liquidctl neomutt nvim ssh systemd zsh: _phony
+bash fish git kitty liquidctl neomutt nvim ssh systemd zsh: _phony
 	make -C $@
 
 .PHONY: help essential _phony
