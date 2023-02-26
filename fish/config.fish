@@ -18,8 +18,6 @@ if status is-interactive
     abbr -a v nvim
     abbr -a n nvim # because abbrs visibly expand, I now keep trying to start [n]vim with n
 
-    abbr -a --set-cursor vg "vgrep % && vgrep --interactive"
-
     abbr -a ga git add
     abbr -a gb git branch
     abbr -a gc git commit --verbose
