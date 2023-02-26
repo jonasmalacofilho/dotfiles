@@ -1,5 +1,3 @@
-fish_add_path /usr/local/bin
-
 if status is-interactive
     # Commands to run in interactive sessions go here.
 
