@@ -1,5 +1,8 @@
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope: files' })
+vim.keymap.set('n', '<leader>fF', function()
+  builtin.find_files({ hidden = true, no_ignore = true })
+end, { desc = 'Telescope: all files' })
 vim.keymap.set('n', '<leader>fc', builtin.commands, { desc = 'Telescope: commands' })
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope: live grep' })
 vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope: buffers' })
