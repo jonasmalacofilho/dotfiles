@@ -3,10 +3,11 @@ function arch_update_mirrors -a country -a limit_to -a timeout -d "Update Arch m
     if test -z $limit_to; set limit_to 4; end
     if test -z $timeout; set timeout 2; end
 
-    and set -f ignoremirrors /etc/pacman.d/ignoremirrors
-    if test -f $ignoremirrors
+    set -l ignoremirrors /etc/pacman.d/ignoremirrors
+
+    if test -f "$ignoremirrors"
         and echo :: Ignoring the following mirror patterns:
-        and cat $ignoremirrors
+        and cat "$ignoremirrors"
     else
         and echo :: No ignoremirrors file found
         and set ignoremirrors /dev/null
@@ -14,8 +15,8 @@ function arch_update_mirrors -a country -a limit_to -a timeout -d "Update Arch m
 
     and echo :: Getting ranked and up-to-date pacman mirrorlist for $country...
     and curl -s "https://archlinux.org/mirrorlist/?country=$country&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" |
-        grep -v -f $ignoremirrors |
+        grep -v -f "$ignoremirrors" |
         sed -e 's/^#Server/Server/' -e '/^#/d' |
-        rankmirrors -n $limit_to -m $timeout -r extra -v - |
+        rankmirrors -n "$limit_to" -m "$timeout" -r extra -v - |
         sudo tee /etc/pacman.d/mirrorlist
 end

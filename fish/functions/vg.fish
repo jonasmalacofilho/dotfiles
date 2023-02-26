@@ -1,4 +1,3 @@
-function vg --wraps='vgrep $argv && vgrep --interactive' --description 'alias vg vgrep $argv && vgrep --interactive'
-  vgrep $argv && vgrep --interactive $argv
-        
+function vg -d "Interactively search with vgrep"
+    vgrep $argv && vgrep --interactive $argv
 end
