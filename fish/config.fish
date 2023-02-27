@@ -2,7 +2,7 @@ if status is-interactive
     # Commands to run in interactive sessions go here.
 
     # To have abbreviations expand anywhere in the command line, e.g. after
-    # `sudo`, use `--position anywhere`. This achieves a similar result as 
+    # `sudo`, use `--position anywhere`. This achieves a similar result as
     # aliasing `sudo = 'sudo '` in bash and zsh.
 
     abbr -a _ sudo
@@ -21,14 +21,14 @@ if status is-interactive
     abbr -a ga git add
     abbr -a gb git branch
     abbr -a gc git commit --verbose
-    abbr -a gca git commit --all --verbose
+    abbr -a gca git commit --verbose --all
     abbr -a gcm git checkout "(git_main_branch)"
     abbr -a gco git checkout
     abbr -a gd git diff
-    abbr -a gdt GIT_EXTERNAL_DIFF=difft git diff
+    abbr -a gdt 'GIT_EXTERNAL_DIFF="difft --display=side-by-side"' git diff
     abbr -a gf git fetch
     abbr -a gl git pull
-    abbr -a glog git log --oneline --decorate --graph
+    abbr -a glog git log --decorate --graph --oneline
     abbr -a glok git log --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)("%s")%C(reset)'
     abbr -a glop git log --patch --stat
     abbr -a gp git push
