@@ -68,6 +68,16 @@ lsp.configure("lua_ls", {
   },
 })
 
+--[[
+Other LSP servers.
+--]]
+
+lsp.configure("eslint")
+
+--[[
+Finishing touches and setup.
+--]]
+
 lsp.setup()
 
 -- FIXME: set only in LSP-attached buffers.
