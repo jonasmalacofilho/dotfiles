@@ -1,4 +1,4 @@
-function arch_update_mirrors -a country -a limit_to -a timeout -d "Update Arch mirrorlist with best local mirrors"
+function arch-update-mirrors -a country -a limit_to -a timeout -d "Update Arch mirrorlist with best local mirrors"
     if test -z $country; set country BR; end
     if test -z $limit_to; set limit_to 4; end
     if test -z $timeout; set timeout 2; end

@@ -1,5 +1,5 @@
 # Adapted from: https://bbs.archlinux.org/viewtopic.php?pid=1585788#p1585788
-function arch_packages_by_size -d "List installed packages sorted by size"
+function arch-packages-by-size -d "List installed packages sorted by size"
     pacman -Qi |
         grep -E '^(Name|Installed)' |
         cut -f2 -d: |
