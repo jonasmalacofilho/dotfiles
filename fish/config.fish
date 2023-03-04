@@ -6,17 +6,19 @@ if status is-interactive
     # aliasing `sudo = 'sudo '` in bash and zsh.
 
     abbr -a _ sudo
+    abbr -a bt btop
     abbr -a f fg
+    abbr -a ht htop
     abbr -a icat kitty +kitten icat
     abbr -a jo xdg-open
     abbr -a l ls -lah
     abbr -a md mkdir -p
+    abbr -a n nvim # because abbrs visibly expand, I now keep trying to start [n]vim with n
     abbr -a py python
     abbr -a t1 tree -L 1
     abbr -a t2 tree -L 2
     abbr -a t3 tree -L 3
     abbr -a v nvim
-    abbr -a n nvim # because abbrs visibly expand, I now keep trying to start [n]vim with n
 
     abbr -a ga git add
     abbr -a gb git branch
