@@ -30,9 +30,12 @@ vim.opt.mouse =  { n = true, v = true, i = true }
 vim.opt.modeline = false
 
 -- Spell by default (assumes undercurls are available).
-vim.opt.spell = true
+vim.opt.spell = false
 vim.opt.spelllang = "en_us"
 vim.opt.spellfile = "~/.config/nvim/spell/personal.utf-8.add"
+
+-- Spell override for specific file types.
+vim.cmd [[autocmd FileType gitcommit,markdown,tex setlocal spell]]
 
 -- Threat splits as auxiliary.
 vim.opt.splitbelow = true
