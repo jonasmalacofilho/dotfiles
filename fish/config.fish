@@ -6,9 +6,9 @@ if status is-interactive
     # aliasing `sudo = 'sudo '` in bash and zsh.
 
     abbr -a _ sudo
-    abbr -a bt btop
+    abbr -a b btop
     abbr -a f fg
-    abbr -a ht htop
+    abbr -a h htop
     abbr -a icat kitty +kitten icat
     abbr -a jo xdg-open
     abbr -a l ls -lah
