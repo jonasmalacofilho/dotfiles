@@ -29,6 +29,7 @@ if status is-interactive
     abbr -a gd git diff
     abbr -a gdt 'GIT_EXTERNAL_DIFF="difft --display=side-by-side"' git diff
     abbr -a gf git fetch
+    abbr -a ghb gh browse
     abbr -a gl git pull
     abbr -a glog git log --decorate --graph --oneline
     abbr -a glok git log --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)("%s")%C(reset)'
