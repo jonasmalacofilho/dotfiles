@@ -19,6 +19,7 @@ if status is-interactive
     abbr -a t2 tree -L 2
     abbr -a t3 tree -L 3
     abbr -a v nvim
+    abbr -a kssh kitty +kitten ssh
 
     abbr -a ga git add
     abbr -a gb git branch
