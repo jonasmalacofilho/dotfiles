@@ -17,6 +17,8 @@ if status is-interactive
     abbr -a t2 tree -L 2
     abbr -a t3 tree -L 3
     abbr -a v nvim
+    abbr -a w watch --differences --interval 1
+    abbr -a we watchexec --clear
 
     abbr -a icat kitty +kitten icat
     abbr -a scat kitty +kitten ssh
