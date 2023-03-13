@@ -33,7 +33,7 @@ if status is-interactive
     abbr -a gf git fetch
     abbr -a ghb gh browse
     abbr -a gl git pull
-    abbr -a glg git log --pretty="'%C(auto)%h%C(reset) %C(auto)%s%C(reset) [%C(auto)%an%C(reset)]%C(auto)%d%C(reset)'" --graph
+    abbr -a glg git log --pretty="'%C(auto)%h%C(reset)%C(auto)%d%C(reset) %C(auto)%s%C(reset) [%C(auto)%an%C(reset)]'" --graph
     abbr -a glk git log --pretty="'%C(auto)%h%C(reset) (\"%s\")'"
     abbr -a glog git log --stat
     abbr -a glop git log --patch --stat
