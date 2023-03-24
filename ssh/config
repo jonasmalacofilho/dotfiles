@@ -1,15 +1,20 @@
+Host *.local 192.168.0.*
+	StrictHostKeyChecking yes
+	UpdateHostKeys no
+
 Host github.com
+	StrictHostKeyChecking yes
 	UpdateHostKeys no
 	User git
+
+Host aur.archlinux.org
+	User aur
 
 Host gitlab.com
 	User git
 
 Host bitbucket.org bitbucket.com
 	User git
-
-Host aur.archlinux.org
-	User aur
 
 Host *.ngrok.io
 	CheckHostIP no
