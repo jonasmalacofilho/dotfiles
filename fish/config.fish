@@ -21,7 +21,7 @@ if status is-interactive
     abbr -a we watchexec --clear
 
     abbr -a icat kitty +kitten icat
-    abbr -a scat kitty +kitten ssh
+    abbr -a kssh kitty +kitten ssh
 
     abbr -a ga git add
     abbr -a gb git branch
