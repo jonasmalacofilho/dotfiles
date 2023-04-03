@@ -1,4 +1,4 @@
-function v4l2phone_start -d "Start a phone camera V4L2 device"
+function camera-open -d "Open a phone camera V4L2 device"
     # Connect to the phone.
     adb start-server
     and adb forward tcp:9009 tcp:9009
