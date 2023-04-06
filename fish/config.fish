@@ -24,6 +24,7 @@ if status is-interactive
     abbr -a icat kitty +kitten icat
     abbr -a kssh kitty +kitten ssh
 
+    abbr -a g git
     abbr -a ga git add
     abbr -a gb git branch
     abbr -a gc git commit --verbose
