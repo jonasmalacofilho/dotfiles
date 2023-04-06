@@ -32,6 +32,7 @@ if status is-interactive
     abbr -a cco cargo check
     abbr -a cdoc cargo doc
     abbr -a cdoco cargo doc --open
+    abbr -a cfmt cargo fmt
     abbr -a cnb cargo new --bin
     abbr -a cnl cargo new --lib
     abbr -a cnt cargo nextest run
@@ -41,6 +42,7 @@ if status is-interactive
     abbr -a ct cargo test --
     abbr -a ctr cargo test --release --
     abbr -a cw cargo watch
+    abbr -a cwntb cargo -x '"clippy"' -x '"doc"' -x '"nextest run"' -x '"build"'
     abbr -a cwtb cargo -x '"clippy"' -x '"doc"' -x '"test"' -x '"build"'
 
     abbr -a g git
