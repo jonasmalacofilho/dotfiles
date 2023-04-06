@@ -30,8 +30,8 @@ if status is-interactive
     abbr -a cbr cargo build --release --
     abbr -a cc cargo clippy
     abbr -a cco cargo check
-    abbr -a cd cargo doc
-    abbr -a cdo cargo doc --open
+    abbr -a cdoc cargo doc
+    abbr -a cdoco cargo doc --open
     abbr -a cnb cargo new --bin
     abbr -a cnl cargo new --lib
     abbr -a cnt cargo nextest run
