@@ -55,7 +55,5 @@ vim.keymap.set("n", "<leader>j", ":lprev<CR>zz")
 vim.keymap.set("n", "<leader>k", ":lnext<CR>zz")
 
 -- Horizontal mouse wheel scrolling.
-vim.keymap.set("n", "<C-ScrollWheelDown>", "z6l")
-vim.keymap.set("n", "<C-ScrollWheelUp>", "z6h")
-vim.keymap.set("n", "<S-C-ScrollWheelDown>", "zL")
-vim.keymap.set("n", "<S-C-ScrollWheelUp>", "zH")
+vim.keymap.set("n", "<S-ScrollWheelDown>", "z6l")
+vim.keymap.set("n", "<S-ScrollWheelUp>", "z6h")
