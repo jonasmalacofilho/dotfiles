@@ -53,6 +53,7 @@ if status is-interactive
     abbr -a gca git commit --verbose --all
     abbr -a gcm git checkout "(git_main_branch)"
     abbr -a gco git checkout
+    abbr -a gcp git commit --verbose --patch
     abbr -a gd git diff
     abbr -a gdt 'GIT_EXTERNAL_DIFF="difft --display=side-by-side"' git diff
     abbr -a gf git fetch
