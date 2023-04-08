@@ -43,8 +43,8 @@ if status is-interactive
     abbr -a ct cargo test --
     abbr -a ctr cargo test --release --
     abbr -a cw cargo watch
-    abbr -a cwntb cargo -x '"clippy"' -x '"doc"' -x '"nextest run"' -x '"build"'
-    abbr -a cwtb cargo -x '"clippy"' -x '"doc"' -x '"test"' -x '"build"'
+    abbr -a cwntb cargo watch -x '"clippy"' -x '"doc"' -x '"nextest run"' -x '"build"'
+    abbr -a cwtb cargo watch -x '"clippy"' -x '"doc"' -x '"test"' -x '"build"'
 
     abbr -a g git
     abbr -a ga git add
