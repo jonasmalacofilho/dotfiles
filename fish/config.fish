@@ -29,6 +29,7 @@ if status is-interactive
     abbr -a cb cargo build --
     abbr -a cbr cargo build --release --
     abbr -a cc cargo clippy
+    abbr -a cclean cargo clean
     abbr -a cco cargo check
     abbr -a cdoc cargo doc
     abbr -a cdoco cargo doc --open
