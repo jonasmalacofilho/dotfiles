@@ -17,7 +17,7 @@ if status is-interactive
     abbr -a t2 tree -L 2
     abbr -a t3 tree -L 3
     abbr -a v nvim -c '"Telescope find_files"'
-    abbr -a vf nvim
+    abbr -a vv nvim
     abbr -a w watch --differences --interval 1
     abbr -a we watchexec --clear
 
