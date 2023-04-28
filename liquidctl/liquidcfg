@@ -105,7 +105,10 @@ $LL $KRAKEN set sync color fixed "hsv(211,100,100)"
 # $LL $SMART_DEVICE set led color moving-alternating 'hsv(30,98,100)' 'hsv(30,98,10)' --speed slower  # xmas
 
 # low glare scheme
-$LL $SMART_DEVICE set led color fixed 0A0000
+# $LL $SMART_DEVICE set led color fixed 0A0000
+
+# soft lighting
+$LL $SMART_DEVICE set led color fixed 7F4706
 
 if liquidctl list $TEST_CLC120 2>/dev/null | grep "Asetek 690LC"; then
 	echo "Applying EVGA CLC settings"
