@@ -19,7 +19,7 @@ vim.opt.shiftwidth = 0
 vim.opt.expandtab = true
 
 -- Tab width overrides for specific file types.
-vim.cmd [[autocmd FileType lua,vim,yaml setlocal tabstop=2]]
+vim.cmd [[autocmd FileType javascript,javascriptreact,lua,json,typescript,typescriptreact,vim,yaml setlocal tabstop=2]]
 vim.cmd [[autocmd FileType c setlocal tabstop=8 softtabstop=8 noexpandtab]]
 vim.cmd [[autocmd FileType tex setlocal tabstop=4 softtabstop=4 noexpandtab]]
 
