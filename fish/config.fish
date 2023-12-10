@@ -24,26 +24,8 @@ if status is-interactive
     abbr -a kssh kitty +kitten ssh
 
     abbr -a c cargo
-    abbr -a ca cargo add
-    abbr -a cb cargo build --
-    abbr -a cbr cargo build --release --
-    abbr -a cc cargo clippy
-    abbr -a cclean cargo clean
-    abbr -a cco cargo check
-    abbr -a cdoc cargo doc
-    abbr -a cdoco cargo doc --open
-    abbr -a cfmt cargo fmt
-    abbr -a cnb cargo new --bin
-    abbr -a cnl cargo new --lib
-    abbr -a cnt cargo nextest run
-    abbr -a cntr cargo nextest run --release
-    abbr -a cr cargo run --
-    abbr -a crr cargo run --release --
-    abbr -a ct cargo test --
-    abbr -a ctr cargo test --release --
-    abbr -a cw cargo watch
-    abbr -a cwntb cargo watch -x '"clippy"' -x '"doc"' -x '"nextest run"' -x '"build"'
-    abbr -a cwtb cargo watch -x '"clippy"' -x '"doc"' -x '"test"' -x '"build"'
+    abbr -a cnt cargo nextest
+    abbr -a cw cargo watch -x '"clippy"' -x '"doc"' -x '"nextest run"' -x '"build -r"'
 
     abbr -a g git
     abbr -a ga git add
