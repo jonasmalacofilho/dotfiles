@@ -25,7 +25,7 @@ if status is-interactive
 
     abbr -a c cargo
     abbr -a cnt cargo nextest
-    abbr -a cw cargo watch -x '"clippy"' -x '"doc"' -x '"nextest run"' -x '"build -r"'
+    abbr -a cw cargo watch -x '"clippy"' -x '"doc"' -x '"nextest run"' -x '"build"'
 
     abbr -a g git
     abbr -a ga git add
