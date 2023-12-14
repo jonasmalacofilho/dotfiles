@@ -1,7 +1,3 @@
--- Move lines up or down.
-vim.keymap.set("v", "J", ":m '>+1<CR>gv", { desc = "Move lines down" })
-vim.keymap.set("v", "K", ":m '<-2<CR>gv", { desc = "Move lines up" })
-
 -- Override shift motions in visual mode to remain in that mode.
 vim.keymap.set("v", "<", "<gv", { desc = "Shift lines leftwards" })
 vim.keymap.set("v", ">", ">gv", { desc = "Shift lines rightwards" })
