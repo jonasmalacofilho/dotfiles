@@ -20,6 +20,8 @@ if status is-interactive
     abbr -a w watch --differences --interval 1
     abbr -a we watchexec --clear
 
+    abbr -a --set-cursor m 'math "%"'
+
     abbr -a icat kitty +kitten icat
     abbr -a kssh kitty +kitten ssh
 
