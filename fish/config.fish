@@ -25,9 +25,12 @@ if status is-interactive
     abbr -a icat kitty +kitten icat
     abbr -a kssh kitty +kitten ssh
 
-    abbr -a c cargo
-    abbr -a cnt cargo nextest
-    abbr -a cw cargo watch -x '"clippy"' -x '"doc"' -x '"nextest run"' -x '"build"'
+    abbr -a cnt cargo nextest run
+    abbr -a cb cargo build
+    abbr -a cbr cargo build --release
+    abbr -a cr cargo r --
+    abbr -a crr cargo r -r --
+    abbr -a cw cargo watch -x clippy -x '"nextest run"' -x '"b"'
 
     abbr -a g git
     abbr -a ga git add
