@@ -1,6 +1,5 @@
 # ~/.bashrc for interactive shells that are *not* login shells
 
-export SHELL=/bin/fish
 export EDITOR=nvim
 export VISUAL=nvim
 
