@@ -1,5 +1,3 @@
-# ~/.bashrc for interactive shells that are *not* login shells
-
 export EDITOR=nvim
 export VISUAL=nvim
 
