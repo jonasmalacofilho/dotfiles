@@ -15,5 +15,6 @@ fi
 # See: <https://wiki.archlinux.org/title/Fish#Setting_fish_as_interactive_shell_only>.
 if [[ $(ps --no-header --pid=$PPID --format=comm) != "fish" && -z ${BASH_EXECUTION_STRING} ]]
 then
-    exec fish
+    shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=''
+    exec fish $LOGIN_OPTION
 fi
