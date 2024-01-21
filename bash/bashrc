@@ -1,11 +1,6 @@
 export EDITOR=nvim
 export VISUAL=nvim
 
-# Enable Wayland support when applicatble and where supported.
-if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-    export MOZ_ENABLE_WAYLAND=1
-fi
-
 # If not running interactively, stop here.
 [[ $- != *i* ]] && return
 
