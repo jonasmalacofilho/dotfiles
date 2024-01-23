@@ -1,7 +1,5 @@
 function arch-update -d "Update Arch system with pacman"
-    read --nchars 1 -l response --prompt-str="Clean pacman and yay's caches first? (y/N) "
-    or return  1
-    switch $response
+    switch (read --prompt-str="Clean pacman and yay's caches first? (y/N) ")
         case y Y
             sudo yay -Sc
             or return 1

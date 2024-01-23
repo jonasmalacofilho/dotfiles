@@ -1,7 +1,5 @@
-function confirm -d "Request user confirmation before executing a command"
-    read --nchars 1 -l response --prompt-str="Are you sure you want to execute this: (y/N) "
-    or return  1
-    switch $response
+function confirm -d "Request user confirmation before continuing"
+    switch (read --prompt-str="Are you sure you want to continue? (y/N) ")
         case y Y
             $argv
         case n N ''
