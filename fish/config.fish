@@ -26,6 +26,7 @@ if status is-interactive
     abbr -a icat kitty +kitten icat
     abbr -a kssh kitty +kitten ssh
 
+    abbr -a c cargo
     abbr -a cnt cargo nextest run
     abbr -a cb cargo build
     abbr -a cbr cargo build --release
