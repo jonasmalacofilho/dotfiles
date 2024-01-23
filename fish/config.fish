@@ -53,6 +53,7 @@ if status is-interactive
     abbr -a gp git push
     abbr -a gsh git show
     abbr -a gst git status
+    abbr -a gu "git add . && git commit -m update && git push"
 
     # Manual kitty integration, since from its (and the system's) perspective my default shell is bash,
     # so that /etc/profile.d/* gets sourced.
