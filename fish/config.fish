@@ -7,7 +7,6 @@ if status is-interactive
 
     abbr -a _ sudo
     abbr -a b btop
-    abbr -a bin trash
     abbr -a f fg
     abbr -a h htop
     abbr -a jo xdg-open
@@ -20,6 +19,8 @@ if status is-interactive
     abbr -a v nvim
     abbr -a w watch --differences --interval 1
     abbr -a we watchexec --clear
+
+    abbr -a --position=anywhere bin trash
 
     abbr -a --set-cursor m 'math "%"'
 
