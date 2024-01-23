@@ -7,6 +7,7 @@ if status is-interactive
 
     abbr -a _ sudo
     abbr -a b btop
+    abbr -a bin trash
     abbr -a f fg
     abbr -a h htop
     abbr -a jo xdg-open
