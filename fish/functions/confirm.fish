@@ -1,3 +1,4 @@
+# TODO: support --prompt-str [and, correspondingly, --]
 function confirm -d "Request user confirmation before continuing"
     switch (read --prompt-str="Are you sure you want to continue? (y/N) ")
         case y Y
