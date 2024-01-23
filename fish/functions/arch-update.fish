@@ -4,7 +4,7 @@ function arch-update -d "Update Arch system with pacman"
 
     echo -e "\nUpgrading pacman packages"
     sudo pacman -Syu
-    or return 1
+    or return
 
     # pacdiff requires neovim-symlinks or neovim-drop-in or vim[diff]
     echo -e "\nChecking for pacnew files"
