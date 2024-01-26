@@ -1,5 +1,5 @@
 function yay-update -d "Update AUR/yay packages with yay"
-    confirm --accept-no --prompt "Clean yay cache first?" -- sudo yay -Sca
+    confirm --accept-no --prompt "Clean yay cache first?" -- yay -Sca
     or return
 
     echo -e "\nUpgrading AUR/yay packages"
