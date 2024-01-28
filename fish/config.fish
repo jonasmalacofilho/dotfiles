@@ -36,7 +36,7 @@ if status is-interactive
     abbr -a cw cargo watch -x clippy -x '"nextest run"' -x '"b"'
 
     set GIT_LOG_FMT_KERNEL "%C(auto)%h%C(reset) (\"%s\")"
-    set GIT_LOG_FMT_JONAS "%C(auto)%h%C(reset)%C(auto)%d%C(reset) %C(auto)%s%C(reset) [%C(auto)%aN, %ar%C(reset)]"
+    set GIT_LOG_FMT_JONAS "%C(auto)%h%d %s %C(dim)[%aN, %ar]%C(reset)"
 
     abbr -a g git
     abbr -a ga git add
