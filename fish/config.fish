@@ -35,6 +35,9 @@ if status is-interactive
     abbr -a crr cargo r -r --
     abbr -a cw cargo watch -x clippy -x '"nextest run"' -x '"b"'
 
+    set GIT_LOG_FMT_KERNEL "%C(auto)%h%C(reset) (\"%s\")"
+    set GIT_LOG_FMT_JONAS "%C(auto)%h%C(reset)%C(auto)%d%C(reset) %C(auto)%s%C(reset) [%C(auto)%an%C(reset)]"
+
     abbr -a g git
     abbr -a ga git add
     abbr -a gb git branch
@@ -48,8 +51,8 @@ if status is-interactive
     abbr -a gf git fetch
     abbr -a ghb gh browse
     abbr -a gl git pull
-    abbr -a glg git log --pretty="'%C(auto)%h%C(reset)%C(auto)%d%C(reset) %C(auto)%s%C(reset) [%C(auto)%an%C(reset)]'" --graph
-    abbr -a glk git log --pretty="'%C(auto)%h%C(reset) (\"%s\")'"
+    abbr -a glg 'git log --pretty=$GIT_LOG_FMT_JONAS --graph'
+    abbr -a glk 'git log --pretty=$GIT_LOG_FMT_KERNEL'
     abbr -a glog git log --stat
     abbr -a glop git log --patch --stat
     abbr -a gp git push
