@@ -25,7 +25,7 @@ if status is-interactive
     abbr -a --set-cursor m 'math "%"'
 
     abbr -a icat kitten icat
-    abbr -a kssh kitten ssh
+    abbr -a kish kitten ssh
 
     abbr -a c cargo
     abbr -a cnt cargo nextest run
