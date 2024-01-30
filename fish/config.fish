@@ -9,7 +9,9 @@ if status is-interactive
     abbr -a b btop
     abbr -a f fg
     abbr -a h htop
+    abbr -a icat kitten icat
     abbr -a jo xdg-open
+    abbr -a kish kitten ssh
     abbr -a l ls -lah
     abbr -a md mkdir -p
     abbr -a py python
@@ -23,9 +25,6 @@ if status is-interactive
     abbr -a --position=anywhere bin trash
 
     abbr -a --set-cursor m 'math "%"'
-
-    abbr -a icat kitten icat
-    abbr -a kish kitten ssh
 
     abbr -a c cargo
     abbr -a cnt cargo nextest run
