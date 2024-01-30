@@ -22,3 +22,13 @@ Based on:
 require("jonas.set")
 require("jonas.remap")
 require("jonas.packer")
+
+function find_files(text)
+  local builtin = require('telescope.builtin')
+  builtin.find_files({ default_text = text })
+end
+
+function live_grep(text)
+  local builtin = require('telescope.builtin')
+  builtin.live_grep({ default_text = text })
+end

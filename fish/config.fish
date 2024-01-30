@@ -24,6 +24,8 @@ if status is-interactive
 
     abbr -a --position=anywhere bin trash
 
+    abbr -a --set-cursor nf nvim -c "':lua find_files(\"%\")'"
+    abbr -a --set-cursor ng nvim -c "':lua live_grep(\"%\")'"
     abbr -a --set-cursor m 'math "%"'
 
     abbr -a c cargo
