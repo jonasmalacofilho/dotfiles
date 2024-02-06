@@ -18,15 +18,15 @@ if status is-interactive
     abbr -a t1 tree -L 1
     abbr -a t2 tree -L 2
     abbr -a t3 tree -L 3
-    abbr -a v nvim
     abbr -a w watch --differences --interval 1
     abbr -a we watchexec --clear
 
     abbr -a --position=anywhere bin trash
 
-    abbr -a --set-cursor nf nvim -c "':lua find_files(\"%\")'"
-    abbr -a --set-cursor ng nvim -c "':lua live_grep(\"%\")'"
     abbr -a --set-cursor m 'math "%"'
+
+    abbr -a --set-cursor ng nvim -c "':lua live_grep(\"%\")'"
+    abbr -a --set-cursor nv nvim -c "':lua find_files(\"%\")'"
 
     abbr -a c cargo
     abbr -a cnt cargo nextest run
