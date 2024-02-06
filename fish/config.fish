@@ -18,7 +18,7 @@ if status is-interactive
     abbr -a t1 tree -L 1
     abbr -a t2 tree -L 2
     abbr -a t3 tree -L 3
-    abbr -a w watch --differences --interval 1
+    abbr -a w watch -d -n 1
     abbr -a we watchexec --clear
 
     abbr -a --position=anywhere bin trash
@@ -42,11 +42,11 @@ if status is-interactive
     abbr -a g git
     abbr -a ga git add
     abbr -a gb git branch
-    abbr -a gc git commit --verbose
-    abbr -a gca git commit --verbose --all
+    abbr -a gc git commit -v
+    abbr -a gca git commit -v --all
     abbr -a gcm git checkout "(git_main_branch)"
     abbr -a gco git checkout
-    abbr -a gcp git commit --verbose --patch
+    abbr -a gcp git commit -v --patch
     abbr -a gd git diff
     abbr -a gdt 'GIT_EXTERNAL_DIFF="difft --display=side-by-side"' git diff
     abbr -a gf git fetch
