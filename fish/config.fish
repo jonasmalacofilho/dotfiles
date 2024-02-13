@@ -25,8 +25,9 @@ if status is-interactive
 
     abbr -a --set-cursor m 'math "%"'
 
-    abbr -a --set-cursor ng nvim -c "':lua live_grep(\"%\")'"
-    abbr -a --set-cursor nv nvim -c "':lua find_files(\"%\")'"
+    abbr -a nv nvim
+    abbr -a --set-cursor nvg nvim -c "':lua live_grep(\"%\")'"
+    abbr -a --set-cursor nvf nvim -c "':lua find_files(\"%\")'"
 
     abbr -a c cargo
     abbr -a cnt cargo nextest run
