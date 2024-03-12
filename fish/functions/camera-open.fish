@@ -1,6 +1,6 @@
 function camera-open -d "Open a phone camera V4L2 device"
     # Connect to the phone.
-    adb start-server
+    adb wait-for-usb-device
     and adb forward tcp:9009 tcp:9009
 
     # Set up v4l2loopback
