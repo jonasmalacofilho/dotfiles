@@ -1,6 +1,9 @@
 if status is-interactive
     # Commands to run in interactive sessions go here.
 
+    # Delete one word backwards with C-BS
+    bind \b backward-kill-word
+
     # To have abbreviations expand anywhere in the command line, e.g. after
     # `sudo`, use `--position anywhere`. This achieves a similar result as
     # aliasing `sudo = 'sudo '` in bash and zsh.
