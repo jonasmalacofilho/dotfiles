@@ -55,4 +55,4 @@ vim.keymap.set("n", "<S-ScrollWheelDown>", "z6l")
 vim.keymap.set("n", "<S-ScrollWheelUp>", "z6h")
 
 -- Delete the word before the cursor with C-BS
-vim.keymap.set("i", "<C-BS>", "<C-w>")
+vim.keymap.set({ "i", "c" }, "<C-BS>", "<C-w>")
