@@ -5,8 +5,13 @@ if status is-interactive
     bind \b backward-kill-word
 
     # To have abbreviations expand anywhere in the command line, e.g. after
-    # `sudo`, use `--position anywhere`. This achieves a similar result as
-    # aliasing `sudo = 'sudo '` in bash and zsh.
+    # `sudo`, use `--position anywhere`.
+    #
+    # This achieves a somewhat similar result as aliasing `sudo = 'sudo '` in
+    # bash or zsh, but with a higher chance of unwanted expansions. Luckly this
+    # it will soon(ish) be possible to restrict this to specific commands:
+    #
+    # https://github.com/fish-shell/fish-shell/pull/10452
 
     abbr -a _ sudo
     abbr -a b btop
