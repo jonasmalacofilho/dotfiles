@@ -89,6 +89,8 @@ return require('packer').startup(function(use)
   -- /etc/sudo.conf. For example:
   --
   --   Path askpass /usr/lib/git-core/git-gui--askpass
+  --
+  -- Note that git-gui--askpass requires tk (for the wish command).
   use 'tpope/vim-eunuch'
 
   -- Basic LSP setup. Also installs mason.
