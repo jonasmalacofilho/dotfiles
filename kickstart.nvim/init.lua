@@ -186,21 +186,8 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- Check the current status of the plugins:
 --   :Lazy
--- (Press `?` for help; use `:q` to close the window).
---
--- Update plugins:
---   :Lazy update
---
--- Plugins can be added with a link (or for a github repo: 'owner/repo' link).
---
--- Plugins can also be added by using a table, with the first argument being
--- the link and the following keys can be used to configure plugin
--- behavior/loading/etc.
 --
 -- Use `opts = {}` to force a plugin to be loaded.
---
---  This is equivalent to:
---    require('Comment').setup({})
 --
 require('lazy').setup({
 
@@ -209,7 +196,21 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'javascript',
+        'lua',
+        'luadoc',
+        'markdown',
+        'python',
+        'rust',
+        'typescript',
+        'vim',
+        'vimdoc',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -220,21 +221,20 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      incremental_selection = {
+        enable = true,
+      },
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
 
-      -- Prefer git instead of curl in order to improve connectivity in some environments
-      require('nvim-treesitter.install').prefer_git = true
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup(opts)
 
-      -- There are additional nvim-treesitter modules that you can use to interact
-      -- with nvim-treesitter. You should go explore a few and see what interests you:
-      --
-      --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-      --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-      --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+      -- Additional nvim-treesiter modules to explore:
+      -- - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+      -- - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+      -- - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
 
