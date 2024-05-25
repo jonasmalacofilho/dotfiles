@@ -174,7 +174,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
---    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
+-- See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
@@ -184,34 +184,31 @@ vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure and install plugins ]]
 --
---  To check the current status of your plugins, run
---    :Lazy
+-- Check the current status of the plugins:
+--   :Lazy
+-- (Press `?` for help; use `:q` to close the window).
 --
---  You can press `?` in this menu for help. Use `:q` to close the window
+-- Update plugins:
+--   :Lazy update
 --
---  To update plugins you can run
---    :Lazy update
+-- Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 --
--- NOTE: Here is where you install your plugins.
+-- Plugins can also be added by using a table, with the first argument being
+-- the link and the following keys can be used to configure plugin
+-- behavior/loading/etc.
+--
+-- Use `opts = {}` to force a plugin to be loaded.
+--
+--  This is equivalent to:
+--    require('Comment').setup({})
+--
 require('lazy').setup({
-  -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
-  -- NOTE: Plugins can also be added by using a table,
-  -- with the first argument being the link and the following
-  -- keys can be used to configure plugin behavior/loading/etc.
-  --
-  -- Use `opts = {}` to force a plugin to be loaded.
-  --
-  --  This is equivalent to:
-  --    require('Comment').setup({})
+  -- Detect tabstop and shiftwidth automatically.
+  'tpope/vim-sleuth',
 
-  -- Here is a more advanced example where we pass configuration
-  -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
-  --    require('gitsigns').setup({ ... })
-  --
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
+  -- Adds git related signs to the gutter, as well as utilities for managing changes.
+  {
     'lewis6991/gitsigns.nvim',
     opts = {
       signs = {
@@ -247,6 +244,7 @@ require('lazy').setup({
 
       -- Document existing key chains
       require('which-key').register {
+        ['<leader>a'] = { name = 'Spell check', _ = 'which_key_ignore' },
         ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
         ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
         ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
@@ -262,14 +260,8 @@ require('lazy').setup({
     end,
   },
 
-  -- NOTE: Plugins can specify dependencies.
-  --
-  -- The dependencies are proper plugin specifications as well - anything
-  -- you do for a plugin at the top level, you can do for a dependency.
-  --
-  -- Use the `dependencies` key to specify the dependencies of a particular plugin
-
-  { -- Fuzzy Finder (files, lsp, etc)
+  -- Fuzzy Finder (files, lsp, etc).
+  {
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
     branch = '0.1.x',
@@ -374,7 +366,8 @@ require('lazy').setup({
     end,
   },
 
-  { -- LSP Configuration & Plugins
+  -- LSP Configuration & Plugins.
+  {
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
@@ -606,7 +599,8 @@ require('lazy').setup({
     end,
   },
 
-  { -- Autoformat
+  -- Autoformat.
+  {
     'stevearc/conform.nvim',
     lazy = false,
     keys = {
@@ -644,7 +638,8 @@ require('lazy').setup({
     },
   },
 
-  { -- Autocompletion
+  -- Autocompletion.
+  {
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
     dependencies = {
@@ -771,10 +766,11 @@ require('lazy').setup({
     end,
   },
 
-  -- Highlight todo, notes, etc in comments
+  -- Highlight todo, notes, etc in comments.
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
-  { -- Collection of various small independent plugins/modules
+  -- Collection of various small independent plugins/modules.
+  {
     'echasnovski/mini.nvim',
     config = function()
       -- Better Around/Inside textobjects
@@ -811,7 +807,9 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
-  { -- Highlight, edit, and navigate code
+
+  -- Highlight, edit, and navigate code.
+  {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
@@ -888,5 +886,4 @@ require('lazy').setup({
   },
 })
 
--- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
