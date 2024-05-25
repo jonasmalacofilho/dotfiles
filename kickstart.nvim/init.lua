@@ -23,8 +23,7 @@
         * Not yet lean, and thus, not as robust as possible.
 --]]
 
--- Set the leader key.
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+-- Set the leader key (must happen before plugins are loaded).
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -33,6 +32,9 @@ vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See: `:help vim.opt`, `:help option-list`
+
+-- Always use confirm with :q, :qa, :w, etc.
+vim.opt.confirm = true
 
 -- Make line numbers default.
 vim.opt.number = true
@@ -98,13 +100,13 @@ vim.opt.spelllang = 'en_us'
 vim.opt.spellfile = '~/.config/nvim/spell/personal.utf-8.add'
 
 -- [[ Basic Keymaps ]]
---  See `:help vim.keymap.set()`
+-- See `:help vim.keymap.set()`
 
--- Set highlight on search, but clear on pressing <Esc> in normal mode
+-- Set highlight on search, but clear on pressing <Esc> in normal mode.
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Additional diagnostic keymaps.
---  `vim.diagnostic.open_float` is also mapped by default to C-W_d
+-- (`vim.diagnostic.open_float` is also mapped by default to C-W_d)
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
@@ -112,31 +114,14 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
 --
--- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
+-- This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
+--
+-- TODO: remove if proven useful in the next couple of weeks.
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows.
---
---  This remaps CTRL-l; to clear and redraw the screen, use `:mod[e]`.
---
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
 -- Buffer, window and tab manipulation.
--- vim.keymap.set('n', '<leader>b', ':b#<CR>', { desc = 'Switch to previous buffer' })
--- vim.keymap.set('n', '<leader>s', ':sp<CR>', { desc = 'Split window horizontally' })
--- vim.keymap.set('n', '<leader>v', ':vsp<CR>', { desc = 'Split window vertically' })
--- vim.keymap.set('n', '<leader>t', ':tabe<CR>', { desc = 'Open a new, empty, tab page' })
--- vim.keymap.set('n', '<leader>q', ':confirm q<CR>', { desc = 'Close window' })
--- vim.keymap.set('n', '<leader>Q', ':confirm qa<CR>', { desc = 'Close all window' })
--- vim.keymap.set('n', '<leader>w', ':update<CR>', { desc = 'Write file if modified' })
--- vim.keymap.set('n', '<leader>x', ':x<CR>', { desc = 'Write file if modified and close window' })
--- TODO: uncomment
+vim.keymap.set('n', '<leader>b', ':b#<CR>', { desc = 'Switch to previous buffer' })
 
 -- Override shift motions in visual mode to remain in that mode.
 vim.keymap.set('v', '<', '<gv', { desc = 'Shift lines leftwards' })
@@ -145,13 +130,12 @@ vim.keymap.set('v', '>', '>gv', { desc = 'Shift lines rightwards' })
 -- Select text that was just pasted.
 vim.keymap.set('n', 'gV', '`[v`]', { desc = 'Select just pasted text' })
 
--- Keybinds for working with wrapped lines.
---
---  Move up/down: if count is zero, move in display lines, else move linewise.
+-- Move down/up through with the parts of wrapped lines. Specifically, if
+-- count is zero, move in display lines, else move linewise.
 vim.keymap.set('', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = 'Smartly move downward' })
 vim.keymap.set('', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = 'Smartly move upward' })
---
---  Enable horizontal scrolling with the mouse wheel.
+
+-- Enable horizontal scrolling with the mouse wheel.
 vim.keymap.set('n', '<S-ScrollWheelDown>', 'z6l')
 vim.keymap.set('n', '<S-ScrollWheelUp>', 'z6h')
 
@@ -168,11 +152,9 @@ vim.keymap.set('n', '<leader>aa', ':setlocal spell spelllang=en_us,pt_br<CR>', {
 vim.keymap.set('n', '<leader>al', ':setlocal nospell<CR>', { desc = "Don't spell check" })
 
 -- [[ Basic Autocommands ]]
---  See `:help lua-guide-autocommands`
+-- See `:help lua-guide-autocommands`
 
--- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
+-- Highlight when yanking (copying) text.
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
