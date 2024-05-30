@@ -689,6 +689,19 @@ require('lazy').setup({
       signs = false,
       highlight = { comments_only = false },
     },
+    config = function(_, opts)
+      local todo = require 'todo-comments'
+      todo.setup(opts)
+
+      vim.keymap.set('n', ']t', function()
+        todo.jump_next()
+      end, { desc = 'Next todo comment' })
+      vim.keymap.set('n', '[t', function()
+        todo.jump_prev()
+      end, { desc = 'Previous todo comment' })
+
+      vim.keymap.set('n', '<leader>st', ':TodoTelescope<CR>', { desc = '[S]earch [T]ODO, FIXME and other notes' })
+    end,
   },
 
   -- Adds git related signs to the gutter, as well as utilities for managing changes.
