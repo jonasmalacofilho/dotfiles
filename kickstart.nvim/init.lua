@@ -117,7 +117,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 --
--- TODO: remove if proven useful in the next couple of weeks.
+-- TODO: remove if unused after a couple of weeks.
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- Buffer, window and tab manipulation.
@@ -771,6 +771,9 @@ require('lazy').setup({
       require('mini.surround').setup()
     end,
   },
+
+  -- TODO: tpope/vim-eunuch?
+  -- TODO: ranger support with rnvimr?
 
   -- Additional Kickstart plugins available.
   -- require 'kickstart.plugins.debug',
