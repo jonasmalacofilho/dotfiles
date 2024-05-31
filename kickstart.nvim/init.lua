@@ -184,12 +184,17 @@ vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure and install plugins ]]
 --
+-- Plugins are grouped by category, and categories are sorted by importance.
+--
 -- Check the current status of the plugins:
 --   :Lazy
 --
--- Use `opts = {}` to force a plugin to be loaded.
+-- Use `opts = {}` to force a plugin to be loaded. Configuration can be customized with `config`,
+-- which takes `(_, opts)`.
 --
 require('lazy').setup({
+
+  -- [[ Advanced syntax highlighting and indent ]]
 
   -- Highlight, edit, and navigate code.
   {
@@ -251,6 +256,11 @@ require('lazy').setup({
       --   vim.cmd.hi 'Comment gui=none'
     end,
   },
+
+  -- Detect tabstop and shiftwidth automatically.
+  'tpope/vim-sleuth',
+
+  -- [[ Language Server Protocol and features ]]
 
   -- LSP Configuration & Plugins.
   {
@@ -567,6 +577,8 @@ require('lazy').setup({
     },
   },
 
+  -- [[ Convenience ]]
+
   -- Fuzzy Finder (files, lsp, etc).
   {
     'nvim-telescope/telescope.nvim',
@@ -677,8 +689,20 @@ require('lazy').setup({
     end,
   },
 
-  -- Detect tabstop and shiftwidth automatically.
-  'tpope/vim-sleuth',
+  -- Useful plugin to show you pending keybinds.
+  {
+    'folke/which-key.nvim',
+    event = 'VimEnter', -- late, but before all UI elements are loaded
+    config = function()
+      require('which-key').setup()
+
+      -- Document existing key chains
+      require('which-key').register {
+        ['<leader>a'] = { name = 'Spell check ([A]bc icon)', _ = 'which_key_ignore' },
+        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
+      }
+    end,
+  },
 
   -- Highlight todo, notes, etc in comments.
   {
@@ -718,39 +742,15 @@ require('lazy').setup({
     },
   },
 
-  -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
-  --
-  -- This is often very useful to both group configuration, as well as handle
-  -- lazy loading plugins that don't need to be loaded immediately at startup.
-  --
-  -- For example, in the following configuration, we use:
-  --  event = 'VimEnter'
-  --
-  -- which loads which-key before all the UI elements are loaded. Events can be
-  -- normal autocommands events (`:help autocmd-events`).
-  --
-  -- Then, because we use the `config` key, the configuration only runs
-  -- after the plugin has been loaded:
-  --  config = function() ... end
+  -- [[ mini.nvim collection ]]
 
-  { -- Useful plugin to show you pending keybinds.
-    'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function() -- This is the function that runs, AFTER loading
-      require('which-key').setup()
-
-      -- Document existing key chains
-      require('which-key').register {
-        ['<leader>a'] = { name = 'Spell check ([A]bc icon)', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-      }
-    end,
-  },
-
-  -- Collection of various small independent plugins/modules.
   {
     'echasnovski/mini.nvim',
     config = function()
+      -- Simple statusline.
+      local statusline = require 'mini.statusline'
+      statusline.setup { use_icons = vim.g.have_nerd_font }
+
       -- Better Around/Inside textobjects.
       --
       -- - va)  - [V]isually select [A]round [)]paren
@@ -769,21 +769,6 @@ require('lazy').setup({
       --
       -- NOTE: makes `s` as `c` unusable.
       require('mini.surround').setup()
-
-      -- Simple statusline.
-      local statusline = require 'mini.statusline'
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we could set the section for
-      -- cursor location to (always) LINE:COLUMN.
-      ---@diagnostic disable-next-line: duplicate-set-field
-      -- statusline.section_location = function()
-      --   return '%2l:%-2v'
-      -- end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
 
