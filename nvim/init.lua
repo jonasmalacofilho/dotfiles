@@ -630,11 +630,14 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          mappings = {
+            i = {
+              -- Not sure why it needs to be C-s-w, instead of C-w, like in "normal" insert mode.
+              ['<C-BS>'] = { '<C-s-w>', type = 'command', opts = { desc = 'Delete the word before the cursor' } },
+            },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
