@@ -691,6 +691,15 @@ require('lazy').setup({
     end,
   },
 
+  -- Integrate with ranger.
+  {
+    'kevinhwang91/rnvimr',
+    event = 'VimEnter',
+    config = function()
+      vim.keymap.set('n', '<leader>x', ':RnvimrToggle<cr>', { desc = 'E[x]plore files with ranger' })
+    end,
+  },
+
   -- Useful plugin to show you pending keybinds.
   {
     'folke/which-key.nvim',
@@ -775,7 +784,6 @@ require('lazy').setup({
   },
 
   -- TODO: tpope/vim-eunuch?
-  -- TODO: ranger support with rnvimr?
 
   -- Additional Kickstart plugins available.
   -- require 'kickstart.plugins.debug',
