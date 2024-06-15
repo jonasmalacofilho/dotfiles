@@ -376,7 +376,7 @@ require('lazy').setup({
               command = 'clippy',
             },
           },
-          cmd = { 'rustup', 'run', 'stable', 'rust-analyzer' },
+          cmd = { '/usr/bin/rust-analyzer' },
         },
 
         lua_ls = {
