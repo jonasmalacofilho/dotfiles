@@ -367,13 +367,15 @@ require('lazy').setup({
         -- TODO: look into https://github.com/mrcjkb/rustaceanvim for a more advanced setup
         rust_analyzer = {
           settings = {
-            imports = {
-              granularity = {
-                group = 'module',
+            ['rust-analyzer'] = {
+              imports = {
+                granularity = {
+                  group = 'module',
+                },
               },
-            },
-            check = {
-              command = 'clippy',
+              check = {
+                command = 'clippy',
+              },
             },
           },
           cmd = { '/usr/bin/rust-analyzer' },
