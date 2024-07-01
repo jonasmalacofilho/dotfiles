@@ -102,7 +102,7 @@ vim.opt.spellfile = '~/.config/nvim/spell/personal.utf-8.add'
 -- See `:help vim.keymap.set()`
 
 -- Start typing a command without the shift key.
-vim.keymap.set('n', '<leader>;', ':', { desc = 'Start typing a command' })
+vim.keymap.set({ 'n', 'v' }, '<leader>;', ':', { desc = 'Start typing a command' })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode.
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
