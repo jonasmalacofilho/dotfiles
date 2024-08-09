@@ -557,34 +557,35 @@ require('lazy').setup({
       },
     },
     opts = {
-      notify_on_error = false,
+      formatters_by_ft = {
+        javascript = { 'prettier' },
+        javascriptreact = { 'prettier' },
+        json = { 'prettier' },
+        jsonc = { 'prettier' },
+        lua = { 'stylua' },
+        python = { 'black' },
+        rust = { lsp_format = 'fallback' },
+        typescript = { 'prettier' },
+        typescriptreact = { 'prettier' },
+      },
       format_on_save = function(bufnr)
         -- Disable with a global or buffer-local variable
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
           return
         end
 
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        return {
-          timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+        -- Since most filetypes don't have trully cannonical formatters, only enable format_on_save
+        -- in a few cases.
+        local enabled = {
+          rust = true,
         }
+
+        if not enabled[vim.bo[bufnr].filetype] then
+          return
+        end
+
+        return {}
       end,
-      formatters_by_ft = {
-        javascript = { 'prettier' },
-        json = { 'prettier' },
-        jsonc = { 'prettier' },
-        lua = { 'stylua' },
-        python = { 'black' },
-        typescript = { 'prettier' },
-        -- Conform can run multiple formatters sequentially
-        --   python = { "isort", "black" },
-        -- or, with sub-list, *until* a formatter is found.
-        --   javascript = { { "prettierd", "prettier" } },
-      },
     },
   },
 
