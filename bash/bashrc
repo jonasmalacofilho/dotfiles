@@ -2,9 +2,14 @@ export EDITOR=nvim
 export VISUAL=nvim
 export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
 
-# Enable Wayland support when applicatble and where supported.
 if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+    # Run QT applications on Wayland.
     export QT_QPA_PLATFORM="wayland"
+
+    # Use the EGL nvidia-vaapi-driver backend to try to mitigate issues of erratic behavior on
+    # Firefox, especially on Google Docs & Sheets.
+    # See: https://github.com/elFarto/nvidia-vaapi-driver/issues/126#issuecomment-1847493100
+    export NVD_BACKEND="egl"
 fi
 
 # Don't disable the RDD sandbox, but somehow still required for Firefox with nvidia-vaapi-driver.
