@@ -1,6 +1,7 @@
+.luarc.json
+lazy-lock.json
+nvim
 tags
 test.sh
-.luarc.json
-nvim
 
 spell/
