@@ -5,7 +5,7 @@ Description=Static liquidctl configuration
 Type=oneshot
 ExecStart=/usr/local/bin/liquidcfg --flush --verbose
 ExecStart=/usr/bin/sleep 5
-ExecStart=/usr/bin/liquidctl status --verbose --unsafe smbus,vengeance_rgb
+ExecStart=/usr/bin/liquidctl status --verbose
 
 [Install]
 WantedBy=default.target
