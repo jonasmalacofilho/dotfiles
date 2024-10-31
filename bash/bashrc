@@ -6,6 +6,9 @@ if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     # Run QT applications on Wayland.
     export QT_QPA_PLATFORM="wayland"
 
+    # Run Electron 28+ applications on Wayland.
+    export ELECTRON_OZONE_PLATFORM_HINT="auto"
+
     # Use the EGL nvidia-vaapi-driver backend to try to mitigate issues of erratic behavior on
     # Firefox, especially on Google Docs & Sheets.
     # See: https://github.com/elFarto/nvidia-vaapi-driver/issues/126#issuecomment-1847493100
