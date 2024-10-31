@@ -373,6 +373,7 @@ require('lazy').setup({
             ['rust-analyzer'] = {
               imports = {
                 granularity = {
+                  enforce = true,
                   group = 'module',
                 },
               },
