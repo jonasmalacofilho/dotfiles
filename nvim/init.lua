@@ -382,7 +382,7 @@ require('lazy').setup({
               },
             },
           },
-          cmd = { '/usr/bin/rust-analyzer' },
+          -- cmd = { '/usr/bin/rust-analyzer' },
         },
 
         lua_ls = {
