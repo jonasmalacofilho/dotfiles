@@ -1,4 +1,5 @@
 *.swp
+.git/
 .local/
 tags
 venv/
