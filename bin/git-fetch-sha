@@ -1,0 +1,32 @@
+#!/bin/bash
+# by Jonas Berlin 2021 from https://gist.github.com/xkr47/a82d710092847a39901a563b22e82b4b
+# 1. Place in e.g. $HOME/bin/git-fetch-sha
+# 2. Run "git fetch-sha" for usage
+
+set -e
+
+remote="$1"
+sha="$2"
+
+if [ "$sha" -a $(echo "$sha" | egrep '^[0-9a-f]{40}$' | wc -l) != 1 ]; then
+    echo ERROR: Need full 40-character SHA
+    exit 2
+fi
+
+if [ "$remote" ]; then
+    url="$(git remote get-url "$remote")"
+fi
+
+if [ $# != 2 -o ! "$url" -o ! "$sha" ]; then
+    echo "usage: git fetch-sha <remote> <full-40-character-sha>"
+    echo
+    echo "example: git fetch-sha origin 0123456789abcdef0123456789abcdef01234567"
+    exit 1
+fi
+
+git fetch-pack "$url" "$sha"
+
+echo
+echo "Success. You can now optionally connect the sha to a branch:"
+echo
+echo "  git branch foo $sha"

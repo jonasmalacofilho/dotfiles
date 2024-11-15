@@ -2,6 +2,12 @@ export EDITOR=nvim
 export VISUAL=nvim
 export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
 
+# Find the location of my dotfiles.
+# Adapted from: https://stackoverflow.com/a/246128
+export DOTFILES=$( cd -P "$( dirname $(readlink "${BASH_SOURCE[0]}") )/.." >/dev/null 2>&1 && pwd )
+
+export PATH=$PATH:$DOTFILES/bin
+
 if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     # Run QT applications on Wayland.
     export QT_QPA_PLATFORM="wayland"
