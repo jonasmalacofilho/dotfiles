@@ -562,6 +562,7 @@ require('lazy').setup({
     },
     opts = {
       formatters_by_ft = {
+        html = { 'prettier' },
         javascript = { 'prettier' },
         javascriptreact = { 'prettier' },
         json = { 'prettier' },
