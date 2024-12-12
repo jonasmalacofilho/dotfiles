@@ -29,8 +29,6 @@ if status is-interactive
     abbr -a w watch -d -n 1
     abbr -a we watchexec --clear
 
-    abbr -a --position=anywhere bin trash
-
     abbr -a --set-cursor m 'math "%"'
 
     abbr -a nv nvim
