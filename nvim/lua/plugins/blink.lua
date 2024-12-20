@@ -9,16 +9,25 @@ return {
   opts = {
     keymap = { preset = 'default' },
 
+    completion = {
+      documentation = {
+        auto_show = true,
+        auto_show_delay_ms = 50,
+        update_delay_ms = 50,
+      },
+    },
+
     appearance = {
       use_nvim_cmp_as_default = true,
-      nerd_font_variant = 'mono'
+      nerd_font_variant = 'mono',
     },
 
     sources = {
       default = { 'lsp', 'path', 'snippets', 'buffer' },
     },
 
-    signature = { enabled = true }
+    signature = { enabled = true },
   },
-  opts_extend = { "sources.default" }
+
+  opts_extend = { 'sources.default' },
 }
