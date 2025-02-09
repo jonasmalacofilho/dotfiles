@@ -644,7 +644,6 @@ require('lazy').setup({
     opts = {
       signs = false,
       keywords = { SAFETY = { color = "hint" }, QUESTION = { color = "info" } },
-      highlight = { comments_only = false },
     },
     config = function(_, opts)
       local todo = require 'todo-comments'
