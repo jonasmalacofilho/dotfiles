@@ -2,19 +2,47 @@
 	name = Jonas Malaco
 	email = jonas@protocubo.io
 	signingkey = 06af7ad0
-[color]
-	ui = true
-[push]
-	default = simple
+
 [core]
 	excludesfile = ~/.gitignore.global
 	abbrev = 12
 	pager = less
+
+[init]
+	defaultBranch = main
+
+[push]
+	default = simple
+
+[pull]
+	rebase = false
+
+[color]
+	ui = true
+
+[alias]
+	klog = log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'
+	head = !git --no-pager log --abbrev=12 --oneline --format='%h' -1
+	pulls = fetch origin "+refs/pull/*:refs/origin/pull/*"
+	upulls = fetch upstream "+refs/pull/*:refs/upstream/pull/*"
+
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge --skip -- %f
 	required = true
 	process = git-lfs filter-process --skip
+
+[url "git@github.com:"]
+	insteadOf = "gh:"
+
+[url "git@gitlab.com:"]
+	insteadOf = "gl:"
+
+# Patch-based workflows.
+
+[format]
+	signOff = true
+
 [sendemail]
 	smtpencryption = tls
 	smtpserver = smtp.gmail.com
@@ -23,18 +51,3 @@
 	annotate = true
 	confirm = always
 	suppressfrom = false
-[alias]
-	klog = log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'
-	head = !git --no-pager log --abbrev=12 --oneline --format='%h' -1
-	pulls = fetch origin "+refs/pull/*:refs/origin/pull/*"
-	upulls = fetch upstream "+refs/pull/*:refs/upstream/pull/*"
-[pull]
-	rebase = false
-[init]
-	defaultBranch = main
-[url "git@github.com:"]
-	insteadOf = "gh:"
-[url "git@gitlab.com:"]
-	insteadOf = "gl:"
-[format]
-	signOff = true
