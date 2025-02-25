@@ -11,14 +11,33 @@
 [init]
 	defaultBranch = main
 
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = -version:refname
+
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+
+[commit]
+	verbose = true
+
 [push]
 	default = simple
 
 [pull]
 	rebase = false
 
-[color]
-	ui = true
+# Reuse recorded resolutions.
+[rerere]
+	enabled = true
+	autoupdate = true
+
+[help]
+	autocorrect = prompt
 
 [alias]
 	klog = log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'
