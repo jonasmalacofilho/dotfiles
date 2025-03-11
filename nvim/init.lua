@@ -206,31 +206,32 @@ require('lazy').setup({
       ensure_installed = {
         'bash',
         'c',
-        'diff',
-        'html',
+        'fish',
         'javascript',
         'lua',
         'luadoc',
         'markdown',
         'python',
         'rust',
+        'tsx',
         'typescript',
         'vim',
         'vimdoc',
       },
-      -- Autoinstall languages that are not installed
+      -- Autoinstall languages that are not installed.
       auto_install = true,
+      -- Use Treesitter for syntax highlighting.
       highlight = {
         enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        -- If you are experiencing weird indenting issues, add the language to
-        -- the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
+        -- Disable when unbearably slow/laggy (can also be a function). Note that this reverts back
+        -- to Vim's `syntax`, which is very limited. Can't you just clear (or disable) hlsearch?
+        -- disable = { 'tsx', 'rust' },
+        -- Keep  Vim's regex `syntax` system for ident on some languages (add to this list when
+        -- experiencing "weird indenting issues").
+        -- additional_vim_regex_highlighting = { 'ruby' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
-      incremental_selection = {
-        enable = true,
-      },
+      indent = { enable = true },
+      incremental_selection = { enable = true },
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -643,7 +644,7 @@ require('lazy').setup({
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = {
       signs = false,
-      keywords = { SAFETY = { color = "hint" }, QUESTION = { color = "info" } },
+      keywords = { SAFETY = { color = 'hint' }, QUESTION = { color = 'info' } },
     },
     config = function(_, opts)
       local todo = require 'todo-comments'
