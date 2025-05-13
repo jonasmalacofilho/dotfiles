@@ -2,11 +2,15 @@ export EDITOR=nvim
 export VISUAL=nvim
 export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
 
-# Find the location of my dotfiles.
-# Adapted from: https://stackoverflow.com/a/246128
+# Find the location of my dotfiles. Adapted from <https://stackoverflow.com/a/246128>.
 export DOTFILES=$( cd -P "$( dirname $(readlink "${BASH_SOURCE[0]}") )/.." >/dev/null 2>&1 && pwd )
 
-export PATH=$PATH:$DOTFILES/bin
+# Add directories to `PATH`, but avoid duplicates (see: <https://superuser.com/a/1333564>).
+[ "${PATH#*:$DOTFILES/bin}" == "$PATH" ] && export PATH=$PATH:$DOTFILES/bin
+# [ "${PATH#*$EXAMPLE/bin:}" == "$PATH" ] && export PATH="$EXAMPLE/bin:$PATH"
+
+# WARN: `fish_user_paths` MUST NOT be an empty string (instead of an empty list). It is prepended to
+# `PATH`, where an empty string is interpreted as `.` – the current directory.
 
 if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     # Run QT applications on Wayland.
