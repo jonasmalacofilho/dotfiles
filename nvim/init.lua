@@ -249,11 +249,12 @@ require('lazy').setup({
   -- Colorscheme.
   {
     -- 'ellisonleao/gruvbox.nvim',
-    'folke/tokyonight.nvim',
+    -- 'folke/tokyonight.nvim',
+    'Shatur/neovim-ayu',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here. Some themes may supply more than one style.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'ayu'
 
       -- Can configure highlights by doing something like:
       --   vim.cmd.hi 'Comment gui=none'
@@ -373,7 +374,8 @@ require('lazy').setup({
         -- - https://github.com/rust-lang/rust-analyzer/blob/master/docs/user/generated_config.adoc
         -- - https://rust-analyzer.github.io/manual.html
         --
-        -- TODO: look into https://github.com/mrcjkb/rustaceanvim for a more advanced setup
+        -- TODO: look into https://github.com/mrcjkb/rustaceanvim for a more advanced setup.
+        -- TODO: support workspace/project-specific settings (see rustaceanvim).
         rust_analyzer = {
           settings = {
             ['rust-analyzer'] = {
