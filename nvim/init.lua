@@ -268,6 +268,18 @@ require('lazy').setup({
 
   -- LSP Configuration & Plugins.
   {
+    -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
+    -- used for completion, annotations and signatures of Neovim apis
+    'folke/lazydev.nvim',
+    ft = 'lua',
+    opts = {
+      library = {
+        -- Load luvit types when the `vim.uv` word is found
+        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+      },
+    },
+  },
+  {
     'neovim/nvim-lspconfig',
     dependencies = {
       -- NOTE: passing `opts = {}` is the same as calling `require(...).setup({})`
@@ -280,10 +292,6 @@ require('lazy').setup({
 
       -- Useful status updates for LSP.
       { 'j-hui/fidget.nvim', opts = {} },
-
-      -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
-      -- used for completion, annotations and signatures of Neovim apis.
-      { 'folke/neodev.nvim', opts = {} },
 
       { 'saghen/blink.cmp' },
     },
@@ -455,6 +463,20 @@ require('lazy').setup({
         vim.lsp.enable(vim.tbl_keys(servers.others))
       end
     end,
+  },
+
+  -- Autocompletion.
+  {
+    'saghen/blink.cmp',
+    event = 'VimEnter',
+    version = '1.*',
+    dependencies = {
+      -- Set up LuaLS for editing Neovim config files.
+      'folke/lazydev.nvim',
+    },
+    --- @module 'blink.cmp'
+    --- @type blink.cmp.Config
+    opts = {},
   },
 
   -- Autoformat.
