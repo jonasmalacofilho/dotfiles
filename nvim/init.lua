@@ -270,13 +270,15 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      -- Automatically install LSPs and related tools to stdpath for Neovim.
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
-      'williamboman/mason-lspconfig.nvim',
+      -- NOTE: passing `opts = {}` is the same as calling `require(...).setup({})`
+      --
+      -- Automatically install LSPs and related tools to stdpath for Neovim
+      -- Mason must be loaded before its dependents so we need to set it up here.
+      { 'mason-org/mason.nvim', opts = {} },
+      'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { 'j-hui/fidget.nvim', opts = {} },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -349,93 +351,109 @@ require('lazy').setup({
       })
 
       -- LSP servers and clients are able to communicate to each other what features they support.
-      -- By default, Neovim doesn't support everything that is in the LSP specification.
-      -- When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
-      -- So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
-
-      -- Enable the following language servers. They will automatically be installed.
+      -- By default, Neovim doesn't support everything that is in the LSP specification. When you
+      -- add blink.cmp, luasnip, etc. Neovim now has *more* capabilities. So, in theory, we need to
+      -- create new capabilities with blink.cmp, and then broadcast that to the servers.
       --
-      -- Add any additional override configuration in the following tables. Available keys are:
+      -- However, blink.cmp now extends capabilites by default from its internal code[1]. But,
+      -- previously, the following line was required by the completion plugin that preceeded
+      -- blink.cmp.
+      --
+      --   local capabilities = require("blink.cmp").get_lsp_capabilities()
+      --
+      -- [1]: https://github.com/Saghen/blink.cmp/blob/102db2f5996a/plugin/blink-cmp.lua
+
+      -- Language server configuration.
+      --
+      -- Comprised by the following sub-tables:
+      --
+      -- - mason: servers automatically installed with mason
+      -- - others: other servers available on the system
+      --
+      -- Both tables have an identical structure of language server names as keys and a table of
+      -- language server (override) configuration as values. The available keys are:
+      --
       -- - cmd (table): Override the default command used to start the server
       -- - filetypes (table): Override the default list of associated filetypes for the server
       -- - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       -- - settings (table): Override the default settings passed when initializing the server.
       --
-      -- For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      --
       -- See `:help lspconfig-all` for a list of all the pre-configured LSPs.
+      ---@class LspServersConfig
+      ---@field mason table<string, vim.lsp.Config>
+      ---@field others table<string, vim.lsp.Config>
       local servers = {
-        -- rust-analyzer
-        --
-        -- Documentation:
-        -- - https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
-        -- - https://github.com/rust-lang/rust-analyzer/blob/master/docs/user/generated_config.adoc
-        -- - https://rust-analyzer.github.io/manual.html
-        --
-        -- TODO: look into https://github.com/mrcjkb/rustaceanvim for a more advanced setup.
-        -- TODO: support workspace/project-specific settings (see rustaceanvim).
-        rust_analyzer = {
-          settings = {
-            ['rust-analyzer'] = {
-              imports = {
-                granularity = {
-                  enforce = true,
-                  group = 'module',
+        mason = {
+          rust_analyzer = {
+            -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
+            -- https://rust-analyzer.github.io/manual.html
+            -- TODO: look into https://github.com/mrcjkb/rustaceanvim for a more advanced setup
+            -- TODO: support workspace/project-specific settings (see rustaceanvim)
+            settings = {
+              ['rust-analyzer'] = {
+                imports = {
+                  granularity = {
+                    enforce = true,
+                    group = 'module',
+                  },
+                },
+                check = {
+                  command = 'clippy',
                 },
               },
-              check = {
-                command = 'clippy',
+            },
+          },
+
+          lua_ls = {
+            settings = {
+              Lua = {
+                completion = {
+                  callSnippet = 'Replace',
+                },
+                diagnostics = { disable = { 'missing-fields' } },
               },
             },
           },
-          -- cmd = { '/usr/bin/rust-analyzer' },
-        },
 
-        lua_ls = {
-          settings = {
-            Lua = {
-              completion = {
-                callSnippet = 'Replace',
-              },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
-            },
-          },
+          -- For many servers and setups, the defaults work just fine.
+          eslint = {},
+          tailwindcss = {},
+          ts_ls = {},
+          pyright = {},
+          clangd = {},
         },
-
-        pyright = {},
-        clangd = {},
+        others = {},
       }
 
-      -- Ensure the servers and tools above are installed.
+      -- Ensure the servers and tools managed by Mason (above) are installed.
       --
-      -- To check the current status of installed tools and/or manually install other tools:
-      --   :Mason
-      -- (You can press `g?` for help in that menu).
-      require('mason').setup()
-
-      -- You can add other tools here that you want Mason to install
-      -- for you, so that they are available from within Neovim.
-      local ensure_installed = vim.tbl_keys(servers or {})
+      -- You can add other tools here that you want Mason to install for you, so that they are
+      -- available from within Neovim.
+      local ensure_installed = vim.tbl_keys(servers.mason or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+      -- Either merge all additional server configs from the `servers.mason` and `servers.others` tables
+      -- to the default language server configs as provided by nvim-lspconfig or
+      -- define a custom server config that's unavailable on nvim-lspconfig.
+      for server, config in pairs(vim.tbl_extend('keep', servers.mason, servers.others)) do
+        if not vim.tbl_isempty(config) then
+          vim.lsp.config(server, config)
+        end
+      end
+
+      -- After configuring our language servers, we now enable them
       require('mason-lspconfig').setup {
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for tsserver).
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
+        ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+        automatic_enable = true, -- automatically run vim.lsp.enable() for all servers that are installed via Mason
       }
+
+      -- Manually run vim.lsp.enable for all language servers that are *not* installed via Mason
+      if not vim.tbl_isempty(servers.others) then
+        vim.lsp.enable(vim.tbl_keys(servers.others))
+      end
     end,
   },
 
