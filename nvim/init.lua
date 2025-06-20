@@ -256,19 +256,14 @@ require('lazy').setup({
     -- 'folke/tokyonight.nvim',
     'Shatur/neovim-ayu',
     priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      local colors = require 'ayu.colors'
-      colors.generate(false) -- Pass `true` to enable mirage
-
-      require('ayu').setup {
-        terminal = false,
-        overrides = {
-          -- Disable italics in comments.
-          Comment = { italic = false },
-        },
-      }
-
-      vim.cmd.colorscheme 'ayu'
+    opts = {
+      overrides = {
+        Comment = { italic = false },
+      },
+    },
+    config = function(opts)
+      require('ayu').setup(opts)
+      vim.cmd 'colorscheme ayu'
     end,
   },
 
