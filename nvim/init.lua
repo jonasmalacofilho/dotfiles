@@ -262,12 +262,10 @@ require('lazy').setup({
 
       require('ayu').setup {
         terminal = false,
-        overrides = function()
-          return {
-            -- Disable italics in comments.
-            Comment = { fg = colors.comment },
-          }
-        end,
+        overrides = {
+          -- Disable italics in comments.
+          Comment = { italic = false },
+        },
       }
 
       vim.cmd.colorscheme 'ayu'
