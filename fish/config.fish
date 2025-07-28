@@ -58,6 +58,7 @@ if status is-interactive
     abbr -a ghb gh browse
     abbr -a gl git pull
     abbr -a glg 'git log --pretty=$GIT_LOG_FMT_JONAS --graph'
+    abbr -a glga 'git log --pretty=$GIT_LOG_FMT_JONAS --graph --all'
     abbr -a glk 'git log --pretty=$GIT_LOG_FMT_KERNEL'
     abbr -a glog git log --stat
     abbr -a glop git log --patch --stat
