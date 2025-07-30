@@ -483,9 +483,11 @@ require('lazy').setup({
                     group = 'module',
                   },
                 },
-                check = {
-                  command = 'clippy',
-                },
+                -- Can be much slower in larger projects; `clippy` itself is slower than `check`,
+                -- but RA also seems to more effectively reuse computations with `check`.
+                -- check = {
+                --   command = 'clippy',
+                -- },
               },
             },
           },
