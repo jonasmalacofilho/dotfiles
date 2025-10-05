@@ -1,4 +1,4 @@
-function compress-pdf -d "Compress PDF"
+function compress-pdf-for-kindle -d "Compress PDF"
     if not argparse -N 2 -X 2 'preset=' -- $argv
         echo "Usage: $(status function) [--preset=<preset>] <input> <output>"
         return 1
@@ -19,10 +19,11 @@ function compress-pdf -d "Compress PDF"
         -dAutoFilterColorImages=false \
         -dPassThroughJPEGImages=false \
         -dPassThroughJPXImages=false \
-        -dConvertCMYKImagesToRGB=true \
-        # -sColorConversionStrategy=Gray \
+        # -dConvertCMYKImagesToRGB=true \
+        -sColorConversionStrategy=Gray \
         -dNOPAUSE \
         -dBATCH \
         -sOutputFile=$argv[2] \
         $argv[1]
 end
+
