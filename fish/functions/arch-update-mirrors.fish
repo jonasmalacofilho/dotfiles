@@ -13,6 +13,9 @@ function arch-update-mirrors -a country -a limit_to -a timeout -d "Update Arch m
         and set ignoremirrors /dev/null
     end
 
+    and echo :: Backing up the current mirrorlist
+    and sudo cp /etc/pacman.d/mirrorlist{,.old}
+
     and echo :: Getting ranked and up-to-date pacman mirrorlist for $country...
     and curl -s "https://archlinux.org/mirrorlist/?country=$country&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" |
         grep -v -f "$ignoremirrors" |
