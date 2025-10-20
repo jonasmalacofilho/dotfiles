@@ -18,6 +18,8 @@ function arch-update-mirrors -a country -a limit_to -a timeout -d "Update Arch m
 
     and echo :: Getting ranked and up-to-date pacman mirrorlist for $country...
     and curl -s "https://archlinux.org/mirrorlist/?country=$country&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" |
+        cat - (echo '#Server = https://fastly.mirror.pkgbuild.com/$repo/os/$arch' | psub) |
+        sudo tee /etc/pacman.d/mirrorlist.$country |
         grep -v -f "$ignoremirrors" |
         sed -e 's/^#Server/Server/' -e '/^#/d' |
         rankmirrors -n "$limit_to" -m "$timeout" -r extra -v - |
