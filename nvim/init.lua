@@ -579,12 +579,14 @@ require('lazy').setup({
         javascript = { 'prettier' },
         javascriptreact = { 'prettier' },
         json = { 'prettier' },
+        json5 = { 'prettier' },
         jsonc = { 'prettier' },
         lua = { 'stylua' },
         python = { 'black' },
         rust = { lsp_format = 'fallback' },
         typescript = { 'prettier' },
         typescriptreact = { 'prettier' },
+        yaml = { 'prettier' },
       },
       format_on_save = function(bufnr)
         -- Disable with a global or buffer-local variable
