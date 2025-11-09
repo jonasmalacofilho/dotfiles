@@ -582,6 +582,7 @@ require('lazy').setup({
         json5 = { 'prettier' },
         jsonc = { 'prettier' },
         lua = { 'stylua' },
+        markdown = { 'prettier' },
         python = { 'black' },
         rust = { lsp_format = 'fallback' },
         typescript = { 'prettier' },
