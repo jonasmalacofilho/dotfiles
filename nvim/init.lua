@@ -578,6 +578,7 @@ require('lazy').setup({
         html = { 'prettier' },
         javascript = { 'prettier' },
         javascriptreact = { 'prettier' },
+        markdown = { 'prettier' },
         json = { 'prettier' },
         json5 = { 'prettier' },
         jsonc = { 'prettier' },
