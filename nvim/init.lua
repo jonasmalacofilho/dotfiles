@@ -257,11 +257,13 @@ require('lazy').setup({
     'Shatur/neovim-ayu',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     opts = {
+      terminal = false,
       overrides = {
         Comment = { italic = false },
+        Normal = { bg = 'None' },
       },
     },
-    config = function(opts)
+    config = function(_, opts)
       require('ayu').setup(opts)
       vim.cmd 'colorscheme ayu'
     end,
