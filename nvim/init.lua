@@ -259,6 +259,7 @@ require('lazy').setup({
     opts = {
       overrides = {
         Comment = { italic = false },
+        Normal = { bg = 'None' },
       },
     },
     config = function(_, opts)
