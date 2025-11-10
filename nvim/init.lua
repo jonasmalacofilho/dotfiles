@@ -261,7 +261,7 @@ require('lazy').setup({
         Comment = { italic = false },
       },
     },
-    config = function(opts)
+    config = function(_, opts)
       require('ayu').setup(opts)
       vim.cmd 'colorscheme ayu'
     end,
