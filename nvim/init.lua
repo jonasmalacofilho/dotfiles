@@ -260,7 +260,6 @@ require('lazy').setup({
       terminal = false,
       overrides = {
         Comment = { italic = false },
-        Normal = { bg = 'None' },
       },
     },
     config = function(_, opts)
