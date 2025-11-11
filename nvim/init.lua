@@ -264,7 +264,7 @@ require('lazy').setup({
     },
     config = function(_, opts)
       require('ayu').setup(opts)
-      vim.cmd 'colorscheme ayu'
+      vim.cmd [[colorscheme ayu]]
     end,
   },
 
