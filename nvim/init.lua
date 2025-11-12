@@ -84,7 +84,7 @@ vim.opt.scrolloff = 3
 
 -- Default to 100-column lines.
 vim.opt.textwidth = 100
-vim.opt.colorcolumn = { 101 }
+vim.opt.colorcolumn = { "+1" }
 
 -- Show filename on window title.
 vim.opt.title = true
