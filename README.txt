@@ -1,4 +1,3 @@
 - most files and directories are manages with symlinks created by their corresponding Makefiles
 - new stuff has started to use toml-bombadil
 - btop is using GNU stow
-- inputrc has to be manually linked
