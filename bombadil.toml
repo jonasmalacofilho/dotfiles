@@ -1,7 +1,5 @@
 # To overwrite existing symlinks:
-#   bombadil link
-#   bombadil unlink
-#   bombadil link
+#   bombadil link && bombadil unlink && bombadil link
 
 dotfiles_dir = "dotfiles"
 
@@ -11,6 +9,7 @@ dotfiles_dir = "dotfiles"
 btop = { direct = true, source = "btop", target = ".config/btop" }
 fish = { direct = true, source = "fish", target = ".config/fish" }
 kitty = { direct = true, source = "kitty", target = ".config/kitty" }
+nvim = { direct = true, source = "nvim", target = ".config/nvim" }
 
 # Stuff that goes in ~/
 editorconfig = { direct = true, source = "editorconfig", target = ".editorconfig" }

@@ -1,6 +1,6 @@
-essential: bash nvim ssh tmux _phony
+essential: bash ssh tmux _phony
 
-bash liquidctl neomutt nvim ssh systemd tmux: _phony
+bash liquidctl neomutt ssh systemd tmux: _phony
 	make -C $@
 
 .PHONY: _phony
