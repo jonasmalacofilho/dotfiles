@@ -37,4 +37,3 @@ indent_size = 2
 
 [*.y{,a}ml]
 indent_size = 2
-
