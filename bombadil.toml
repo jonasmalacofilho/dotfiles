@@ -18,3 +18,6 @@ inputrc = { direct = true, source = "inputrc", target = ".inputrc" }
 # Git
 gitconfig = { direct = true, source = "git/config", target = ".gitconfig" }
 gitignore = { direct = true, source = "git/ignore", target = ".gitignore.global" }
+
+# SSH
+ssh = { direct = true, source = "ssh/config", target = ".ssh/config" }
