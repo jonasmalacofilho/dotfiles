@@ -1,6 +1,11 @@
 dotfiles_dir = "dotfiles"
 
 [settings.dots]
-inputrc = { direct = true, source = "inputrc", target = ".inputrc" }
-editorconfig = { direct = true, source = "editorconfig", target = ".editorconfig" }
+
+# Stuff that goes in ~/.config
 btop = { direct = true, source = "btop", target = ".config/btop" }
+fish = { direct = true, source = "fish", target = ".config/fish" }
+
+# Stuff that goes in ~/
+editorconfig = { direct = true, source = "editorconfig", target = ".editorconfig" }
+inputrc = { direct = true, source = "inputrc", target = ".inputrc" }
