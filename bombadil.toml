@@ -1,4 +1,5 @@
 dotfiles_dir = "dotfiles"
 
 [settings.dots]
+inputrc = { direct = true, source = "inputrc", target = ".inputrc" }
 editorconfig = { direct = true, source = "editorconfig", target = ".editorconfig" }
