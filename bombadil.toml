@@ -10,6 +10,7 @@ dotfiles_dir = "dotfiles"
 # Stuff that goes in ~/.config
 btop = { direct = true, source = "btop", target = ".config/btop" }
 fish = { direct = true, source = "fish", target = ".config/fish" }
+kitty = { direct = true, source = "kitty", target = ".config/kitty" }
 
 # Stuff that goes in ~/
 editorconfig = { direct = true, source = "editorconfig", target = ".editorconfig" }
