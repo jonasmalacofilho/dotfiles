@@ -1,0 +1,40 @@
+# https://editorconfig.org/
+# https://spec.editorconfig.org/
+# https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties
+# https://neovim.io/doc/user/plugins.html#editorconfig
+# https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig
+
+root = true
+
+[*]
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+tab_width = 8
+trim_trailing_whitespace = true
+
+# Not supported by VS Code
+charset = utf-8
+
+# max_line_length not set for * because we want two sets of defaults: 80 for most files supported by
+# prettier, and 100 for everything else; plus it's not supported by VS Code
+
+[*.md]
+indent_size = 2
+
+# Not supported by VS Code
+max_line_length = 100
+
+[*.{mjs,js,ts}{,x}]
+indent_size = 2
+
+[*.json{,c}]
+indent_size = 2
+
+[*.{html,css}]
+indent_size = 2
+
+[*.y{,a}ml]
+indent_size = 2
+
