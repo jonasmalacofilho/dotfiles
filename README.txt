@@ -1,2 +1,7 @@
-- most files and directories are manages with symlinks created by their corresponding Makefiles
-- new stuff has started to use toml-bombadil
+These are my dotfiles.
+
+Currently most stuff is set up with toml-bombadil:
+
+    bombadil link
+
+Older stuff uses Makefiles.
