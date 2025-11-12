@@ -15,6 +15,7 @@ if status is-interactive
 
     abbr -a _ sudo
     abbr -a b btop
+    abbr -a bl bombadil link
     abbr -a f fg
     abbr -a h htop
     abbr -a icat kitten icat
