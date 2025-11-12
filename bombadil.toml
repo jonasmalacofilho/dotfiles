@@ -3,3 +3,4 @@ dotfiles_dir = "dotfiles"
 [settings.dots]
 inputrc = { direct = true, source = "inputrc", target = ".inputrc" }
 editorconfig = { direct = true, source = "editorconfig", target = ".editorconfig" }
+btop = { direct = true, source = "btop", target = ".config/btop" }
