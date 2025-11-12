@@ -37,3 +37,6 @@ indent_size = 2
 
 [*.y{,a}ml]
 indent_size = 2
+
+[Makefile]
+indent_style = tab
