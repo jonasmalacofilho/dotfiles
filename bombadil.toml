@@ -5,6 +5,17 @@ dotfiles_dir = "dotfiles"
 
 [settings.dots]
 
+# Bash
+bashprofile = { direct = true, source = "bash/profile", target = ".bash_profile" }
+bashrc = { direct = true, source = "bash/rc", target = ".bashrc" }
+
+# Git
+gitconfig = { direct = true, source = "git/config", target = ".gitconfig" }
+gitignore = { direct = true, source = "git/ignore", target = ".gitignore.global" }
+
+# SSH
+ssh = { direct = true, source = "ssh/config", target = ".ssh/config" }
+
 # Stuff that goes in ~/.config
 btop = { direct = true, source = "btop", target = ".config/btop" }
 fish = { direct = true, source = "fish", target = ".config/fish" }
@@ -14,10 +25,3 @@ nvim = { direct = true, source = "nvim", target = ".config/nvim" }
 # Stuff that goes in ~/
 editorconfig = { direct = true, source = "editorconfig", target = ".editorconfig" }
 inputrc = { direct = true, source = "inputrc", target = ".inputrc" }
-
-# Git
-gitconfig = { direct = true, source = "git/config", target = ".gitconfig" }
-gitignore = { direct = true, source = "git/ignore", target = ".gitignore.global" }
-
-# SSH
-ssh = { direct = true, source = "ssh/config", target = ".ssh/config" }
