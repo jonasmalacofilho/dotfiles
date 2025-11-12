@@ -89,11 +89,6 @@ vim.opt.colorcolumn = { "+1" }
 -- Show filename on window title.
 vim.opt.title = true
 
--- Default/preferred indentation.
-vim.opt.expandtab = true
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 0
-
 -- Enable break indent
 vim.opt.breakindent = true
 
