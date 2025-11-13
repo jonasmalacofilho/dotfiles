@@ -21,6 +21,7 @@ btop = { direct = true, source = "btop", target = ".config/btop" }
 fish = { direct = true, source = "fish", target = ".config/fish" }
 kitty = { direct = true, source = "kitty", target = ".config/kitty" }
 nvim = { direct = true, source = "nvim", target = ".config/nvim" }
+tmux = { direct = true, source = "tmux", target = ".config/tmux" }
 
 # Stuff that goes in ~/
 editorconfig = { direct = true, source = "editorconfig/editorconfig", target = ".editorconfig" }
