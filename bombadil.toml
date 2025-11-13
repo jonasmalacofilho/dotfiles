@@ -23,5 +23,5 @@ kitty = { direct = true, source = "kitty", target = ".config/kitty" }
 nvim = { direct = true, source = "nvim", target = ".config/nvim" }
 
 # Stuff that goes in ~/
-editorconfig = { direct = true, source = "editorconfig", target = ".editorconfig" }
-inputrc = { direct = true, source = "inputrc", target = ".inputrc" }
+editorconfig = { direct = true, source = "editorconfig/editorconfig", target = ".editorconfig" }
+readline = { direct = true, source = "readline/inputrc", target = ".inputrc" }
