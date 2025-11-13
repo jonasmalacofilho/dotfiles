@@ -25,12 +25,6 @@ rustflags = [
     "-Ctarget-cpu=native",
 ]
 
-[target.arm-unknown-linux-musleabihf]
-linker = "Code/raspberrypi-tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc"
-
-[target.arm-unknown-linux-gnueabihf]
-linker = "Code/raspberrypi-tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc"
-
 [target.aarch64-unknown-linux-musl]
 linker = "aarch64-linux-gnu-gcc"
 rustflags = [ "-Ctarget-feature=+crt-static", "-Clink-arg=-lgcc" ]
