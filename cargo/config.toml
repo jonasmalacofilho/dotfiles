@@ -1,8 +1,3 @@
-[resolver]
-# Opt into the MSRV-aware resolver which be the default for Edition 2024 and Rust 1.85.
-# TODO: remove after Rust 1.85.
-incompatible-rust-versions = "fallback"
-
 [net]
 # git-fetch-with-cli = true # sometimes useful (cargo-edit#869)
 
