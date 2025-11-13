@@ -50,10 +50,12 @@ if status is-interactive
     abbr -a gb git branch
     abbr -a gc git commit -v
     abbr -a gca git commit -v --all
+    abbr -a gcaa git commit -v --all --amend
     abbr -a gcm git checkout "(git_main_branch)"
     abbr -a gco git checkout
     abbr -a gcp git commit -v --patch
     abbr -a gd git diff
+    abbr -a gdc git diff --cached
     abbr -a gdt 'GIT_EXTERNAL_DIFF="difft --display=side-by-side"' git diff
     abbr -a gf git fetch
     abbr -a ghb gh browse
@@ -63,7 +65,9 @@ if status is-interactive
     abbr -a glk 'git log --pretty=$GIT_LOG_FMT_KERNEL'
     abbr -a glog git log --stat
     abbr -a glop git log --patch --stat
+    abbr -a gme git merge
     abbr -a gp git push
+    abbr -a gre git rebase
     abbr -a gsh git show
     abbr -a gst git status
     abbr -a gu "git add . && git commit -m update && git push"
