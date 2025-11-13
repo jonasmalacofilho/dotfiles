@@ -13,7 +13,7 @@ gitignore = { direct = true, source = "git/ignore", target = ".gitignore.global"
 # SSH
 ssh = { direct = true, source = "ssh/config", target = ".ssh/config" }
 
-# Stuff that goes in ~/.config
+# Stuff that goes in ~/.config/
 btop = { direct = true, source = "btop", target = ".config/btop" }
 fish = { direct = true, source = "fish", target = ".config/fish" }
 kitty = { direct = true, source = "kitty", target = ".config/kitty" }
@@ -22,5 +22,6 @@ pnpm = { direct = true, source = "pnpm", target = ".config/pnpm" }
 tmux = { direct = true, source = "tmux", target = ".config/tmux" }
 
 # Stuff that goes in ~/
+cargo = { direct = true, source = "cargo/config.toml", target = ".cargo/config.toml" }
 editorconfig = { direct = true, source = "editorconfig/editorconfig", target = ".editorconfig" }
 readline = { direct = true, source = "readline/inputrc", target = ".inputrc" }
