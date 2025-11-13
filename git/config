@@ -45,12 +45,6 @@
 	pulls = fetch origin "+refs/pull/*:refs/origin/pull/*"
 	upulls = fetch upstream "+refs/pull/*:refs/upstream/pull/*"
 
-[filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge --skip -- %f
-	required = true
-	process = git-lfs filter-process --skip
-
 [url "git@github.com:"]
 	insteadOf = "gh:"
 
