@@ -7,32 +7,22 @@
 root = true
 
 [*]
+charset = utf-8
 end_of_line = lf
 indent_size = 4
 indent_style = space
 insert_final_newline = true
+max_line_length = 100
 tab_width = 8
 trim_trailing_whitespace = true
 
-# Not supported by VS Code
-charset = utf-8
-
-# max_line_length not set for * because we want two sets of defaults: 80 for most files supported by
-# prettier, and 100 for everything else; plus it's not supported by VS Code
-
-[*.md]
-indent_size = 2
-
-# Not supported by VS Code
-max_line_length = 100
-
-[*.{mjs,js,ts}{,x}]
-indent_size = 2
-
-[*.json{,c}]
+[*.{{js,ts}{,x},mjs,json*}]
 indent_size = 2
 
 [*.{html,css}]
+indent_size = 2
+
+[*.lua]
 indent_size = 2
 
 [*.y{,a}ml]
@@ -40,3 +30,6 @@ indent_size = 2
 
 [Makefile]
 indent_style = tab
+
+[**.git/*]
+max_line_length = 72

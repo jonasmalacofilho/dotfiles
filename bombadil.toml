@@ -11,7 +11,6 @@ pnpm = { direct = true, source = "pnpm", target = ".config/pnpm" }
 tmux = { direct = true, source = "tmux", target = ".config/tmux" }
 
 # Single-file configs that go directly into ~/
-editorconfig = { direct = true, source = "editorconfig/editorconfig", target = ".editorconfig" }
 readline = { direct = true, source = "readline/inputrc", target = ".inputrc" }
 
 # Bash
