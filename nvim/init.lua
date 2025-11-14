@@ -84,7 +84,7 @@ vim.opt.scrolloff = 3
 
 -- Default to 100-column lines.
 vim.opt.textwidth = 100
-vim.opt.colorcolumn = { "+1" }
+vim.opt.colorcolumn = { '+1' }
 
 -- Default/preferred indentation (possibly overwritten by autocmds/editorconfig).
 vim.opt.expandtab = true
@@ -186,7 +186,7 @@ vim.api.nvim_create_autocmd('FileType', {
 
 -- Indent these files with 2 spaces.
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'javascript*', 'typescript*', 'json*', 'html', 'css', 'lua', 'yaml' },
+  pattern = { 'markdown', 'javascript*', 'typescript*', 'json*', 'html', 'css', 'lua', 'yaml' },
   desc = 'Automatically enable spell checking for some file types',
   group = vim.api.nvim_create_augroup('filetype-auto-spell-checking', { clear = true }),
   callback = function()
