@@ -211,6 +211,7 @@ require('lazy').setup({
       ensure_installed = {
         'bash',
         'c',
+        'diff', -- in particular, makes `git commit -v` colorful
         'fish',
         'javascript',
         'lua',
