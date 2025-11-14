@@ -170,6 +170,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Natively supported filetypes by Neovim:
+-- - https://github.com/neovim/neovim/blob/master/runtime/lua/vim/filetype.lua
+-- - $VIMRUNTIME/lua/vim/filetype.lua
+
 -- Automatically enable spell checking for some file types.
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'gitcommit', 'markdown', 'tex' },
