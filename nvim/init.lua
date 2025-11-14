@@ -558,20 +558,6 @@ require('lazy').setup({
     end,
   },
 
-  -- Autocompletion.
-  {
-    'saghen/blink.cmp',
-    event = 'VimEnter',
-    version = '1.*',
-    dependencies = {
-      -- Set up LuaLS for editing Neovim config files.
-      'folke/lazydev.nvim',
-    },
-    --- @module 'blink.cmp'
-    --- @type blink.cmp.Config
-    opts = {},
-  },
-
   -- Autoformat.
   {
     'stevearc/conform.nvim',
