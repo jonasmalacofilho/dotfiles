@@ -86,6 +86,12 @@ vim.opt.scrolloff = 3
 vim.opt.textwidth = 100
 vim.opt.colorcolumn = { "+1" }
 
+-- Default/preferred indentation.
+vim.opt.expandtab = true
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.tabstop = 8
+
 -- Show filename on window title.
 vim.opt.title = true
 
