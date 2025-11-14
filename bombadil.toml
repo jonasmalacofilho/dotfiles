@@ -2,6 +2,18 @@ dotfiles_dir = "dotfiles"
 
 [settings.dots]
 
+# Folders that go into ~/.config/
+btop = { direct = true, source = "btop", target = ".config/btop" }
+fish = { direct = true, source = "fish", target = ".config/fish" }
+kitty = { direct = true, source = "kitty", target = ".config/kitty" }
+nvim = { direct = true, source = "nvim", target = ".config/nvim" }
+pnpm = { direct = true, source = "pnpm", target = ".config/pnpm" }
+tmux = { direct = true, source = "tmux", target = ".config/tmux" }
+
+# Single-file configs that go directly into ~/
+editorconfig = { direct = true, source = "editorconfig/editorconfig", target = ".editorconfig" }
+readline = { direct = true, source = "readline/inputrc", target = ".inputrc" }
+
 # Bash
 bashprofile = { direct = true, source = "bash/profile", target = ".bash_profile" }
 bashrc = { direct = true, source = "bash/rc", target = ".bashrc" }
@@ -10,16 +22,5 @@ bashrc = { direct = true, source = "bash/rc", target = ".bashrc" }
 gitconfig = { direct = true, source = "git/config", target = ".gitconfig" }
 gitignore = { direct = true, source = "git/ignore", target = ".gitignore.global" }
 
-# SSH
+cargo = { direct = true, source = "cargo/config.toml", target = ".cargo/config.toml" }
 ssh = { direct = true, source = "ssh/config", target = ".ssh/config" }
-
-# Stuff that goes in ~/.config
-btop = { direct = true, source = "btop", target = ".config/btop" }
-fish = { direct = true, source = "fish", target = ".config/fish" }
-kitty = { direct = true, source = "kitty", target = ".config/kitty" }
-nvim = { direct = true, source = "nvim", target = ".config/nvim" }
-tmux = { direct = true, source = "tmux", target = ".config/tmux" }
-
-# Stuff that goes in ~/
-editorconfig = { direct = true, source = "editorconfig/editorconfig", target = ".editorconfig" }
-readline = { direct = true, source = "readline/inputrc", target = ".inputrc" }

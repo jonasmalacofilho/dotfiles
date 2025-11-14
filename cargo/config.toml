@@ -1,0 +1,25 @@
+[net]
+# git-fetch-with-cli = true # sometimes useful (cargo-edit#869)
+
+# All matching `target.*.rustflags` are joined toghether. On the other hand, `build.rustflags` have
+# lower precedence, but are *not* joined toghether accross multiple configuration files.
+# https://doc.rust-lang.org/cargo/reference/config.html?search=#buildrustflags
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = [
+    # Link with mold.
+    "-Clink-arg=-fuse-ld=mold",
+
+    # # Link with lld.
+    # "-Clink-arg=-fuse-ld=lld",
+    # # which also requires `--no-rosegment` for better stack traces (see note on [cargo-]flamegraph's
+    # # README and <https://bugs.chromium.org/p/chromium/issues/detail?id=919499#c16>).
+    # "-Clink-arg=-Wl,--no-rosegment",
+
+    # Optimize for this uarch.
+    "-Ctarget-cpu=native",
+]
+
+[target.aarch64-unknown-linux-musl]
+linker = "aarch64-linux-gnu-gcc"
+rustflags = [ "-Ctarget-feature=+crt-static", "-Clink-arg=-lgcc" ]
