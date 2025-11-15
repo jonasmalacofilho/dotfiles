@@ -84,7 +84,13 @@ vim.opt.scrolloff = 3
 
 -- Default to 100-column lines.
 vim.opt.textwidth = 100
-vim.opt.colorcolumn = { "+1" }
+vim.opt.colorcolumn = { '+1' }
+
+-- Default/preferred indentation (possibly overwritten by autocmds/editorconfig).
+vim.opt.expandtab = true
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.tabstop = 8
 
 -- Show filename on window title.
 vim.opt.title = true
@@ -164,6 +170,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Natively supported filetypes by Neovim:
+-- - https://github.com/neovim/neovim/blob/master/runtime/lua/vim/filetype.lua
+-- - $VIMRUNTIME/lua/vim/filetype.lua
+
 -- Automatically enable spell checking for some file types.
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'gitcommit', 'markdown', 'tex' },
@@ -171,6 +181,17 @@ vim.api.nvim_create_autocmd('FileType', {
   group = vim.api.nvim_create_augroup('filetype-auto-spell-checking', { clear = true }),
   callback = function()
     vim.opt_local.spell = true
+  end,
+})
+
+-- Indent these files with 2 spaces.
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'markdown', 'javascript*', 'typescript*', 'json*', 'html', 'css', 'lua', 'yaml' },
+  desc = 'Automatically enable spell checking for some file types',
+  group = vim.api.nvim_create_augroup('filetype-auto-spell-checking', { clear = true }),
+  callback = function()
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.softtabstop = 2
   end,
 })
 
@@ -205,6 +226,7 @@ require('lazy').setup({
       ensure_installed = {
         'bash',
         'c',
+        'diff', -- in particular, makes `git commit -v` colorful
         'fish',
         'javascript',
         'lua',
@@ -550,20 +572,6 @@ require('lazy').setup({
         vim.lsp.enable(vim.tbl_keys(servers.others))
       end
     end,
-  },
-
-  -- Autocompletion.
-  {
-    'saghen/blink.cmp',
-    event = 'VimEnter',
-    version = '1.*',
-    dependencies = {
-      -- Set up LuaLS for editing Neovim config files.
-      'folke/lazydev.nvim',
-    },
-    --- @module 'blink.cmp'
-    --- @type blink.cmp.Config
-    opts = {},
   },
 
   -- Autoformat.
