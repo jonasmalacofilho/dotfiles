@@ -51,8 +51,8 @@ if status is-interactive
     abbr -a gc git commit -v
     abbr -a gca git commit -v --all
     abbr -a gcaa git commit -v --all --amend
-    abbr -a gcm git checkout "(git_main_branch)"
-    abbr -a gco git checkout
+    abbr -a gcm git switch "(git_main_branch)"
+    abbr -a gco git switch
     abbr -a gcp git commit -v --patch
     abbr -a gd git diff
     abbr -a gdc git diff --cached
