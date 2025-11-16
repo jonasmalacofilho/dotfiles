@@ -69,7 +69,7 @@ if status is-interactive
     abbr -a gp git push
     abbr -a gre git rebase
     abbr -a gsh git show
-    abbr -a gst git status
+    abbr -a gst git status -sb
     abbr -a gu "git add . && git commit -m update && git push"
     abbr -a --command gh b browse
 
