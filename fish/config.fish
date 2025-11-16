@@ -58,7 +58,7 @@ if status is-interactive
     abbr -a gdc git diff --cached
     abbr -a gdt 'GIT_EXTERNAL_DIFF="difft --display=side-by-side"' git diff
     abbr -a gf git fetch
-    abbr -a ghb gh browse
+    abbr -a ghb gh browse # deprecated
     abbr -a gl git pull
     abbr -a glg 'git log --pretty=$GIT_LOG_FMT_JONAS --graph'
     abbr -a glga 'git log --pretty=$GIT_LOG_FMT_JONAS --graph --all'
@@ -71,6 +71,7 @@ if status is-interactive
     abbr -a gsh git show
     abbr -a gst git status
     abbr -a gu "git add . && git commit -m update && git push"
+    abbr -a --command gh b browse
 
     # Manual kitty integration, since from its (and the system's) perspective my default shell is bash,
     # so that /etc/profile.d/* gets sourced.
