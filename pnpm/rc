@@ -1,2 +1,3 @@
 minimum-release-age=20160
 resolution-mode=time-based
+trust-policy=no-downgrade
