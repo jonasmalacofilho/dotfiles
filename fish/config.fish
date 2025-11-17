@@ -42,35 +42,38 @@ if status is-interactive
     abbr -a crr cargo r -r --
     abbr -a cw cargo watch -x clippy -x '"nextest run"' -x '"b"'
 
-    set GIT_LOG_FMT_KERNEL "%C(auto)%h%C(reset) (\"%s\")"
-    set GIT_LOG_FMT_JONAS "%C(auto)%h%d %s %C(dim)[%aN, %ar]%C(reset)"
+    # Custon one-line log format with extra integration.
+    set GIT_LOG_SUMMARY "%C(auto)%h%d %s %C(dim)[%aN, %ar]%C(reset)"
+    # Format preferred for commit references in the Linux kernel.
+    set GIT_LOG_KERNEL "%C(auto)%h%C(reset) (\"%s\")"
 
     abbr -a g git
     abbr -a ga git add
     abbr -a gb git branch
-    abbr -a gc git commit -v
-    abbr -a gca git commit -v --all
-    abbr -a gcaa git commit -v --all --amend
+    abbr -a gc git commit
+    abbr -a gca git commit --all
+    abbr -a gcaa git commit --all --amend
     abbr -a gcm git switch "(git_main_branch)"
     abbr -a gco git switch
-    abbr -a gcp git commit -v --patch
+    abbr -a gcp git commit -p
+    abbr -a gcpa git commit -p --amend
     abbr -a gd git diff
     abbr -a gdc git diff --cached
     abbr -a gdt 'GIT_EXTERNAL_DIFF="difft --display=side-by-side"' git diff
     abbr -a gf git fetch
-    abbr -a ghb gh browse # deprecated
     abbr -a gl git pull
-    abbr -a glg 'git log --pretty=$GIT_LOG_FMT_JONAS --graph'
-    abbr -a glga 'git log --pretty=$GIT_LOG_FMT_JONAS --graph --all'
-    abbr -a glk 'git log --pretty=$GIT_LOG_FMT_KERNEL'
+    abbr -a glg 'git log --format=$GIT_LOG_SUMMARY --graph'
+    abbr -a glga 'git log --format=$GIT_LOG_SUMMARY --graph --all'
+    abbr -a glk 'git log --format=$GIT_LOG_KERNEL'
     abbr -a glog git log --stat
-    abbr -a glop git log --patch --stat
+    abbr -a glop git log --stat -p
     abbr -a gme git merge
     abbr -a gp git push
     abbr -a gre git rebase
     abbr -a gsh git show
-    abbr -a gst git status -sb
+    abbr -a gst git status -bs
     abbr -a gu "git add . && git commit -m update && git push"
+
     abbr -a --command gh b browse
 
     # Manual kitty integration, since from its (and the system's) perspective my default shell is bash,
