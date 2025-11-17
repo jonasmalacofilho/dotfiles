@@ -76,8 +76,9 @@ if status is-interactive
 
     abbr -a --command gh b browse
 
-    # Manual kitty integration, since from its (and the system's) perspective my default shell is bash,
-    # so that /etc/profile.d/* gets sourced.
+    # Manual kitty integration, since from its (and the system's) perspective my default shell is
+    # bash (so that /etc/profile.d/* gets sourced).
+    # Docs: https://sw.kovidgoyal.net/kitty/shell-integration/#manual-shell-integration
     if set -q KITTY_INSTALLATION_DIR
         set --global KITTY_SHELL_INTEGRATION enabled
         source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
