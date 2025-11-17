@@ -76,6 +76,21 @@ if status is-interactive
 
     abbr -a --command gh b browse
 
+    function find_cmd_runner
+        if test -e "x"
+            echo "./x"
+        else if test -e "cast"
+            echo "./cast";
+        # else if test -e "justfile"
+        #     echo "just"
+        else if test -e "Makefile"
+            echo "make"
+        else
+            return 1
+        end
+    end
+    abbr -a x -f find_cmd_runner
+
     # Manual kitty integration, since from its (and the system's) perspective my default shell is
     # bash (so that /etc/profile.d/* gets sourced).
     # Docs: https://sw.kovidgoyal.net/kitty/shell-integration/#manual-shell-integration
