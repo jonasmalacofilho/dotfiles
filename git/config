@@ -3,47 +3,60 @@
 	email = jonas@protocubo.io
 	signingkey = 06af7ad0
 
-[core]
-	excludesfile = ~/.gitignore.global
-	abbrev = 12
-	pager = less
+[alias]
+	head = !git --no-pager log --abbrev=12 --oneline --format='%h' -1
+	klog = log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'
+	pulls = fetch origin "+refs/pull/*:refs/origin/pull/*"
+	upulls = fetch upstream "+refs/pull/*:refs/upstream/pull/*"
 
-[init]
-	defaultBranch = main
+[core]
+	abbrev = 12
+	excludesfile = ~/.gitignore.global
+	pager = less
 
 [branch]
 	sort = -committerdate
 
-[tag]
-	sort = -version:refname
+[commit]
+	verbose = true
 
 [diff]
 	algorithm = histogram
 	colorMoved = plain
 	mnemonicPrefix = true
+	renames = true
 
-[commit]
-	verbose = true
+[fetch]
+	all = true
+	prune = true
+	pruneTags = true
 
-[push]
-	default = simple
-
-[pull]
-	rebase = false
-
-# Reuse recorded resolutions.
-[rerere]
-	enabled = true
-	autoupdate = true
+# For patch-based workflows.
+[format]
+	signOff = true
 
 [help]
 	autocorrect = prompt
 
-[alias]
-	klog = log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'
-	head = !git --no-pager log --abbrev=12 --oneline --format='%h' -1
-	pulls = fetch origin "+refs/pull/*:refs/origin/pull/*"
-	upulls = fetch upstream "+refs/pull/*:refs/upstream/pull/*"
+[init]
+	defaultBranch = main
+
+[push]
+	autoSetupRemote = true
+	default = simple
+	followTags = true
+
+[rebase]
+	autoSquash = true
+	updateRefs = true
+
+# Reuse recorded resolutions.
+[rerere]
+	autoupdate = true
+	enabled = true
+
+[tag]
+	sort = -version:refname
 
 [url "git@github.com:"]
 	insteadOf = "gh:"
@@ -51,16 +64,14 @@
 [url "git@gitlab.com:"]
 	insteadOf = "gl:"
 
-# Patch-based workflows.
-
-[format]
-	signOff = true
-
+# For patch-based workflows.
 [sendemail]
-	smtpencryption = tls
-	smtpserver = smtp.gmail.com
-	smtpuser = jonas@protocubo.io
-	smtpserverport = 587
 	annotate = true
 	confirm = always
+	smtpencryption = tls
+	smtpserver = smtp.gmail.com
+	smtpserverport = 587
+	smtpuser = jonas@protocubo.io
 	suppressfrom = false
+
+# vim: noet ts=8 sw=0 sts=0
