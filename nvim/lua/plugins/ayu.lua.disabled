@@ -1,8 +1,8 @@
 return {
-  -- 'ellisonleao/gruvbox.nvim',
-  -- 'folke/tokyonight.nvim',
   'Shatur/neovim-ayu',
   priority = 1000, -- Make sure to load this before all the other start plugins.
+  lazy = false,
+
   opts = {
     terminal = false,
     overrides = {
@@ -20,8 +20,13 @@ return {
       NvimTreeIndentMarker = { fg = '#454B55' },
     },
   },
+
   config = function(_, opts)
     require('ayu').setup(opts)
-    vim.cmd [[colorscheme ayu]]
+    vim.cmd.colorscheme 'ayu'
   end,
 }
+
+-- Other themes used in the past:
+-- - 'ellisonleao/gruvbox.nvim',
+-- - 'folke/tokyonight.nvim',

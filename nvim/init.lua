@@ -244,11 +244,14 @@ require('lazy').setup({
       -- Use Treesitter for syntax highlighting.
       highlight = {
         enable = true,
+
         -- Disable when unbearably slow/laggy (can also be a function). Note that this reverts back
         -- to Vim's `syntax`, which is very limited. Can't you just clear (or disable) hlsearch?
         -- disable = { 'tsx', 'rust' },
+
         -- Keep  Vim's regex `syntax` system for ident on some languages (add to this list when
-        -- experiencing "weird indenting issues").
+        -- experiencing "weird indenting issues"). But this can cause issues with the catppuccin
+        -- theme.
         -- additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true },
