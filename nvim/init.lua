@@ -267,35 +267,6 @@ require('lazy').setup({
     end,
   },
 
-  -- Colorscheme.
-  {
-    -- 'ellisonleao/gruvbox.nvim',
-    -- 'folke/tokyonight.nvim',
-    'Shatur/neovim-ayu',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    opts = {
-      terminal = false,
-      overrides = {
-        Comment = { italic = false },
-
-        -- Revert to gutter_normal color for LineNr and other highlights using guide_normal in
-        -- Shatur/neovim-ayu but not Luxed/ayu-vim.
-        -- - https://github.com/Shatur/neovim-ayu/blob/master/lua/ayu/init.lua
-        -- - https://github.com/Shatur/neovim-ayu/blob/master/lua/ayu/colors.lua
-        -- - https://github.com/Luxed/ayu-vim/blob/master/colors/ayu.vim
-        -- - https://github.com/Luxed/ayu-vim/blob/master/autoload/ayu.vim
-        LineNr = { fg = '#454B55' },
-        NonText = { fg = '#454B55' },
-        CursorLineConceal = { fg = '#454B55' },
-        NvimTreeIndentMarker = { fg = '#454B55' },
-      },
-    },
-    config = function(_, opts)
-      require('ayu').setup(opts)
-      vim.cmd [[colorscheme ayu]]
-    end,
-  },
-
   -- Detect tabstop and shiftwidth automatically.
   'tpope/vim-sleuth',
 
