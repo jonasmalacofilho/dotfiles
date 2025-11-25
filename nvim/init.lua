@@ -244,11 +244,14 @@ require('lazy').setup({
       -- Use Treesitter for syntax highlighting.
       highlight = {
         enable = true,
+
         -- Disable when unbearably slow/laggy (can also be a function). Note that this reverts back
         -- to Vim's `syntax`, which is very limited. Can't you just clear (or disable) hlsearch?
         -- disable = { 'tsx', 'rust' },
+
         -- Keep  Vim's regex `syntax` system for ident on some languages (add to this list when
-        -- experiencing "weird indenting issues").
+        -- experiencing "weird indenting issues"). But this can cause issues with the catppuccin
+        -- theme.
         -- additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true },
@@ -264,35 +267,6 @@ require('lazy').setup({
       -- - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
       -- - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       -- - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-    end,
-  },
-
-  -- Colorscheme.
-  {
-    -- 'ellisonleao/gruvbox.nvim',
-    -- 'folke/tokyonight.nvim',
-    'Shatur/neovim-ayu',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    opts = {
-      terminal = false,
-      overrides = {
-        Comment = { italic = false },
-
-        -- Revert to gutter_normal color for LineNr and other highlights using guide_normal in
-        -- Shatur/neovim-ayu but not Luxed/ayu-vim.
-        -- - https://github.com/Shatur/neovim-ayu/blob/master/lua/ayu/init.lua
-        -- - https://github.com/Shatur/neovim-ayu/blob/master/lua/ayu/colors.lua
-        -- - https://github.com/Luxed/ayu-vim/blob/master/colors/ayu.vim
-        -- - https://github.com/Luxed/ayu-vim/blob/master/autoload/ayu.vim
-        LineNr = { fg = '#454B55' },
-        NonText = { fg = '#454B55' },
-        CursorLineConceal = { fg = '#454B55' },
-        NvimTreeIndentMarker = { fg = '#454B55' },
-      },
-    },
-    config = function(_, opts)
-      require('ayu').setup(opts)
-      vim.cmd [[colorscheme ayu]]
     end,
   },
 
