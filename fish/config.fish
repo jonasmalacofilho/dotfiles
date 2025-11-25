@@ -73,6 +73,7 @@ if status is-interactive
     abbr -a gsh git show
     abbr -a gst git status -bs
     abbr -a gu "git add . && git commit -m update && git push"
+    abbr -a gwt git worktree
 
     abbr -a --command gh b browse
 
