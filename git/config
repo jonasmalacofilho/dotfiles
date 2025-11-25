@@ -29,7 +29,6 @@
 [fetch]
 	all = true
 	prune = true
-	pruneTags = true
 
 # For patch-based workflows.
 [format]
