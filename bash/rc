@@ -19,15 +19,22 @@ if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     # Run Electron 28+ applications on Wayland.
     export ELECTRON_OZONE_PLATFORM_HINT="auto"
 
-    # Use the EGL nvidia-vaapi-driver backend to try to mitigate issues of erratic behavior on
-    # Firefox, especially on Google Docs & Sheets.
-    # See: https://github.com/elFarto/nvidia-vaapi-driver/issues/126#issuecomment-1847493100
-    export NVD_BACKEND="egl"
-fi
+    if [ "$HOST" == "calvin" ]; then
+        # Don't disable the RDD sandbox, but somehow still required for Firefox with
+        # nvidia-vaapi-driver.
+        # See: https://github.com/elFarto/nvidia-vaapi-driver/issues/259#issuecomment-2199252508
+        export MOZ_DISABLE_RDD_SANDBOX=0
 
-# Don't disable the RDD sandbox, but somehow still required for Firefox with nvidia-vaapi-driver.
-# See: https://github.com/elFarto/nvidia-vaapi-driver/issues/259#issuecomment-2199252508
-export MOZ_DISABLE_RDD_SANDBOX=0
+        # Other environment variables for Firefox with nvidia-vaapi-driver.
+        export LIBVA_DRIVER_NAME=nvidia
+        export CUDA_DISABLE_PERF_BOOST=1
+
+        # Additionally, try to foce the use of the EGL nvidia-vaapi-driver backend to try to
+        # mitigate issues of erratic behavior on Firefox, especially on Google Docs & Sheets.
+        # See: https://github.com/elFarto/nvidia-vaapi-driver/issues/126#issuecomment-1847493100
+        # export NVD_BACKEND="egl"
+    fi
+fi
 
 # If not running interactively, stop here.
 [[ $- != *i* ]] && return
