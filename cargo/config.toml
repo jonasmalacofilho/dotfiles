@@ -5,7 +5,7 @@
 # lower precedence, but are *not* joined toghether accross multiple configuration files.
 # https://doc.rust-lang.org/cargo/reference/config.html?search=#buildrustflags
 
-[target.x86_64-unknown-linux-gnu]
+[target.'cfg(target_os = "linux")']
 rustflags = [
     # Link with mold.
     "-Clink-arg=-fuse-ld=mold",
@@ -15,11 +15,14 @@ rustflags = [
     # # which also requires `--no-rosegment` for better stack traces (see note on [cargo-]flamegraph's
     # # README and <https://bugs.chromium.org/p/chromium/issues/detail?id=919499#c16>).
     # "-Clink-arg=-Wl,--no-rosegment",
+]
 
+[target.x86_64-unknown-linux-gnu]
+rustflags = [
     # Optimize for this uarch.
     "-Ctarget-cpu=native",
 ]
 
 [target.aarch64-unknown-linux-musl]
-linker = "aarch64-linux-gnu-gcc"
+# linker = "aarch64-linux-gnu-gcc"
 rustflags = [ "-Ctarget-feature=+crt-static", "-Clink-arg=-lgcc" ]
