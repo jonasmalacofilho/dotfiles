@@ -12,6 +12,7 @@ tmux = { direct = true, source = "tmux", target = ".config/tmux" }
 
 # Single-file configs that go directly into ~/
 readline = { direct = true, source = "readline/inputrc", target = ".inputrc" }
+npm = { direct = true, source = "npm/rc", target = ".npmrc" }
 
 # Bash
 bashprofile = { direct = true, source = "bash/profile", target = ".bash_profile" }

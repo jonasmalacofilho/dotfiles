@@ -10,7 +10,7 @@ STEPS_PER_PT = math.ceil(3 / HALF_PX_IN_QUOTES_PT)
 
 print(f"quotes_pt render_px calvin_pt")
 print(f"-----------------------------")
-for quotes_pt in (x / STEPS_PER_PT for x in range(7 * STEPS_PER_PT, 12 * STEPS_PER_PT)):
+for quotes_pt in (x / STEPS_PER_PT for x in range(7 * STEPS_PER_PT, 13 * STEPS_PER_PT)):
     render_px = quotes_pt * OS_DPI / PPI
     half_px_aligned = "*" if round(render_px, 1) % 0.5 == 0 else " "
     calvin_pt = quotes_pt * OS_DPI / CALVIN_PT
