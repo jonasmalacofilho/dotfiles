@@ -1,16 +1,30 @@
+# TODO: customize VCS prompt (see /usr/share/fish/.../sample_prompts/informative_vcs.fish)
+# TODO: put the commandline on its own line (requires reimplementing the right rpompt)
+# TODO: make both left and right prompts stand out (maybe add solid bars)
 function fish_prompt
-    # TODO: make both left and right prompts stand out
+    set -l normal (set_color normal)
+    set -l cwd_color (set_color brblue)
+    set -l vcs_color (set_color brmagenta)
+    set -l alert_color (set_color red)
 
-    set -l pwd (set_color $fish_color_cwd)(prompt_pwd -D 2)(set_color normal)
-    set -l vcs (fish_vcs_prompt "(%s)")
+    set -l pwd {$cwd_color}(prompt_pwd -D 2)
+
+    set -l vcs
+    if not contains -- --final-rendering $argv
+        set vcs {$vcs_color}(fish_vcs_prompt "(%s)")
+    end
 
     set -l login
+    set -l marker {$normal}\$
     if set -q SSH_TTY
-        set login (prompt_login)
-    else if test "$EUID" = 0
-        set login (set_color --dim red)root(set_color $prompt_color)
+        set -l user_color (set_color brcyan)
+        set -l host_color (set_color brgreen)
+        set login {$user_color}(whoami){$normal}@{$host_color}(prompt_hostname)
+    else if fish_is_root_user
+        set login {$alert_color}root
+        set marker {$alert_color}#
     end
 
     echo
-    string join -n ' ' -- $login $pwd $vcs "> "
+    string join -n ' ' -- $login $pwd $vcs $marker $normal
 end
