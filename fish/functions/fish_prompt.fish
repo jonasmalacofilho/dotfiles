@@ -3,7 +3,7 @@
 # TODO: make both left and right prompts stand out (maybe add solid bars)
 function fish_prompt
     set -l normal (set_color normal)
-    set -l cwd_color (set_color brblue)
+    set -l cwd_color (set_color brgreen)
     set -l vcs_color (set_color brmagenta)
     set -l alert_color (set_color red)
 
@@ -17,8 +17,8 @@ function fish_prompt
     set -l login
     set -l marker {$normal}\$
     if set -q SSH_TTY
-        set -l user_color (set_color brcyan)
-        set -l host_color (set_color brgreen)
+        set -l user_color (set_color bryellow)
+        set -l host_color (set_color brcyan)
         set login {$user_color}(whoami){$normal}@{$host_color}(prompt_hostname)
     else if fish_is_root_user
         set login {$alert_color}root
