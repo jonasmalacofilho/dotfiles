@@ -10,6 +10,9 @@ nvim = { direct = true, source = "nvim", target = ".config/nvim" }
 pnpm = { direct = true, source = "pnpm", target = ".config/pnpm" }
 tmux = { direct = true, source = "tmux", target = ".config/tmux" }
 
+# Single-file configs that go into ~/.config/
+starship = { direct = true, source = "starship/config.toml", target = ".config/starship.toml" }
+
 # Single-file configs that go directly into ~/
 readline = { direct = true, source = "readline/inputrc", target = ".inputrc" }
 npm = { direct = true, source = "npm/rc", target = ".npmrc" }

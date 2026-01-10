@@ -1,6 +1,8 @@
 if status is-interactive
     # Commands to run in interactive sessions go here.
 
+    fish_config theme choose "Catppuccin Mocha"
+
     # Delete one word backwards with C-BS
     bind \b backward-kill-word
 
@@ -95,8 +97,12 @@ if status is-interactive
     # bash (so that /etc/profile.d/* gets sourced).
     # Docs: https://sw.kovidgoyal.net/kitty/shell-integration/#manual-shell-integration
     if set -q KITTY_INSTALLATION_DIR
-        set --global KITTY_SHELL_INTEGRATION enabled
+        set -g KITTY_SHELL_INTEGRATION enabled
         source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
         set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
+    end
+
+    if type -q starship
+        starship init fish | source
     end
 end
