@@ -2,7 +2,6 @@ if status is-interactive
     # Commands to run in interactive sessions go here.
 
     fish_config theme choose "Catppuccin Mocha"
-    set -g fish_transient_prompt 1
 
     # Delete one word backwards with C-BS
     bind \b backward-kill-word
