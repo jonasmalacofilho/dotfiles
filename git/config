@@ -9,9 +9,6 @@
 	pulls = fetch origin "+refs/pull/*:refs/origin/pull/*"
 	upulls = fetch upstream "+refs/pull/*:refs/upstream/pull/*"
 
-[bash]
-	showInformativeStatus = true
-
 [core]
 	abbrev = 12
 	excludesfile = ~/.gitignore.global
