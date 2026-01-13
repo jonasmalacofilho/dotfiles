@@ -3,7 +3,7 @@
 format = '$all$line_break$character'
 
 [cmd_duration]
-min_time = 0
+min_time = 1
 show_milliseconds = true
 style = "bold dimmed white"
 

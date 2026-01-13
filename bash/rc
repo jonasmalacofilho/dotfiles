@@ -1,6 +1,9 @@
 export EDITOR=nvim
 export VISUAL=nvim
-export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
+
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
+fi
 
 # Find the location of my dotfiles. Adapted from <https://stackoverflow.com/a/246128>.
 export DOTFILES=$( cd -P "$( dirname $(readlink "${BASH_SOURCE[0]}") )/.." >/dev/null 2>&1 && pwd )
