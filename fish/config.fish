@@ -34,7 +34,7 @@ if status is-interactive
 
     abbr -a --set-cursor m 'math "%"'
 
-    abbr -a nv nvim
+    abbr -a n nvim
 
     abbr -a c cargo
     abbr -a cnt cargo nextest run
