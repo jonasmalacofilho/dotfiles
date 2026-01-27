@@ -16,6 +16,7 @@ if status is-interactive
     # https://github.com/fish-shell/fish-shell/pull/10452
 
     abbr -a _ sudo
+    abbr -a _! sudo -s
     abbr -a b btop
     abbr -a bl bombadil link
     abbr -a f fg
