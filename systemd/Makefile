@@ -1,12 +1,15 @@
 DEST=~/.config/systemd/user
 
-all: $(DEST)/haxe.service reload
+default:
+
+haxe: $(DEST)/haxe.service reload
+check-gtx1080: $(DEST)/check-gtx1080.service reload
 
 reload:
 	systemctl --user daemon-reload
 
-$(DEST)/%.service: %.service /usr/bin/systemctl
+$(DEST)/%.service: %.service
 	mkdir -p $(DEST)
 	cp $? $@
 
-.PHONY: all reload
+.PHONY: default reload

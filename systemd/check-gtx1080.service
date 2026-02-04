@@ -1,0 +1,13 @@
+[Unit]
+Description=Check that the falty GPU isn't going to crash
+Requires=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/sleep 3
+ExecStart=/usr/bin/nvidia-settings -q PCIECurrentLinkWidth
+ExecStart=/usr/bin/bash -c 'notify-send "GPU running with x$(nvidia-settings -tq PCIECurrentLinkWidth) PCI-e lanes"'
+
+[Install]
+WantedBy=default.target
