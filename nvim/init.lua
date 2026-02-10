@@ -743,22 +743,28 @@ require('lazy').setup({
 
   -- Highlight todo, notes, etc in comments.
   --
-  -- FIXME:
-  -- TODO:
-  -- QUESTION:
-  -- HACK:
-  -- WARN:
-  -- PERF:
-  -- TEST:
+  -- Some of the supported keywords:
+  --
   -- NOTE:
   -- SAFETY:
+  -- TODO:
+  -- WARN:
+  -- FIXME:
   {
     'folke/todo-comments.nvim',
     event = 'VimEnter',
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = {
       signs = false,
-      keywords = { SAFETY = { color = 'hint' }, QUESTION = { color = 'info' } },
+      merge_keywords = false,
+      keywords = {
+        PERF = { alt = { 'PERFORMANCE', 'OPTIMIZE' } },
+        NOTE = { color = 'test', alt = { 'INFO', 'QUESTION' } },
+        SAFETY = { color = 'hint', alt = { 'TIP' } },
+        TODO = { color = 'info', alt = { 'IMPORTANT', 'TEST' } },
+        WARN = { color = 'warning', alt = { 'WARNING', 'HACK', 'XXX' } },
+        FIXME = { color = 'error', alt = { 'BUG', 'CAUTION' } },
+      },
     },
     config = function(_, opts)
       local todo = require 'todo-comments'
