@@ -18,7 +18,7 @@ function pom
     case 50/10
         set work 50m
         set break 10m
-    case 'all done'
+    case "*"
         return
     end
 
