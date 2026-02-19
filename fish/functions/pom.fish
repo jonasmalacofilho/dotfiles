@@ -21,12 +21,12 @@ function pom
 
         set activity $(gum input --value $activity --header "What will you work on?")
 
-        termdown -aT $activity $work \
+        termdown -aWT $activity $work \
             && kitten notify -u critical "Pomodoro" "Work timer is up! Take a break 😊"
 
         switch $(gum choose "yes" "no need" "all done" --header "Ready for a break?")
         case "yes"
-            termdown -aT "On Break" $break \
+            termdown -aWT "On Break" $break \
                 && kitten notify -u critical "Pomodoro" "Break is over! Get back to work 😬"
         case "no need"
             continue
