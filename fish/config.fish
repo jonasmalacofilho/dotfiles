@@ -50,6 +50,7 @@ if status is-interactive
     # Format preferred for commit references in the Linux kernel.
     set GIT_LOG_KERNEL "%C(auto)%h%C(reset) (\"%s\")"
 
+    abbr -a con confirm
     abbr -a g git
     abbr -a ga git add
     abbr -a gb git branch
