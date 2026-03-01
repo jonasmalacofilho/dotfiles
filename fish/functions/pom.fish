@@ -7,7 +7,7 @@
 
 function pom
     while true
-        switch $(gum choose "25/5" "50/10" "all done" --header "Choose a pomodoro split:")
+        switch $(gum choose "25/5" "50/10" "exit" --header "Choose a pomodoro split:")
         case "25/5"
             set work 25m
             set break 5m
@@ -21,12 +21,12 @@ function pom
         termdown -aW $work \
             && kitten notify -u critical "Pomodoro" "Work timer is up! Take a break 😊"
 
-        switch $(gum choose "yes" "no need" "all done" --header "Ready for a break?")
+        switch $(gum choose "no need" "yes" "exit" --header "Ready for a break?")
+        case "no need"
+            continue
         case "yes"
             termdown -aWT "On Break" $break \
                 && kitten notify -u critical "Pomodoro" "Break is over! Get back to work 😬"
-        case "no need"
-            continue
         case "*"
             return
         end
