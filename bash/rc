@@ -39,6 +39,19 @@ if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     fi
 fi
 
+# Claude privacy settings.
+#
+# IMPORTANT: the most important setting is to forbid the use of my data for training, which can only
+# be be done via <https://claude.ai/settings/data-privacy-controls>.
+#
+# References:
+# - https://code.claude.com/docs/en/data-usage#telemetry-services
+# - https://code.claude.com/docs/en/env-vars
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+# To be extra safe, also explicitly disable these features, even if currently redundant.
+export DISABLE_FEEDBACK_COMMAND=1
+export DISABLE_ERROR_REPORTING=1
+
 # If not running interactively, stop here.
 [[ $- != *i* ]] && return
 
