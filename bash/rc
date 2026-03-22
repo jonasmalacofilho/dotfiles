@@ -54,6 +54,8 @@ fi
 export DISABLE_FEEDBACK_COMMAND=1
 export DISABLE_ERROR_REPORTING=1
 
+export RIPGREP_CONFIG_PATH=~/.config/ripgreprc
+
 # If not running interactively, stop here.
 [[ $- != *i* ]] && return
 
