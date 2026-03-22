@@ -12,6 +12,7 @@ tmux = { direct = true, source = "tmux", target = ".config/tmux" }
 
 # Single-file configs that go into ~/.config/
 starship = { direct = true, source = "starship/config.toml", target = ".config/starship.toml" }
+ripgrep = { direct = true, source = "ripgrep/rc", target = ".config/ripgreprc" }
 
 # Single-file configs that go directly into ~/
 readline = { direct = true, source = "readline/inputrc", target = ".inputrc" }
