@@ -64,8 +64,8 @@ if status is-interactive
     abbr -a g git
     abbr -a ga git add
     abbr -a gb git branch
-    abbr -a gcm git switch "(git_main_branch)"
     abbr -a gco git switch
+    abbr -a gcom git switch "(git_main_branch)"
     abbr -a gf git fetch
     abbr -a gl git pull
     abbr -a gme git merge
