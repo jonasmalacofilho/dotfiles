@@ -249,7 +249,9 @@ require('lazy').setup({
         callback = function(args)
           local buf, filetype = args.buf, args.match
           local language = vim.treesitter.language.get_lang(filetype)
-          if not language then return end
+          if not language then
+            return
+          end
 
           local installed_parsers = require('nvim-treesitter').get_installed 'parsers'
 
