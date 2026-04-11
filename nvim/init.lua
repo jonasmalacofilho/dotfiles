@@ -476,28 +476,6 @@ require('lazy').setup({
       ---@field others table<string, vim.lsp.Config>
       local servers = {
         mason = {
-          rust_analyzer = {
-            -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
-            -- https://rust-analyzer.github.io/manual.html
-            -- TODO: look into https://github.com/mrcjkb/rustaceanvim for a more advanced setup
-            -- TODO: support workspace/project-specific settings (see rustaceanvim)
-            settings = {
-              ['rust-analyzer'] = {
-                imports = {
-                  granularity = {
-                    enforce = true,
-                    group = 'module',
-                  },
-                },
-                -- Can be much slower in larger projects; `clippy` itself is slower than `check`,
-                -- but RA also seems to more effectively reuse computations with `check`.
-                -- check = {
-                --   command = 'clippy',
-                -- },
-              },
-            },
-          },
-
           lua_ls = {
             settings = {
               Lua = {
@@ -516,7 +494,29 @@ require('lazy').setup({
           pyright = {},
           clangd = {},
         },
-        others = {},
+        others = {
+          rust_analyzer = {
+            -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
+            -- https://rust-analyzer.github.io/manual.html
+            -- TODO: look into https://github.com/mrcjkb/rustaceanvim for a more advanced setup
+            -- TODO: support workspace/project-specific settings (see rustaceanvim)
+            settings = {
+              ['rust-analyzer'] = {
+                imports = {
+                  granularity = {
+                    enforce = true,
+                    group = 'module',
+                  },
+                },
+                -- Can be much slower in larger projects; `clippy` itself is slower than `check`,
+                -- but RA also seems to more effectively reuse computations with `check`.
+                check = {
+                  command = 'clippy',
+                },
+              },
+            },
+          },
+        },
       }
 
       -- Ensure the servers and tools managed by Mason (above) are installed.
