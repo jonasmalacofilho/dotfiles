@@ -1,6 +1,6 @@
 return {
   'saghen/blink.cmp',
-  version = '1.*',
+  version = '1.*', -- v2 requires blink.lib and that's "not ready for us" as of April 2026
   dependencies = {
     -- Set up LuaLS for editing Neovim config files.
     'folke/lazydev.nvim',
