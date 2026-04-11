@@ -51,7 +51,6 @@ fi
 # - https://code.claude.com/docs/en/data-usage#telemetry-services
 # - https://code.claude.com/docs/en/env-vars
 # - https://code.claude.com/docs/en/remote-control#%E2%80%9Dremote-control-is-not-yet-enabled-for-your-account%E2%80%9D
-export DISABLE_FEEDBACK_COMMAND=1
 export DISABLE_ERROR_REPORTING=1
 
 export RIPGREP_CONFIG_PATH=~/.config/ripgreprc
