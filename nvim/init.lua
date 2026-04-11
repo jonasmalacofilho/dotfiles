@@ -158,6 +158,17 @@ vim.keymap.set('n', '<leader>ap', ':setlocal spell spelllang=pt_br<CR>', { desc 
 vim.keymap.set('n', '<leader>aa', ':setlocal spell spelllang=en_us,pt_br<CR>', { desc = 'Spell check in en_US + pt_BR' })
 vim.keymap.set('n', '<leader>al', ':setlocal nospell<CR>', { desc = "Don't spell check" })
 
+-- Remap vim.lsp.buf.selection_range to not clash with mini.ai.
+local map_lsp_selection = function(lhs, desc)
+  local s = vim.startswith(desc, 'Increase') and 1 or -1
+  local rhs = function()
+    vim.lsp.buf.selection_range(s * vim.v.count1)
+  end
+  vim.keymap.set('x', lhs, rhs, { desc = desc })
+end
+map_lsp_selection('+', 'Increase selection')
+map_lsp_selection('-', 'Decrease selection')
+
 -- [[ Basic Autocommands ]]
 -- See `:help lua-guide-autocommands`
 
