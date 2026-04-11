@@ -187,8 +187,8 @@ vim.api.nvim_create_autocmd('FileType', {
 -- Indent these files with 2 spaces.
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'markdown', 'javascript*', 'typescript*', 'json*', 'html', 'css', 'lua', 'yaml' },
-  desc = 'Automatically enable spell checking for some file types',
-  group = vim.api.nvim_create_augroup('filetype-auto-spell-checking', { clear = true }),
+  desc = 'Indent with 2 spaces for some file types',
+  group = vim.api.nvim_create_augroup('filetype-auto-2-space-indent', { clear = true }),
   callback = function()
     vim.opt_local.shiftwidth = 2
     vim.opt_local.softtabstop = 2
