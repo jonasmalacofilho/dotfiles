@@ -39,10 +39,10 @@ if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     fi
 fi
 
-# Claude privacy settings.
+# Claude Code privacy settings.
 #
-# IMPORTANT: the most important setting is to forbid the use of my data for training, which can only
-# be be done via <https://claude.ai/settings/data-privacy-controls>.
+# IMPORTANT: the most important setting is to forbid the use of my data for training, which can
+# be be done via <https://claude.ai/settings/data-privacy-controls> or with `/privacy-settings`.
 #
 # Don't simply set CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 to preserve the remove control
 # capability.
