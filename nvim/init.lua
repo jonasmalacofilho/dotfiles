@@ -221,9 +221,11 @@ require('lazy').setup({
   -- Highlight, edit, and navigate code.
   {
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
+    lazy = false,
     build = ':TSUpdate',
-    opts = {
-      ensure_installed = {
+    config = function()
+      local parsers = {
         'bash',
         'c',
         'diff', -- in particular, makes `git commit -v` colorful
@@ -238,35 +240,36 @@ require('lazy').setup({
         'typescript',
         'vim',
         'vimdoc',
-      },
-      -- Autoinstall languages that are not installed.
-      auto_install = true,
-      -- Use Treesitter for syntax highlighting.
-      highlight = {
-        enable = true,
+      }
+      require('nvim-treesitter').install(parsers)
 
-        -- Disable when unbearably slow/laggy (can also be a function). Note that this reverts back
-        -- to Vim's `syntax`, which is very limited. Can't you just clear (or disable) hlsearch?
-        -- disable = { 'tsx', 'rust' },
+      local available_parsers = require('nvim-treesitter').get_available()
 
-        -- Keep  Vim's regex `syntax` system for ident on some languages (add to this list when
-        -- experiencing "weird indenting issues"). But this can cause issues with the catppuccin
-        -- theme.
-        -- additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true },
-      incremental_selection = { enable = true },
-    },
-    config = function(_, opts)
-      -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function(args)
+          local buf, filetype = args.buf, args.match
+          local language = vim.treesitter.language.get_lang(filetype)
+          if not language then return end
 
-      ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup(opts)
+          local installed_parsers = require('nvim-treesitter').get_installed 'parsers'
 
-      -- Additional nvim-treesiter modules to explore:
-      -- - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-      -- - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-      -- - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+          if vim.tbl_contains(installed_parsers, language) then
+            vim.treesitter.start(buf, language)
+            vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          elseif vim.tbl_contains(available_parsers, language) then
+            require('nvim-treesitter').install(language):await(function()
+              vim.treesitter.start(buf, language)
+              vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end)
+          else
+            -- parser not available from nvim-treesitter, try anyway (e.g. bundled parsers)
+            if vim.treesitter.language.add(language) then
+              vim.treesitter.start(buf, language)
+              vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end
+          end
+        end,
+      })
     end,
   },
 
