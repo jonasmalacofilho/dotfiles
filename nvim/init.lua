@@ -158,6 +158,17 @@ vim.keymap.set('n', '<leader>ap', ':setlocal spell spelllang=pt_br<CR>', { desc 
 vim.keymap.set('n', '<leader>aa', ':setlocal spell spelllang=en_us,pt_br<CR>', { desc = 'Spell check in en_US + pt_BR' })
 vim.keymap.set('n', '<leader>al', ':setlocal nospell<CR>', { desc = "Don't spell check" })
 
+-- Remap vim.lsp.buf.selection_range to not clash with mini.ai.
+local map_lsp_selection = function(lhs, desc)
+  local s = vim.startswith(desc, 'Increase') and 1 or -1
+  local rhs = function()
+    vim.lsp.buf.selection_range(s * vim.v.count1)
+  end
+  vim.keymap.set('x', lhs, rhs, { desc = desc })
+end
+map_lsp_selection('+', 'Increase selection')
+map_lsp_selection('-', 'Decrease selection')
+
 -- [[ Basic Autocommands ]]
 -- See `:help lua-guide-autocommands`
 
@@ -187,8 +198,8 @@ vim.api.nvim_create_autocmd('FileType', {
 -- Indent these files with 2 spaces.
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'markdown', 'javascript*', 'typescript*', 'json*', 'html', 'css', 'lua', 'yaml' },
-  desc = 'Automatically enable spell checking for some file types',
-  group = vim.api.nvim_create_augroup('filetype-auto-spell-checking', { clear = true }),
+  desc = 'Indent with 2 spaces for some file types',
+  group = vim.api.nvim_create_augroup('filetype-auto-2-space-indent', { clear = true }),
   callback = function()
     vim.opt_local.shiftwidth = 2
     vim.opt_local.softtabstop = 2
@@ -198,7 +209,7 @@ vim.api.nvim_create_autocmd('FileType', {
 -- [[ Install `lazy.nvim` plugin manager ]]
 -- See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
   vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
 end ---@diagnostic disable-next-line: undefined-field
@@ -221,9 +232,11 @@ require('lazy').setup({
   -- Highlight, edit, and navigate code.
   {
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
+    lazy = false,
     build = ':TSUpdate',
-    opts = {
-      ensure_installed = {
+    config = function()
+      local parsers = {
         'bash',
         'c',
         'diff', -- in particular, makes `git commit -v` colorful
@@ -238,35 +251,38 @@ require('lazy').setup({
         'typescript',
         'vim',
         'vimdoc',
-      },
-      -- Autoinstall languages that are not installed.
-      auto_install = true,
-      -- Use Treesitter for syntax highlighting.
-      highlight = {
-        enable = true,
+      }
+      require('nvim-treesitter').install(parsers)
 
-        -- Disable when unbearably slow/laggy (can also be a function). Note that this reverts back
-        -- to Vim's `syntax`, which is very limited. Can't you just clear (or disable) hlsearch?
-        -- disable = { 'tsx', 'rust' },
+      local available_parsers = require('nvim-treesitter').get_available()
 
-        -- Keep  Vim's regex `syntax` system for ident on some languages (add to this list when
-        -- experiencing "weird indenting issues"). But this can cause issues with the catppuccin
-        -- theme.
-        -- additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true },
-      incremental_selection = { enable = true },
-    },
-    config = function(_, opts)
-      -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function(args)
+          local buf, filetype = args.buf, args.match
+          local language = vim.treesitter.language.get_lang(filetype)
+          if not language then
+            return
+          end
 
-      ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup(opts)
+          local installed_parsers = require('nvim-treesitter').get_installed 'parsers'
 
-      -- Additional nvim-treesiter modules to explore:
-      -- - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-      -- - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-      -- - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+          if vim.tbl_contains(installed_parsers, language) then
+            vim.treesitter.start(buf, language)
+            vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          elseif vim.tbl_contains(available_parsers, language) then
+            require('nvim-treesitter').install(language):await(function()
+              vim.treesitter.start(buf, language)
+              vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end)
+          else
+            -- parser not available from nvim-treesitter, try anyway (e.g. bundled parsers)
+            if vim.treesitter.language.add(language) then
+              vim.treesitter.start(buf, language)
+              vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end
+          end
+        end,
+      })
     end,
   },
 
@@ -317,51 +333,39 @@ require('lazy').setup({
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          -- Rename the variable under your cursor.
-          --  Most Language Servers support renaming across files, etc.
-          map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame') -- old
-
-          -- Execute a code action, usually your cursor needs to be on top of an error
-          -- or a suggestion from your LSP for this to activate.
-          map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' }) -- old
+          -- Override some default mappings to use Telescope.
 
           -- Find references for the word under your cursor.
           map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences') -- old
 
           -- Jump to the implementation of the word under your cursor.
           --  Useful when your language has ways of declaring types without an actual implementation.
           map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation') -- old
 
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-t>.
           map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition') -- old
-
-          -- WARN: This is not Goto Definition, this is Goto Declaration.
-          --  For example, in C this would take you to the header.
-          map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration') -- old
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
           map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols') -- old
-
-          -- Fuzzy find all the symbols in your current workspace.
-          --  Similar to document symbols, except searches over your entire project.
-          map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols')
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols') -- old
 
           -- Jump to the type of the word under your cursor.
           --  Useful when you're not sure what type a variable is and you want to see
           --  the definition of its *type*, not where it was *defined*.
           map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition') -- old
+
+          -- Custom mappings.
+
+          -- Jump to the declaration of the word under your cursor.
+          --  This is different from jump to definition: for example, in C this will typically take
+          --  you to a header file.
+          map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+          -- Fuzzy find all the symbols in your current workspace.
+          --  Similar to document symbols, except searches over your entire project.
+          map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols')
 
           local client = vim.lsp.get_client_by_id(event.data.client_id)
 
@@ -473,28 +477,6 @@ require('lazy').setup({
       ---@field others table<string, vim.lsp.Config>
       local servers = {
         mason = {
-          rust_analyzer = {
-            -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
-            -- https://rust-analyzer.github.io/manual.html
-            -- TODO: look into https://github.com/mrcjkb/rustaceanvim for a more advanced setup
-            -- TODO: support workspace/project-specific settings (see rustaceanvim)
-            settings = {
-              ['rust-analyzer'] = {
-                imports = {
-                  granularity = {
-                    enforce = true,
-                    group = 'module',
-                  },
-                },
-                -- Can be much slower in larger projects; `clippy` itself is slower than `check`,
-                -- but RA also seems to more effectively reuse computations with `check`.
-                -- check = {
-                --   command = 'clippy',
-                -- },
-              },
-            },
-          },
-
           lua_ls = {
             settings = {
               Lua = {
@@ -513,7 +495,29 @@ require('lazy').setup({
           pyright = {},
           clangd = {},
         },
-        others = {},
+        others = {
+          rust_analyzer = {
+            -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
+            -- https://rust-analyzer.github.io/manual.html
+            -- TODO: look into https://github.com/mrcjkb/rustaceanvim for a more advanced setup
+            -- TODO: support workspace/project-specific settings (see rustaceanvim)
+            settings = {
+              ['rust-analyzer'] = {
+                imports = {
+                  granularity = {
+                    enforce = true,
+                    group = 'module',
+                  },
+                },
+                -- Can be much slower in larger projects; `clippy` itself is slower than `check`,
+                -- but RA also seems to more effectively reuse computations with `check`.
+                check = {
+                  command = 'clippy',
+                },
+              },
+            },
+          },
+        },
       }
 
       -- Ensure the servers and tools managed by Mason (above) are installed.
@@ -605,7 +609,7 @@ require('lazy').setup({
   {
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
-    branch = '0.1.x',
+    branch = 'master',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -825,16 +829,6 @@ require('lazy').setup({
     end,
   },
 
-  -- TODO: tpope/vim-eunuch?
-
-  -- Additional Kickstart plugins available.
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns keymaps
-
   -- Load more plugins, config, etc.
   -- See: `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'plugins' },
@@ -859,5 +853,7 @@ require('lazy').setup({
     },
   },
 })
+
+require 'projects'
 
 -- vim: ts=2 sts=2 sw=2 et

@@ -39,10 +39,10 @@ if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     fi
 fi
 
-# Claude privacy settings.
+# Claude Code privacy settings.
 #
-# IMPORTANT: the most important setting is to forbid the use of my data for training, which can only
-# be be done via <https://claude.ai/settings/data-privacy-controls>.
+# IMPORTANT: the most important setting is to forbid the use of my data for training, which can
+# be be done via <https://claude.ai/settings/data-privacy-controls> or with `/privacy-settings`.
 #
 # Don't simply set CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 to preserve the remove control
 # capability.
@@ -51,7 +51,6 @@ fi
 # - https://code.claude.com/docs/en/data-usage#telemetry-services
 # - https://code.claude.com/docs/en/env-vars
 # - https://code.claude.com/docs/en/remote-control#%E2%80%9Dremote-control-is-not-yet-enabled-for-your-account%E2%80%9D
-export DISABLE_FEEDBACK_COMMAND=1
 export DISABLE_ERROR_REPORTING=1
 
 export RIPGREP_CONFIG_PATH=~/.config/ripgreprc
