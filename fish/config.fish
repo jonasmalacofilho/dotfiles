@@ -70,6 +70,7 @@ if status is-interactive
     abbr -a gl git pull
     abbr -a gme git merge
     abbr -a gp git push
+    abbr -a gpf git fpush
     abbr -a gre git rebase
     abbr -a gsh git show
     abbr -a gst git status
