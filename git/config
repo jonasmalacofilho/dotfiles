@@ -25,6 +25,7 @@
 	colorMoved = plain
 	mnemonicPrefix = true
 	renames = true
+	submodule = log
 
 [fetch]
 	all = true
@@ -40,9 +41,14 @@
 [init]
 	defaultBranch = main
 
+[log]
+	date = iso
+
+[merge]
+	conflictstyle = zdiff3
+
 [push]
 	autoSetupRemote = true
-	default = simple
 	followTags = true
 
 [rebase]
