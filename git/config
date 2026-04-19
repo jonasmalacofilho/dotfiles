@@ -4,9 +4,14 @@
 	signingkey = 06af7ad0
 
 [alias]
+	difft = !GIT_EXTERNAL_DIFF='difft --display=side-by-side' git diff "$@"
+	fpush = push --force-with-lease --force-if-includes
 	head = !git --no-pager log --abbrev=12 --oneline --format='%h' -1
-	klog = log --abbrev=12 --graph --decorate --pretty='%C(auto)%d %C(reset)%C(auto)%h %C(reset)(\"%s\")%C(reset)'
+	klog = log --format='%C(auto)%h%C(reset) ("%s")'
+	main = !git switch $(git rev-parse --abbrev-ref origin/HEAD | sed 's|origin/||')
 	pulls = fetch origin "+refs/pull/*:refs/origin/pull/*"
+	slog = log --format='%C(auto)%h%d %s %C(dim)[%aN, %ar]%C(reset)' --graph
+	sloga = log --format='%C(auto)%h%d %s %C(dim)[%aN, %ar]%C(reset)' --graph --all
 	upulls = fetch upstream "+refs/pull/*:refs/upstream/pull/*"
 
 [core]
@@ -25,6 +30,7 @@
 	colorMoved = plain
 	mnemonicPrefix = true
 	renames = true
+	submodule = log
 
 [fetch]
 	all = true
@@ -40,9 +46,14 @@
 [init]
 	defaultBranch = main
 
+[log]
+	date = iso
+
+[merge]
+	conflictstyle = zdiff3
+
 [push]
 	autoSetupRemote = true
-	default = simple
 	followTags = true
 
 [rebase]
