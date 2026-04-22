@@ -98,8 +98,6 @@ if status is-interactive
     abbr -a glog git log --stat
     abbr -a glop git log --stat -p
 
-    abbr -a --command gh b browse
-
     # Manual kitty integration, since from its (and the system's) perspective my default shell is
     # bash (so that /etc/profile.d/* gets sourced).
     # Docs: https://sw.kovidgoyal.net/kitty/shell-integration/#manual-shell-integration
