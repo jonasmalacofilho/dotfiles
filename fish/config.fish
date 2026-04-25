@@ -13,8 +13,8 @@ if status is-interactive
             echo "./x"
         else if test -e "cast"
             echo "./cast";
-        # else if test -e "justfile"
-        #     echo "just"
+        else if test -e "justfile"
+            echo "just"
         else if test -e "Makefile"
             echo "make"
         else
