@@ -11,6 +11,7 @@ pnpm = { direct = true, source = "pnpm", target = ".config/pnpm" }
 tmux = { direct = true, source = "tmux", target = ".config/tmux" }
 
 # Single-file configs that go into ~/.config/
+gh = { direct = true, source = "gh/config.yml", target = ".config/gh/config.yml" }
 starship = { direct = true, source = "starship/config.toml", target = ".config/starship.toml" }
 ripgrep = { direct = true, source = "ripgrep/rc", target = ".config/ripgreprc" }
 

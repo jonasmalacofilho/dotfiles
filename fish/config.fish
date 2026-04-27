@@ -13,8 +13,8 @@ if status is-interactive
             echo "./x"
         else if test -e "cast"
             echo "./cast";
-        # else if test -e "justfile"
-        #     echo "just"
+        else if test -e "justfile"
+            echo "just"
         else if test -e "Makefile"
             echo "make"
         else
@@ -97,8 +97,6 @@ if status is-interactive
     abbr -a glk git klog
     abbr -a glog git log --stat
     abbr -a glop git log --stat -p
-
-    abbr -a --command gh b browse
 
     # Manual kitty integration, since from its (and the system's) perspective my default shell is
     # bash (so that /etc/profile.d/* gets sourced).
