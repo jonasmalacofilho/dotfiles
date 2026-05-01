@@ -10,7 +10,7 @@ pager:
 aliases:
     b: browse
     co: pr checkout
-    pr last-merged: pr list --state merged --json number,title,mergedAt,createdAt --jq 'sort_by(.mergedAt) | reverse | .[] | [.number, .createdAt, .mergedAt, .title] | @tsv'
+    pr last-merged: "!gh pr list --state merged --json number,title,mergedAt,createdAt --jq '[\"#\", \"CREATED\", \"MERGED\", \"TITLE\"], (sort_by(.mergedAt) | reverse | .[] | [.number, .createdAt, .mergedAt, .title]) | @tsv' | column -t -s $'\\t'"
 # The path to a unix socket through which send HTTP connections. If blank, HTTP traffic will be handled by net/http.DefaultTransport.
 http_unix_socket:
 # What web browser gh should use when opening URLs. If blank, will refer to environment.
