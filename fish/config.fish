@@ -1,4 +1,9 @@
-set -x XDG_CONFIG_HOME ~/.config
+# Fish is always started as a non-login shell: bash or zsh is the login shell in this setup and
+# handles login initialization (path_helper, /etc/profile.d/*, brew shellenv, etc.). Starting fish
+# as a login shell would re-run path_helper on macOS and reorder PATH incorrectly.
+if status is-login
+    echo "warning: fish started as a login shell; PATH may be incorrect (see config.fish)" >&2
+end
 
 if status is-interactive
     # Commands to run in interactive sessions go here.
@@ -41,7 +46,11 @@ if status is-interactive
     abbr -a f fg
     abbr -a h htop
     abbr -a icat kitten icat
-    abbr -a jo xdg-open
+    if test (uname) = Darwin
+        abbr -a jo open
+    else
+        abbr -a jo xdg-open
+    end
     abbr -a kish kitten ssh
     abbr -a l ls -lah
     abbr -a md mkdir -p

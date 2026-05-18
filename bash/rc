@@ -36,6 +36,8 @@ if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     fi
 fi
 
+eval "$(/opt/homebrew/bin/brew shellenv bash)"
+
 # If not running interactively, stop here.
 [[ $- != *i* ]] && return
 
@@ -43,6 +45,8 @@ fi
 # See: <https://wiki.archlinux.org/title/Fish#Setting_fish_as_interactive_shell_only>.
 if [[ $(ps -p $PPID -o comm=) != "fish" && -z ${BASH_EXECUTION_STRING} ]]
 then
-    shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=''
-    exec fish $LOGIN_OPTION
+    # Don't start fish as a login shell. Bash (or zsh) is always the login shell in this setup,
+    # so login initialization (path_helper, /etc/profile.d/*, etc.) is already done. On macOS,
+    # fish --login re-runs path_helper, which reorders PATH and pushes Homebrew after /usr/bin.
+    exec fish
 fi
