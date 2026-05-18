@@ -1,4 +1,3 @@
 # ~/.bash_profile for login shells
-
-# keep everything in ~/.bashrc
-[[ -f ~/.bashrc ]] && . ~/.bashrc
+[ -f ~/.profile ] && . ~/.profile
+[ -f ~/.bashrc ] && . ~/.bashrc

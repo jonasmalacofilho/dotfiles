@@ -24,6 +24,7 @@ Host *.ngrok.io
 
 Host *
 	AddKeysToAgent yes
+	UseKeychain yes
 	ServerAliveCountMax 20
 	ServerAliveInterval 15
 	StrictHostKeyChecking ask

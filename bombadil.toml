@@ -19,6 +19,9 @@ ripgrep = { direct = true, source = "ripgrep/rc", target = ".config/ripgreprc" }
 readline = { direct = true, source = "readline/inputrc", target = ".inputrc" }
 npm = { direct = true, source = "npm/rc", target = ".npmrc" }
 
+# Shell profile (POSIX sh, shared)
+profile = { direct = true, source = "profile/profile", target = ".profile" }
+
 # Bash
 bashprofile = { direct = true, source = "bash/profile", target = ".bash_profile" }
 bashrc = { direct = true, source = "bash/rc", target = ".bashrc" }
@@ -29,3 +32,7 @@ gitignore = { direct = true, source = "git/ignore", target = ".gitignore.global"
 
 cargo = { direct = true, source = "cargo/config.toml", target = ".cargo/config.toml" }
 ssh = { direct = true, source = "ssh/config", target = ".ssh/config" }
+
+[profiles.macos.dots]
+launchd_setenv_host = { direct = true, source = "launchd/setenv-host.plist", target = "Library/LaunchAgents/com.jonasmalaco.setenv.HOST.plist" }
+zprofile = { direct = true, source = "zsh/zprofile", target = ".zprofile" }

@@ -1,7 +1,4 @@
-export EDITOR=nvim
-export VISUAL=nvim
-
-if [ -z "$SSH_AUTH_SOCK" ]; then
+if [ -n "$XDG_RUNTIME_DIR" ] && [ -z "$SSH_AUTH_SOCK" ]; then
     export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
 fi
 
@@ -39,28 +36,12 @@ if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     fi
 fi
 
-# Claude Code privacy settings.
-#
-# IMPORTANT: the most important setting is to forbid the use of my data for training, which can
-# be be done via <https://claude.ai/settings/data-privacy-controls> or with `/privacy-settings`.
-#
-# Don't simply set CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 to preserve the remove control
-# capability.
-#
-# References:
-# - https://code.claude.com/docs/en/data-usage#telemetry-services
-# - https://code.claude.com/docs/en/env-vars
-# - https://code.claude.com/docs/en/remote-control#%E2%80%9Dremote-control-is-not-yet-enabled-for-your-account%E2%80%9D
-export DISABLE_ERROR_REPORTING=1
-
-export RIPGREP_CONFIG_PATH=~/.config/ripgreprc
-
 # If not running interactively, stop here.
 [[ $- != *i* ]] && return
 
 # Use fish as the interactive shell.
 # See: <https://wiki.archlinux.org/title/Fish#Setting_fish_as_interactive_shell_only>.
-if [[ $(ps --no-header --pid=$PPID --format=comm) != "fish" && -z ${BASH_EXECUTION_STRING} ]]
+if [[ $(ps -p $PPID -o comm=) != "fish" && -z ${BASH_EXECUTION_STRING} ]]
 then
     shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=''
     exec fish $LOGIN_OPTION

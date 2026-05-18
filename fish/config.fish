@@ -1,3 +1,4 @@
+set -x XDG_CONFIG_HOME ~/.config
 
 if status is-interactive
     # Commands to run in interactive sessions go here.

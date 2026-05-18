@@ -1,0 +1,4 @@
+[ -f ~/.profile ] && . ~/.profile
+export HOST
+
+eval "$(/opt/homebrew/bin/brew shellenv zsh)"
