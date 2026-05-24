@@ -1,0 +1,28 @@
+(defcfg
+  process-unmapped-keys yes
+)
+
+(defsrc
+  fn lctl
+  caps
+  h    j    k    l
+  y    u    i    o
+)
+
+(defalias
+  cap (tap-hold-press 200 200 esc (layer-while-held nav))
+)
+
+(deflayer default
+  lctl fn
+  @cap
+  _    _    _    _
+  _    _    _    _
+)
+
+(deflayer nav
+  _    _
+  _
+  left down up   right
+  home pgdn pgup end
+)
