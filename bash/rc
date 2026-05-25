@@ -36,7 +36,7 @@ if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     fi
 fi
 
-eval "$(/opt/homebrew/bin/brew shellenv bash)"
+[[ "$(uname)" == "Darwin" ]] && eval "$(/opt/homebrew/bin/brew shellenv bash)"
 
 # If not running interactively, stop here.
 [[ $- != *i* ]] && return
