@@ -1,4 +1,5 @@
 *.swp
+.DS_Store
 .git/
 .local/
 tags
