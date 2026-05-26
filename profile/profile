@@ -18,3 +18,7 @@ export VISUAL=nvim
 export DISABLE_ERROR_REPORTING=1
 
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgreprc"
+
+if [ "$(uname)" = "Darwin" ]; then
+    export PATH="$(brew --prefix rustup)/bin:$PATH"
+fi
