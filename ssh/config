@@ -1,6 +1,5 @@
 Host *.local 192.168.0.*
-	StrictHostKeyChecking yes
-	UpdateHostKeys no
+	StrictHostKeyChecking ask
 
 Host github.com
 	StrictHostKeyChecking yes
