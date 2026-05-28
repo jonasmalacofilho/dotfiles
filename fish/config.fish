@@ -78,6 +78,7 @@ if status is-interactive
     abbr -a gcom git main
     abbr -a gf git fetch
     abbr -a gl git pull
+    abbr -a glr git pull --rebase
     abbr -a gme git merge
     abbr -a gp git push
     abbr -a gpf git fpush
