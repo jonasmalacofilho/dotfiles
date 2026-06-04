@@ -4,7 +4,7 @@
 
 (defsrc
   esc
-  f3   f4   f7   f8   f9   f10  f11  f12
+  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
   grv  lsgt
   fn   lctl
   caps
@@ -19,6 +19,12 @@
   ;; esc: tap = Esc, hold = control layer (same overload pattern as caps).
   esc-ctl (tap-hold-press 200 200 esc (layer-while-held control))
 
+  ;; Moved fn key (the physical Control-labelled key, which the fn<->lctl swap
+  ;; turns into fn): tap = fn, hold = fnrow layer. fnrow reproduces the MacBook's
+  ;; native function row, which the Karabiner VHID otherwise drops for fn+Fkey.
+  ;; Only useful on the MacBook's own keyboard.
+  fnl (tap-hold-press 200 200 fn (layer-while-held fnrow))
+
   ;; Oneshot modifiers: tap applies the mod to the next key, hold acts as a
   ;; normal modifier. Mirrors keyd's oneshot(...) at oneshot_timeout 200.
   ;; A oneshot for the symbols-layer activation key will be added later.
@@ -32,9 +38,9 @@
 ;; (the same usages hidutil's canonical fix swaps: 0x35 grave <-> 0x64 non-US \).
 (deflayer default
   @esc-ctl
-  _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
   lsgt grv
-  lctl fn
+  lctl @fnl
   @cap
   @o-lsft @o-rsft
   _    _    _    _
@@ -43,7 +49,7 @@
 
 (deflayer nav
   _
-  _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
   _    _
   _    _
   _
@@ -53,11 +59,27 @@
 )
 
 ;; Control layer (held via esc): media + volume on the Mac's F7-F12 positions,
-;; plus Mission Control (F3) and Spotlight (F4). mctl/sls are macOS-specific and
-;; may need verification through the Karabiner VHID.
+;; plus Mission Control (F3), Spotlight (F4), and live config reload (F5). This
+;; is the layer to use on non-MacBook keyboards, which have no mac fn key.
+;; mctl/sls are macOS-specific; confirmed working through the VHID on turing.
 (deflayer control
   _
-  mctl sls  prev pp   next mute vold volu
+  _    _    mctl sls  lrld _    prev pp   next mute vold volu
+  _    _
+  _    _
+  _
+  _    _
+  _    _    _    _
+  _    _    _    _
+)
+
+;; fn-row layer (held via the moved fn key): the MacBook's native function row,
+;; for use on the MacBook's own keyboard. F5/F6 assume the modern layout
+;; (Dictation, Do Not Disturb). The macOS-specific actions (brightness, mission
+;; control, spotlight, dictation, dnd) are confirmed working via the VHID on turing.
+(deflayer fnrow
+  _
+  brdown brup mctl sls  dtn  dnd  prev pp   next mute vold volu
   _    _
   _    _
   _

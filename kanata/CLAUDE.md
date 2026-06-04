@@ -86,6 +86,13 @@ Read `./kanata.kbd`.
 - control layer (held via esc): media + volume on the Mac's F7-F12 (prev / play-pause / next, mute,
   vol- / vol+), plus Mission Control (F3) and Spotlight (F4). keyd's equivalent layer was empty, so
   this is new; the macOS-specific Mission Control/Spotlight usages (mctl/sls) work here.
+- control-layer F5 = live config reload (kanata `lrld`); an invalid reload is rejected and the
+  running config is kept. Workflow: edit source, `bombadil link`, then esc+F5 (no restart).
+- moved fn key (the physical Control-labelled key) tap = fn, hold = fnrow layer reproducing the
+  MacBook's native function row: F1/F2 brightness, F3 Mission Control, F4 Spotlight, F5 Dictation,
+  F6 Do Not Disturb, F7-F12 media/volume. For the MacBook's own keyboard; other keyboards use the
+  control layer instead. F5/F6 assume the modern layout (else `bldn`/`blup` for keyboard backlight).
+  All the macOS-specific actions confirmed working through the VHID on turing.
 
 ---
 
