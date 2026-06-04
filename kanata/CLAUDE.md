@@ -97,8 +97,16 @@ Read `./kanata.kbd`.
   `[symbols]` without relying on an AltGr OS layout; each key outputs directly: 1-5 give the shifted
   number symbols, and the letter block gives the brackets, parens, math/shell punctuation, backtick,
   backslash, caret and tilde. Backtick/tilde are emitted via `grv`/`S-grv` (the grave usage the OS
-  maps to them here). Right Option no longer types Option (left Option still does). Accent positions
-  (e/a/u/i/o and comma) type plain letters until step 2.
+  maps to them here). Right Option no longer types Option (left Option still does).
+- symbols layer step 2a = Portuguese acutes and cedilla, direct unicode: e=é a=á u=ú i=í o=ó on the
+  letter keys, comma=ç. Each is a `(fork (unicode lower) (unicode UPPER) (lsft rsft))` so Shift
+  selects the uppercase codepoint (a held unicode codepoint is not uppercased by the OS; see the
+  unicode note under Decisions). Confirmed on turing in multiple apps. Uppercase works when Shift is
+  held alongside a held ralt, or when Shift is tapped (oneshot) before/after the symbols oneshot.
+  KNOWN OPEN ISSUE: with ralt tapped-and-released first, then Shift _held_, then the letter, the
+  symbols oneshot drops before the letter and you get e.g. E instead of É; switching o-sym to the
+  `-release` variant did not fix it and the cause is still under investigation. The `` ` ``/`~`/`^`
+  keys still emit literal symbols; they become dead-key entry points in step 2b.
 
 ---
 
@@ -118,6 +126,23 @@ Read `./kanata.kbd`.
 - All accented characters will be output as direct unicode (`(unicode á)` etc.) rather than relying
   on macOS input method or dead keys at the OS level
 - Dead keys (dead grave, dead tilde) will be implemented as kanata-internal layers
+- `(unicode ...)` on macOS (kanata 1.11.0) is the one output path that does NOT go through the
+  Karabiner VHID: `send_unicode` builds a `CGEvent`, attaches the codepoint via
+  `CGEventKeyboardSetUnicodeString`, and posts it with `CGEventPost` (`src/oskbd/macos.rs`). Every
+  other action writes a `DKEvent` to the virtual HID driver. Consequences:
+  - It needs no special OS input source (the old "switch to Unicode Hex Input / ABC Extended" advice
+    is obsolete for this codepath); the US layout and ISO backtick fix are untouched.
+  - Posting synthetic events via `CGEventPost` requires the Accessibility (TCC) right. kanata is a
+    sudo'd CLI with no TCC identity, so macOS attributes it to the _responsible process_ — the
+    terminal that launched it (kitty here). The first `(unicode)` keypress prompts to grant
+    **kitty** Accessibility; granting it makes unicode work. The earlier remaps never prompted
+    because they use the VHID path. When kanata moves to a launchd autostart it becomes its own
+    responsible process, so Accessibility will need granting to kanata/the daemon instead (revisit
+    at the autostart step).
+  - Because the codepoint is injected literally, a held Shift does not uppercase it; uppercase needs
+    its own codepoint, which is why the accents use `fork` on `(lsft rsft)`.
+  - The v1.8.0 unicode NUL-byte regression (issue #1546) was fixed by PR #1604, included since well
+    before v1.11.0, so our build is unaffected.
 - Characters needed for Brazilian Portuguese:
   - Acute: á é í ó ú (+ uppercase)
   - Tilde: ã õ (+ uppercase), via dead-tilde layer
@@ -158,9 +183,8 @@ In rough priority order:
    - shift+mod nav sublayers: w=S+meta, e=S+alt, r=S+ctrl (for shift+nav combos)
    - `f1` (or equivalent) = enter control layer
 
-2. **Symbols layer — accents and dead keys** (step 2; the ASCII symbols and right-Option activation
-   are done, see "tested and working"). Remaining:
-   - direct-unicode acutes and cedilla in the symbols layer: e=é a=á u=ú i=í o=ó, comma=ç (+ upper)
+2. **Symbols layer — dead keys** (step 2b; the ASCII symbols, right-Option activation, and the
+   direct-unicode acutes + cedilla are done, see "tested and working"). Remaining:
    - dead-key entry points and their sublayers:
      - grave key → dead-grave layer (à + upper)
      - tilde key → dead-tilde layer (ã õ + upper)

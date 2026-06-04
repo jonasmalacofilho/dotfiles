@@ -41,6 +41,21 @@
   o-sym (one-shot 200 (layer-while-held symbols))
 )
 
+;; Portuguese accents (symbols layer, step 2a): direct-unicode acutes and
+;; cedilla. Each emits the codepoint via CGEventPost (the only kanata output
+;; that bypasses the Karabiner VHID; it needs Accessibility on the process that
+;; launched kanata). Because the codepoint is injected literally, a held Shift
+;; does NOT uppercase it -- so fork picks the uppercase codepoint when lsft/rsft
+;; is active (our oneshot Shift counts as active for the next key).
+(defalias
+  e-acute (fork (unicode é) (unicode É) (lsft rsft))
+  a-acute (fork (unicode á) (unicode Á) (lsft rsft))
+  u-acute (fork (unicode ú) (unicode Ú) (lsft rsft))
+  i-acute (fork (unicode í) (unicode Í) (lsft rsft))
+  o-acute (fork (unicode ó) (unicode Ó) (lsft rsft))
+  ccedil  (fork (unicode ç) (unicode Ç) (lsft rsft))
+)
+
 ;; ISO backtick fix: on this Austrian/ISO MacBook under the US OS layout, macOS
 ;; swaps the grave key (left of 1) and the non-US backslash key (left of z), so
 ;; backtick lands left of z. Swap the two outputs to put backtick back left of 1
@@ -127,11 +142,11 @@
 ;; Backtick and tilde are emitted as grv / S-grv: on this keyboard the grave
 ;; usage (0x35) is what the OS maps to ` / ~ (see the ISO backtick fix above).
 ;;
-;; Layout (accents marked [accent] are placeholders for step 2):
+;; Layout (acutes/cedilla are live as of step 2a; ` ~ ^ become dead keys in 2b):
 ;;             ! @ # $ %
-;;             | = [é] & *      [ú] [í] [ó]
-;;             [á] _ ( ) -      ` \ 0
-;;             [ ] { } +      ^ ~ [ç]
+;;             | = é & *        ú í ó
+;;             á _ ( ) -        ` \ 0
+;;             [ ] { } +        ^ ~ ç
 (deflayer symbols
   _
   _    _    _    _    _    _    _    _    _    _    _    _
@@ -141,10 +156,10 @@
   _    _
   _
   S-1  S-2  S-3  S-4  S-5
-  S-bksl eql  _    S-7  S-8
-  _    S-min S-9  S-0  min
+  S-bksl eql  @e-acute S-7  S-8
+  @a-acute S-min S-9  S-0  min
   lbrc rbrc S-lbrc S-rbrc S-eql
-  S-6  S-grv _
+  S-6  S-grv @ccedil
   _    grv  bksl 0
-  _    _    _    _
+  _    @u-acute @i-acute @o-acute
 )
