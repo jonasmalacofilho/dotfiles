@@ -9,6 +9,12 @@
   fn   lctl
   caps
   lsft rsft
+  ralt
+  1    2    3    4    5
+  q    w    e    r    t
+  a    s    d    f    g
+  z    x    c    v    b
+  n    m    comm
   h    j    k    l
   y    u    i    o
 )
@@ -27,9 +33,12 @@
 
   ;; Oneshot modifiers: tap applies the mod to the next key, hold acts as a
   ;; normal modifier. Mirrors keyd's oneshot(...) at oneshot_timeout 200.
-  ;; A oneshot for the symbols-layer activation key will be added later.
   o-lsft (one-shot 200 lsft)
   o-rsft (one-shot 200 rsft)
+
+  ;; Right Option = oneshot symbols layer: tap for the next key, hold while
+  ;; typing several. Replaces keyd's rightalt = oneshot(symbols).
+  o-sym (one-shot 200 (layer-while-held symbols))
 )
 
 ;; ISO backtick fix: on this Austrian/ISO MacBook under the US OS layout, macOS
@@ -43,6 +52,12 @@
   lctl @fnl
   @cap
   @o-lsft @o-rsft
+  @o-sym
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _
   _    _    _    _
   _    _    _    _
 )
@@ -54,6 +69,12 @@
   _    _
   _
   _    _
+  _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _
   left down up   right
   home pgdn pgup end
 )
@@ -69,6 +90,12 @@
   _    _
   _
   _    _
+  _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _
   _    _    _    _
   _    _    _    _
 )
@@ -84,6 +111,40 @@
   _    _
   _
   _    _
+  _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _    _    _
+  _    _    _
   _    _    _    _
+  _    _    _    _
+)
+
+;; Symbols layer (held/oneshot via right Option): programming symbols and (in a
+;; later step) Portuguese accents. Ports keyd's [symbols] layer. Unlike keyd, it
+;; does not rely on an AltGr OS layout; each key outputs its symbol directly.
+;; Backtick and tilde are emitted as grv / S-grv: on this keyboard the grave
+;; usage (0x35) is what the OS maps to ` / ~ (see the ISO backtick fix above).
+;;
+;; Layout (accents marked [accent] are placeholders for step 2):
+;;             ! @ # $ %
+;;             | = [é] & *      [ú] [í] [ó]
+;;             [á] _ ( ) -      ` \ 0
+;;             [ ] { } +      ^ ~ [ç]
+(deflayer symbols
+  _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _
+  _    _
+  _
+  _    _
+  _
+  S-1  S-2  S-3  S-4  S-5
+  S-bksl eql  _    S-7  S-8
+  _    S-min S-9  S-0  min
+  lbrc rbrc S-lbrc S-rbrc S-eql
+  S-6  S-grv _
+  _    grv  bksl 0
   _    _    _    _
 )

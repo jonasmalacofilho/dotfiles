@@ -81,7 +81,7 @@ Read `./kanata.kbd`.
   US OS layout (may become unnecessary once the symbols layer handles grave/tilde)
 - oneshot modifiers (tap = oneshot, hold = normal modifier; 200ms, chaining works): left/right Shift
   only. This deviates from keyd, which also made Control and Alt oneshot; on the Mac those stay as
-  plain modifiers for now. A oneshot for the symbols-layer activation key will be added later.
+  plain modifiers for now.
 - esc: tap = Esc, hold = control layer (overload, 200ms), same pattern as caps
 - control layer (held via esc): media + volume on the Mac's F7-F12 (prev / play-pause / next, mute,
   vol- / vol+), plus Mission Control (F3) and Spotlight (F4). keyd's equivalent layer was empty, so
@@ -93,6 +93,12 @@ Read `./kanata.kbd`.
   F6 Do Not Disturb, F7-F12 media/volume. For the MacBook's own keyboard; other keyboards use the
   control layer instead. F5/F6 assume the modern layout (else `bldn`/`blup` for keyboard backlight).
   All the macOS-specific actions confirmed working through the VHID on turing.
+- symbols layer (held or oneshot via right Option), step 1 = programming symbols. Ports keyd's
+  `[symbols]` without relying on an AltGr OS layout; each key outputs directly: 1-5 give the shifted
+  number symbols, and the letter block gives the brackets, parens, math/shell punctuation, backtick,
+  backslash, caret and tilde. Backtick/tilde are emitted via `grv`/`S-grv` (the grave usage the OS
+  maps to them here). Right Option no longer types Option (left Option still does). Accent positions
+  (e/a/u/i/o and comma) type plain letters until step 2.
 
 ---
 
@@ -152,18 +158,13 @@ In rough priority order:
    - shift+mod nav sublayers: w=S+meta, e=S+alt, r=S+ctrl (for shift+nav combos)
    - `f1` (or equivalent) = enter control layer
 
-2. **Symbols layer** (activated by rightalt as oneshot):
-   - Numbers row: 1=! 2=@ 3=# 4=$ 5=%
-   - qwert: q=| w== e=é r=& t=*
-   - asdf: a=á s=_ d=( f=) g=-
-   - zxcv: z=[ x=] c={ v=} b=+
-   - uiop: u=ú i=í o=ó
-   - jkl: j=` k=\ l=0
-   - nm,: n=^ m=~ ,=ç
-   - Dead key entry points in symbols layer:
-     - grave key → enter dead-grave layer
-     - tilde key → enter dead-tilde layer
-     - (dead-circumflex TBD — no key assigned yet in keyd)
+2. **Symbols layer — accents and dead keys** (step 2; the ASCII symbols and right-Option activation
+   are done, see "tested and working"). Remaining:
+   - direct-unicode acutes and cedilla in the symbols layer: e=é a=á u=ú i=í o=ó, comma=ç (+ upper)
+   - dead-key entry points and their sublayers:
+     - grave key → dead-grave layer (à + upper)
+     - tilde key → dead-tilde layer (ã õ + upper)
+     - circumflex → dead-circumflex layer (â ê ô + upper); no key assigned yet in keyd
 
 ---
 
