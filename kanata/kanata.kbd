@@ -7,7 +7,6 @@
   fn   lctl
   caps
   lsft rsft
-  lalt
   h    j    k    l
   y    u    i    o
 )
@@ -17,9 +16,7 @@
 
   ;; Oneshot modifiers: tap applies the mod to the next key, hold acts as a
   ;; normal modifier. Mirrors keyd's oneshot(...) at oneshot_timeout 200.
-  ;; o-lctl sits on the physical fn key, which the fn<->lctl swap makes Control.
-  o-lctl (one-shot 200 lctl)
-  o-lalt (one-shot 200 lalt)
+  ;; A oneshot for the symbols-layer activation key will be added later.
   o-lsft (one-shot 200 lsft)
   o-rsft (one-shot 200 rsft)
 )
@@ -30,10 +27,9 @@
 ;; (the same usages hidutil's canonical fix swaps: 0x35 grave <-> 0x64 non-US \).
 (deflayer default
   lsgt grv
-  @o-lctl fn
+  lctl fn
   @cap
   @o-lsft @o-rsft
-  @o-lalt
   _    _    _    _
   _    _    _    _
 )
@@ -43,7 +39,6 @@
   _    _
   _
   _    _
-  _
   left down up   right
   home pgdn pgup end
 )

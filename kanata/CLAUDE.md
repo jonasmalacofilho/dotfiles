@@ -79,9 +79,9 @@ Read `./kanata.kbd`.
 - nav layer: hjkl=arrows, yuio=home/pgdn/pgup/end
 - ISO backtick fix: `grv` ↔ `lsgt` swap, so backtick/tilde sits left of 1 (not left of z) under the
   US OS layout (may become unnecessary once the symbols layer handles grave/tilde)
-- oneshot modifiers (tap = oneshot, hold = normal modifier; 200ms, chaining works): left/right
-  Shift, left Option, and Control on the physical fn key (which the swap makes Control). Command
-  keys and right Option deliberately left untouched.
+- oneshot modifiers (tap = oneshot, hold = normal modifier; 200ms, chaining works): left/right Shift
+  only. This deviates from keyd, which also made Control and Alt oneshot; on the Mac those stay as
+  plain modifiers for now. A oneshot for the symbols-layer activation key will be added later.
 
 ---
 
