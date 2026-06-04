@@ -6,12 +6,22 @@
   grv  lsgt
   fn   lctl
   caps
+  lsft rsft
+  lalt
   h    j    k    l
   y    u    i    o
 )
 
 (defalias
   cap (tap-hold-press 200 200 esc (layer-while-held nav))
+
+  ;; Oneshot modifiers: tap applies the mod to the next key, hold acts as a
+  ;; normal modifier. Mirrors keyd's oneshot(...) at oneshot_timeout 200.
+  ;; o-lctl sits on the physical fn key, which the fn<->lctl swap makes Control.
+  o-lctl (one-shot 200 lctl)
+  o-lalt (one-shot 200 lalt)
+  o-lsft (one-shot 200 lsft)
+  o-rsft (one-shot 200 rsft)
 )
 
 ;; ISO backtick fix: on this Austrian/ISO MacBook under the US OS layout, macOS
@@ -20,14 +30,18 @@
 ;; (the same usages hidutil's canonical fix swaps: 0x35 grave <-> 0x64 non-US \).
 (deflayer default
   lsgt grv
-  lctl fn
+  @o-lctl fn
   @cap
+  @o-lsft @o-rsft
+  @o-lalt
   _    _    _    _
   _    _    _    _
 )
 
 (deflayer nav
   _    _
+  _    _
+  _
   _    _
   _
   left down up   right

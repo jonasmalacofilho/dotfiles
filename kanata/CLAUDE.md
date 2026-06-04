@@ -79,6 +79,9 @@ Read `./kanata.kbd`.
 - nav layer: hjkl=arrows, yuio=home/pgdn/pgup/end
 - ISO backtick fix: `grv` ↔ `lsgt` swap, so backtick/tilde sits left of 1 (not left of z) under the
   US OS layout (may become unnecessary once the symbols layer handles grave/tilde)
+- oneshot modifiers (tap = oneshot, hold = normal modifier; 200ms, chaining works): left/right
+  Shift, left Option, and Control on the physical fn key (which the swap makes Control). Command
+  keys and right Option deliberately left untouched.
 
 ---
 
@@ -125,13 +128,9 @@ Read `./kanata.kbd`.
 
 In rough priority order:
 
-1. **Oneshot modifiers**: shift, ctrl, alt as oneshot on their respective keys
-   - keyd: `shift = oneshot(shift)`, etc.
-   - kanata: `(one-shot 200 lsft)` etc.
+1. **esc key**: tap=Esc, hold=config layer (same overload pattern as caps)
 
-2. **esc key**: tap=Esc, hold=config layer (same overload pattern as caps)
-
-3. **Nav layer — remaining keys** (currently only hjkl/yuio are mapped; some of these may be dropped
+2. **Nav layer — remaining keys** (currently only hjkl/yuio are mapped; some of these may be dropped
    or adjusted):
    - `p` = delete
    - `backspace` = C-backspace (delete word)
@@ -144,7 +143,7 @@ In rough priority order:
    - shift+mod nav sublayers: w=S+meta, e=S+alt, r=S+ctrl (for shift+nav combos)
    - `f1` (or equivalent) = enter config layer
 
-4. **Symbols layer** (activated by rightalt as oneshot):
+3. **Symbols layer** (activated by rightalt as oneshot):
    - Numbers row: 1=! 2=@ 3=# 4=$ 5=%
    - qwert: q=| w== e=é r=& t=*
    - asdf: a=á s=_ d=( f=) g=-
@@ -157,7 +156,7 @@ In rough priority order:
      - tilde key → enter dead-tilde layer
      - (dead-circumflex TBD — no key assigned yet in keyd)
 
-5. **Config layer** (accessed via esc hold):
+4. **Config layer** (accessed via esc hold):
    - Media keys: brightness up/down, volume up/down/mute, play/pause, next/prev
    - (Key assignments for media TBD — not in original keyd config)
 
