@@ -38,6 +38,9 @@
 
   ;; Right Option = oneshot symbols layer: tap for the next key, hold while
   ;; typing several. Replaces keyd's rightalt = oneshot(symbols).
+  ;; Note: holding a oneshot key does NOT extend its timer (the layer still
+  ;; reverts on timeout). For an uppercase accent, hold ralt + Shift together
+  ;; then press the letter, so no oneshot timer is in play.
   o-sym (one-shot 200 (layer-while-held symbols))
 )
 
