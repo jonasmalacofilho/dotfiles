@@ -101,12 +101,15 @@ Read `./kanata.kbd`.
 - symbols layer step 2a = Portuguese acutes and cedilla, direct unicode: e=é a=á u=ú i=í o=ó on the
   letter keys, comma=ç. Each is a `(fork (unicode lower) (unicode UPPER) (lsft rsft))` so Shift
   selects the uppercase codepoint (a held unicode codepoint is not uppercased by the OS; see the
-  unicode note under Decisions). Confirmed on turing in multiple apps. Uppercase works when Shift is
-  held alongside a held ralt, or when Shift is tapped (oneshot) before/after the symbols oneshot.
-  KNOWN OPEN ISSUE: with ralt tapped-and-released first, then Shift _held_, then the letter, the
-  symbols oneshot drops before the letter and you get e.g. E instead of É; switching o-sym to the
-  `-release` variant did not fix it and the cause is still under investigation. The `` ` ``/`~`/`^`
-  keys still emit literal symbols; they become dead-key entry points in step 2b.
+  unicode note under Decisions). Confirmed on turing in multiple apps. The `` ` ``/`~`/`^` keys
+  still emit literal symbols; they become dead-key entry points in step 2b.
+  - Uppercase ergonomics (debug-traced, not a bug): when ralt is just tapped, the symbols layer
+    lives only on the oneshot timer (reset to the most recent chained oneshot's value on each press,
+    200ms here) — holding Shift does NOT extend it. So the robust uppercase recipe is to **hold ralt
+    and Shift together, then the letter** (both held = layer-while-held + real modifier, no timer
+    involved). Tapping ralt then leisurely pressing Shift and the letter races the timer and yields
+    e.g. E instead of É once the letter lands after the layer reverts; that's expected oneshot
+    behaviour, matching how AltGr-style layers want the layer key held.
 
 ---
 
