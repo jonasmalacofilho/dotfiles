@@ -5,14 +5,14 @@
 
 ## Static configuration after boot
 
-For day to day usage is it desirable to have the system automatically run liquidctl and configure
+For day to day usage it is desirable to have the system automatically run liquidctl and configure
 each device by itself.
 
 The first step is to create a script with all necessary calls to liquidctl. It can be written in any
 language, but for simplicity I stick with a simple Bash script: [`liquidcfg`](./liquidcfg).
 
-The system then has to configured to automatically start that script; most likely, you will want it
-to run at every boot.
+The system then has to be configured to automatically start that script; most likely, you will want
+it to run at every boot.
 
 How to do this will depend on the OS (and maybe distribution) you use. Personally, I run Arch Linux
 and, these days, Systemd is ubiquitous on most Linux distributions. I will assume you are running
@@ -61,7 +61,7 @@ Finally, once you are happy with the results, enable the service to have it star
 ## Dynamic adjustment of lights throughout the day
 
 This folder also includes `liquiddyncfg` (and associated service and timer files), which I use to
-dynamically configuration my cooler and case lights throughout the day.
+dynamically configure my cooler and case lights throughout the day.
 
 This is similar to the boot-time setup, except that a timer is used to have it run at period
 intervals.
