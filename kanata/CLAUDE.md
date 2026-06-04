@@ -3,13 +3,68 @@
 ## Context
 
 Porting a keyd keyboard layout (Linux) to kanata (macOS) for a MacBook Air M5 (hostname: turing,
-Apple Silicon, ISO keyboard). kanata is already installed and working via Homebrew, but not set up
-to autostart. The Karabiner DriverKit VirtualHIDDevice v6.x driver is installed and active.
+Apple Silicon, ISO keyboard). kanata is already installed via Homebrew. The Karabiner DriverKit
+VirtualHIDDevice v6.x driver is installed and activated, but its **daemon must currently be started
+manually** before kanata, and nothing is set to autostart yet (see "Operational Setup").
 
 Relevant paths:
 
 - source keyd config (but consider "Decisions Made"): `~/Code/etcfiles/keyd/`
 - kanata config: this directory, in dotfiles repo managed with toml-bombadil
+
+---
+
+## Hardware & Keyboards
+
+Two physical keyboards in play; one kanata config is meant to serve both (see "Multiple keyboards").
+
+### MacBook Air M5 (turing) — primary
+
+- ISO physical layout, Austrian (a few extra alphas/symbols over US ANSI).
+- Bottom row, left to right: `fn` `control` `option` `command` `space` `command` `option`, then the
+  arrow-key cluster. Note the extra modifier (fn) and the second command/option on the right that no
+  non-Mac keyboard has.
+- The `fn`/Globe key is a "true" key on macOS: it reaches the OS and is interceptable/remappable in
+  kanata.
+
+### Aula F75 — the mech in heaviest use
+
+- 75% Windows/ANSI/US, fewer keys than the Mac.
+- Bottom row, left to right: `control` `super` `alt` `space` `fn` `control`, then the arrow-key
+  cluster. (The `fn` here is the keyboard's own fn, see below.)
+- The Aula `fn` key is firmware-only: it never reaches the OS and can only be reassigned with Aula's
+  proprietary (Windows) software, and even then only to keyboard-scope functions — it can never be
+  sent to the OS as an ordinary key.
+- The keyd setup assumed the Aula was firmware-remapped: fn-labelled key -> Right Alt, Esc-labelled
+  key -> Fn. The Mac port needs a different scheme (see open decision below).
+- The Aula has a "mac mode" but it has other issues; decision: **not using it**.
+
+#### OPEN DECISION: where Mac's fn lands on the Aula
+
+Mac's config leans on a real `fn` key, but the Aula can't send fn to the OS. Leaning toward using
+the Esc-labelled key position to stand in for Mac's fn, which implies relocating the Aula's own fn
+functionality elsewhere and adjusting the firmware remaps accordingly. Not yet settled — revisit
+when the Aula is actually wired into this config.
+
+---
+
+## Kill Switch (Panic Exit)
+
+kanata has a **built-in** emergency exit; we rely on it rather than building our own (a `cmd`/macro
+kill switch would be strictly less reliable, since it depends on the config loading correctly and
+the combo being reachable in the current layer).
+
+- **Combo: Left Control + Space + Escape, held simultaneously**, terminates the kanata process.
+- It acts on **raw input before any remapping**, so no config bug, wrong layer, or broken alias can
+  disable it. It is hardcoded in kanata and cannot be configured or turned off.
+- **Caveat for turing:** because we swap `fn` <-> `lctl`, press the key _physically labelled_
+  Control (not fn) — the panic watches pre-remap HID, where that key is still Left Control. Esc is
+  the real Esc key, Space is space.
+- **Tested and confirmed working** on turing (macOS + Karabiner VHID).
+
+Independent fallbacks (defense in depth): run kanata in a foreground terminal and kill it with the
+mouse (quit / close window -> SIGHUP), or `sudo pkill kanata` from another shell. Note `Ctrl+C` in
+kanata's own terminal is unreliable, since physical Control is remapped to fn in the default layer.
 
 ---
 
@@ -103,6 +158,24 @@ In rough priority order:
 5. **Config layer** (accessed via esc hold):
    - Media keys: brightness up/down, volume up/down/mute, play/pause, next/prev
    - (Key assignments for media TBD — not in original keyd config)
+
+---
+
+## Operational Setup (not from keyd)
+
+Two processes must be running, both currently started **manually** and neither autostarted yet:
+
+1. **Karabiner VHID daemon** (prerequisite — must be up before kanata):
+   ```
+   sudo '/Library/Application Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice/Applications/Karabiner-VirtualHIDDevice-Daemon.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Daemon'
+   ```
+   (The driver itself is activated via the `Karabiner-VirtualHIDDevice-Manager.app ... activate`
+   manager binary; that part is already done.)
+2. **kanata**: `sudo kanata --cfg ~/.config/kanata/kanata.kbd`
+
+- **Autostart**: still to do — set both to start automatically (e.g. launchd LaunchDaemons, since
+  they need root). Hold off until the config is trusted; for now manual runs are preferred so the
+  foreground terminal doubles as a fallback kill switch.
 
 ---
 
