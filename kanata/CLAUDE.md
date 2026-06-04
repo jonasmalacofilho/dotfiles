@@ -77,6 +77,8 @@ Read `./kanata.kbd`.
 - `fn` ↔ `lctl` swap (fn/Globe and Control keys swapped)
 - `caps` tap=Esc, hold=nav layer (using `tap-hold-press` at 200ms)
 - nav layer: hjkl=arrows, yuio=home/pgdn/pgup/end
+- ISO backtick fix: `grv` ↔ `lsgt` swap, so backtick/tilde sits left of 1 (not left of z) under the
+  US OS layout (may become unnecessary once the symbols layer handles grave/tilde)
 
 ---
 

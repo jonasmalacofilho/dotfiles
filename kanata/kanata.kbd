@@ -3,7 +3,8 @@
 )
 
 (defsrc
-  fn lctl
+  grv  lsgt
+  fn   lctl
   caps
   h    j    k    l
   y    u    i    o
@@ -13,7 +14,12 @@
   cap (tap-hold-press 200 200 esc (layer-while-held nav))
 )
 
+;; ISO backtick fix: on this Austrian/ISO MacBook under the US OS layout, macOS
+;; swaps the grave key (left of 1) and the non-US backslash key (left of z), so
+;; backtick lands left of z. Swap the two outputs to put backtick back left of 1
+;; (the same usages hidutil's canonical fix swaps: 0x35 grave <-> 0x64 non-US \).
 (deflayer default
+  lsgt grv
   lctl fn
   @cap
   _    _    _    _
@@ -21,6 +27,7 @@
 )
 
 (deflayer nav
+  _    _
   _    _
   _
   left down up   right
