@@ -1,6 +1,12 @@
 link:
     bombadil link -p macos
 
+fmt:
+    dprint fmt
+
+fmt-check:
+    dprint check
+
 check-links:
     #!/usr/bin/env bash
     green=$'\033[32m'

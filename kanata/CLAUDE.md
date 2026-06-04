@@ -18,6 +18,7 @@ Relevant paths:
 Read `./kanata.kbd`.
 
 ### What's tested and working
+
 - `fn` ↔ `lctl` swap (fn/Globe and Control keys swapped)
 - `caps` tap=Esc, hold=nav layer (using `tap-hold-press` at 200ms)
 - nav layer: hjkl=arrows, yuio=home/pgdn/pgup/end
@@ -27,16 +28,18 @@ Read `./kanata.kbd`.
 ## Decisions Made
 
 ### General
+
 - macOS-only config for now (no cross-platform with Linux yet)
 - QWERTY only (no layout switching)
 - no home row mods (not in use in Linux, can be added a later point)
 - `tap-hold-press` is the right variant for overload-style behavior (hold triggers on next key
-press, not just timeout) — matches keyd's `overload`
+  press, not just timeout) — matches keyd's `overload`
 - for now, kanata is run as: `sudo kanata --cfg ~/.config/kanata/kanata.kbd`
 
 ### Portuguese characters / symbols layer
+
 - All accented characters will be output as direct unicode (`(unicode á)` etc.) rather than relying
-on macOS input method or dead keys at the OS level
+  on macOS input method or dead keys at the OS level
 - Dead keys (dead grave, dead tilde) will be implemented as kanata-internal layers
 - Characters needed for Brazilian Portuguese:
   - Acute: á é í ó ú (+ uppercase)
@@ -46,15 +49,17 @@ on macOS input method or dead keys at the OS level
   - Cedilla: ç Ç (direct)
 
 ### Function keys / media keys
-- Known limitation: Karabiner virtual keyboard breaks fn+Fkey media control
-  behavior — fn key state is lost through the virtual HID device
-- Solution: map media keys (brightness, volume) explicitly in the config layer
-  rather than relying on fn+Fkey
+
+- Known limitation: Karabiner virtual keyboard breaks fn+Fkey media control behavior — fn key state
+  is lost through the virtual HID device
+- Solution: map media keys (brightness, volume) explicitly in the config layer rather than relying
+  on fn+Fkey
 
 ### Multiple keyboards
+
 - An ANSI US mechanical keyboard will be added later
-- Plan: single kanata config, single instance; differences between keyboards are
-  small enough (mainly the fn key swap, which the mech won't need)
+- Plan: single kanata config, single instance; differences between keyboards are small enough
+  (mainly the fn key swap, which the mech won't need)
 - Revisit when the mech is actually connected
 
 ---
@@ -85,11 +90,11 @@ In rough priority order:
 4. **Symbols layer** (activated by rightalt as oneshot):
    - Numbers row: 1=! 2=@ 3=# 4=$ 5=%
    - qwert: q=| w== e=é r=& t=*
-   - asdf:  a=á s=_ d=( f=) g=-
-   - zxcv:  z=[ x=] c={ v=} b=+
-   - uiop:  u=ú i=í o=ó
-   - jkl:   j=` k=\ l=0
-   - nm,:   n=^ m=~ ,=ç
+   - asdf: a=á s=_ d=( f=) g=-
+   - zxcv: z=[ x=] c={ v=} b=+
+   - uiop: u=ú i=í o=ó
+   - jkl: j=` k=\ l=0
+   - nm,: n=^ m=~ ,=ç
    - Dead key entry points in symbols layer:
      - grave key → enter dead-grave layer
      - tilde key → enter dead-tilde layer
@@ -114,6 +119,7 @@ In rough priority order:
 - `process-unmapped-keys yes`: pass through all keys not in defsrc
 
 ## kanata Key Names (macOS relevant)
+
 - `fn` = fn/Globe key (interceptable on Apple keyboards)
 - `lctl rctl` = Control, `lalt ralt` = Option, `lmet rmet` = Command
 - `lsft rsft` = Shift

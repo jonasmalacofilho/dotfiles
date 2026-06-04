@@ -1,0 +1,13 @@
+{
+  "markdown": {
+    "lineWidth": 100,
+    "textWrap": "always"
+  },
+  "excludes": [
+    "nvim/**",
+    "**/*.txt"
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/markdown-0.22.1.wasm"
+  ]
+}
