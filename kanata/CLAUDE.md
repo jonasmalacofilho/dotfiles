@@ -93,19 +93,21 @@ Read `./kanata.kbd`.
   F6 Do Not Disturb, F7-F12 media/volume. For the MacBook's own keyboard; other keyboards use the
   control layer instead. F5/F6 assume the modern layout (else `bldn`/`blup` for keyboard backlight).
   All the macOS-specific actions confirmed working through the VHID on turing.
-- symbols layer (held or oneshot via right Option), step 1 = programming symbols. Ports keyd's
+- symbols layer (held or oneshot via right Command), step 1 = programming symbols. Ports keyd's
   `[symbols]` without relying on an AltGr OS layout; each key outputs directly: 1-5 give the shifted
   number symbols, and the letter block gives the brackets, parens, math/shell punctuation, backtick,
   backslash, caret and tilde. Backtick/tilde are emitted via `grv`/`S-grv` (the grave usage the OS
-  maps to them here). Right Option no longer types Option (left Option still does).
+  maps to them here). Another small departure from keyd, which activated symbols from rightalt: on
+  the Mac the layer key is right Command (`rmet`), so right Option stays a plain Option and no
+  longer needs intercepting. Right Command no longer types Command (left Command still does).
 - symbols layer step 2a = Portuguese acutes and cedilla, direct unicode: e=é a=á u=ú i=í o=ó on the
   letter keys, comma=ç. Each is a `(fork (unicode lower) (unicode UPPER) (lsft rsft))` so Shift
   selects the uppercase codepoint (a held unicode codepoint is not uppercased by the OS; see the
   unicode note under Decisions). Confirmed on turing in multiple apps. The `` ` ``/`~`/`^` keys
   still emit literal symbols; they become dead-key entry points in step 2b.
-  - Uppercase ergonomics (debug-traced, not a bug): when ralt is just tapped, the symbols layer
+  - Uppercase ergonomics (debug-traced, not a bug): when rmet is just tapped, the symbols layer
     lives only on the oneshot timer (reset to the most recent chained oneshot's value on each press,
-    200ms here) — holding Shift does NOT extend it. So the robust uppercase recipe is to **hold ralt
+    200ms here) — holding Shift does NOT extend it. So the robust uppercase recipe is to **hold rmet
     and Shift together, then the letter** (both held = layer-while-held + real modifier, no timer
     involved). Tapping ralt then leisurely pressing Shift and the letter races the timer and yields
     e.g. E instead of É once the letter lands after the layer reverts; that's expected oneshot

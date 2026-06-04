@@ -9,7 +9,7 @@
   fn   lctl
   caps
   lsft rsft
-  ralt
+  rmet
   1    2    3    4    5
   q    w    e    r    t
   a    s    d    f    g
@@ -36,10 +36,11 @@
   o-lsft (one-shot 200 lsft)
   o-rsft (one-shot 200 rsft)
 
-  ;; Right Option = oneshot symbols layer: tap for the next key, hold while
-  ;; typing several. Replaces keyd's rightalt = oneshot(symbols).
+  ;; Right Command = oneshot symbols layer: tap for the next key, hold while
+  ;; typing several. (keyd used rightalt = oneshot(symbols); on the Mac right
+  ;; Option stays a plain modifier and right Command drives the layer instead.)
   ;; Note: holding a oneshot key does NOT extend its timer (the layer still
-  ;; reverts on timeout). For an uppercase accent, hold ralt + Shift together
+  ;; reverts on timeout). For an uppercase accent, hold rmet + Shift together
   ;; then press the letter, so no oneshot timer is in play.
   o-sym (one-shot 200 (layer-while-held symbols))
 )
@@ -139,7 +140,7 @@
   _    _    _    _
 )
 
-;; Symbols layer (held/oneshot via right Option): programming symbols and (in a
+;; Symbols layer (held/oneshot via right Command): programming symbols and (in a
 ;; later step) Portuguese accents. Ports keyd's [symbols] layer. Unlike keyd, it
 ;; does not rely on an AltGr OS layout; each key outputs its symbol directly.
 ;; Backtick and tilde are emitted as grv / S-grv: on this keyboard the grave
