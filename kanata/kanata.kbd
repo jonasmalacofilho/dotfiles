@@ -3,6 +3,8 @@
 )
 
 (defsrc
+  esc
+  f3   f4   f7   f8   f9   f10  f11  f12
   grv  lsgt
   fn   lctl
   caps
@@ -13,6 +15,9 @@
 
 (defalias
   cap (tap-hold-press 200 200 esc (layer-while-held nav))
+
+  ;; esc: tap = Esc, hold = control layer (same overload pattern as caps).
+  esc-ctl (tap-hold-press 200 200 esc (layer-while-held control))
 
   ;; Oneshot modifiers: tap applies the mod to the next key, hold acts as a
   ;; normal modifier. Mirrors keyd's oneshot(...) at oneshot_timeout 200.
@@ -26,6 +31,8 @@
 ;; backtick lands left of z. Swap the two outputs to put backtick back left of 1
 ;; (the same usages hidutil's canonical fix swaps: 0x35 grave <-> 0x64 non-US \).
 (deflayer default
+  @esc-ctl
+  _    _    _    _    _    _    _    _
   lsgt grv
   lctl fn
   @cap
@@ -35,10 +42,26 @@
 )
 
 (deflayer nav
+  _
+  _    _    _    _    _    _    _    _
   _    _
   _    _
   _
   _    _
   left down up   right
   home pgdn pgup end
+)
+
+;; Control layer (held via esc): media + volume on the Mac's F7-F12 positions,
+;; plus Mission Control (F3) and Spotlight (F4). mctl/sls are macOS-specific and
+;; may need verification through the Karabiner VHID.
+(deflayer control
+  _
+  mctl sls  prev pp   next mute vold volu
+  _    _
+  _    _
+  _
+  _    _
+  _    _    _    _
+  _    _    _    _
 )

@@ -82,6 +82,10 @@ Read `./kanata.kbd`.
 - oneshot modifiers (tap = oneshot, hold = normal modifier; 200ms, chaining works): left/right Shift
   only. This deviates from keyd, which also made Control and Alt oneshot; on the Mac those stay as
   plain modifiers for now. A oneshot for the symbols-layer activation key will be added later.
+- esc: tap = Esc, hold = control layer (overload, 200ms), same pattern as caps
+- control layer (held via esc): media + volume on the Mac's F7-F12 (prev / play-pause / next, mute,
+  vol- / vol+), plus Mission Control (F3) and Spotlight (F4). keyd's equivalent layer was empty, so
+  this is new; the macOS-specific Mission Control/Spotlight usages (mctl/sls) work here.
 
 ---
 
@@ -112,8 +116,8 @@ Read `./kanata.kbd`.
 
 - Known limitation: Karabiner virtual keyboard breaks fn+Fkey media control behavior — fn key state
   is lost through the virtual HID device
-- Solution: map media keys (brightness, volume) explicitly in the config layer rather than relying
-  on fn+Fkey
+- Solution: map media keys (brightness, volume) explicitly in the control layer rather than relying
+  on fn+Fkey (done for volume/playback on F7-F12; brightness on F1/F2 not added yet)
 
 ### Multiple keyboards
 
@@ -128,9 +132,7 @@ Read `./kanata.kbd`.
 
 In rough priority order:
 
-1. **esc key**: tap=Esc, hold=config layer (same overload pattern as caps)
-
-2. **Nav layer — remaining keys** (currently only hjkl/yuio are mapped; some of these may be dropped
+1. **Nav layer — remaining keys** (currently only hjkl/yuio are mapped; some of these may be dropped
    or adjusted):
    - `p` = delete
    - `backspace` = C-backspace (delete word)
@@ -141,9 +143,9 @@ In rough priority order:
    - `rightshift` = capslock
    - mod activators on home row: s=meta, d=alt, f=ctrl, g=shift, space=shift
    - shift+mod nav sublayers: w=S+meta, e=S+alt, r=S+ctrl (for shift+nav combos)
-   - `f1` (or equivalent) = enter config layer
+   - `f1` (or equivalent) = enter control layer
 
-3. **Symbols layer** (activated by rightalt as oneshot):
+2. **Symbols layer** (activated by rightalt as oneshot):
    - Numbers row: 1=! 2=@ 3=# 4=$ 5=%
    - qwert: q=| w== e=é r=& t=*
    - asdf: a=á s=_ d=( f=) g=-
@@ -155,10 +157,6 @@ In rough priority order:
      - grave key → enter dead-grave layer
      - tilde key → enter dead-tilde layer
      - (dead-circumflex TBD — no key assigned yet in keyd)
-
-4. **Config layer** (accessed via esc hold):
-   - Media keys: brightness up/down, volume up/down/mute, play/pause, next/prev
-   - (Key assignments for media TBD — not in original keyd config)
 
 ---
 
@@ -200,4 +198,5 @@ Two processes must be running, both currently started **manually** and neither a
 - `caps` = Caps Lock
 - `bspc` = Backspace, `ret` = Enter
 - `spc` = Space
-- Media: `volu vold mute pp prev next brdu brdd`
+- Media: `volu vold mute pp prev next brup brdown`
+- macOS-specific: `mctl` (Mission Control), `sls` (Spotlight), `lpad` (Launchpad)
