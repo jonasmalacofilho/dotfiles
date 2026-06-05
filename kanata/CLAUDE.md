@@ -85,6 +85,13 @@ Read `./kanata.kbd`.
 - nav layer (held via caps): hjkl=arrows, yuio=home/pgdn/pgup/end, plus editing keys p=forward
   delete, bspc=delete word back, ret=Shift+Enter, '=". The bspc binding is `A-bspc` (macOS
   Option+Backspace); a `NOTE:` in the config flags that Linux wants `C-bspc` instead.
+- forward delete on Backspace (the MacBook lacks a forward-delete key, and the fn<->lctl swap took
+  native fn+Backspace with it). Two routes back: `fn+bspc` is restored in the fnrow layer
+  (`fnrow[bspc]` = `del`, MacBook-only); `ralt+bspc` is cross-platform via
+  `(fork bspc (unmod del) (ralt))` on the default-layer `bspc`. The `unmod` strips the held right
+  Option so the OS gets a bare Delete, not Option+Delete (which macOS reads as delete-word-forward);
+  confirmed stripping works on turing. Plain Backspace and `ralt` as a real Option (the macOS dead
+  keys) are both unaffected.
 - ISO backtick fix: `grv` ↔ `lsgt` swap, so backtick/tilde sits left of 1 (not left of z) under the
   US OS layout (may become unnecessary once the symbols layer handles grave/tilde)
 - oneshot modifiers (tap = oneshot, hold = normal modifier; 200ms, chaining works): left/right Shift

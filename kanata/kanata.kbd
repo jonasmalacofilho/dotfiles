@@ -45,6 +45,18 @@
   o-sym (one-shot 200 (layer-while-held symbols))
 )
 
+;; Forward delete. The MacBook has no forward-delete key, and the fn<->lctl swap
+;; took the native fn+Backspace shortcut with it. Two routes back:
+;;   - fn+bspc: restored in the fnrow layer (held via the relocated fn key);
+;;     MacBook-only, like the rest of that layer.
+;;   - ralt+bspc: cross-platform (right Option on macOS, right Alt on Linux).
+;;     bspc forks on ralt being held; (unmod del) strips that held ralt so the OS
+;;     gets a bare Delete -- otherwise macOS would read Option+Delete as
+;;     delete-word-forward. Plain bspc (no ralt) is unaffected.
+(defalias
+  del-on-ralt (fork bspc (unmod del) (ralt))
+)
+
 ;; Portuguese accents (symbols layer, step 2a): direct-unicode acutes and
 ;; cedilla. Each emits the codepoint via CGEventPost (the only kanata output
 ;; that bypasses the Karabiner VHID; it needs Accessibility on the process that
@@ -106,7 +118,7 @@
 ;; Here that means grv -> lsgt and lsgt -> grv in the default layer.
 (deflayer default
   @esc-ctl _     _     _     _     _     _     _     _     _     _     _     _
-  lsgt  _     _     _     _     _     _     _     _     _     _     _     _     _
+  lsgt  _     _     _     _     _     _     _     _     _     _     _     _     @del-on-ralt
   _     _     _     _     _     _     _     _     _     _     _     _     _
   @cap  _     _     _     _     _     _     _     _     _     _     _     _     _
   @o-lsft grv  _     _     _     _     _     _     _     _     _     _     @o-rsft
@@ -148,7 +160,7 @@
 ;; control, spotlight, dictation, dnd) are confirmed working via the VHID on turing.
 (deflayer fnrow
   _     brdown brup mctl  sls   dtn   dnd   prev  pp    next  mute  vold  volu
-  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _     del
   _     _     _     _     _     _     _     _     _     _     _     _     _
   _     _     _     _     _     _     _     _     _     _     _     _     _     _
   _     _     _     _     _     _     _     _     _     _     _     _     _
