@@ -181,21 +181,29 @@ Read `./kanata.kbd`.
   - Grave: à (+ uppercase), via dead-grave layer
   - Cedilla: ç Ç (direct)
 
-#### Alternative not taken: lean on the macOS US-layout Option dead keys
+#### Related: the macOS US-layout Option dead keys (and emulating them in kanata for Linux)
 
-Instead of reimplementing dead keys in kanata, we could route to the dead keys macOS already
-provides in its US layout: Option+e = dead acute, Option+i = dead circumflex, Option+n = dead tilde,
-Option+\` = dead grave, Option+u = dead umlaut, each then composing with the next vowel (and the OS
-handles case from Shift natively, sidestepping our whole carried-Shift problem). kanata would just
-need right Option (`ralt`) + the letter to reach the OS as Option+letter, e.g. ralt+e -> dead ´,
-ralt+i -> dead ^, ralt+n -> dead ~. Worth keeping in mind. Caveats:
+macOS's own US layout already provides dead keys on Option: Option+e = dead acute, Option+i = dead
+circumflex, Option+n = dead tilde, Option+\` = dead grave, Option+u = dead umlaut, each composing
+with the next vowel, with the OS handling case from Shift natively (none of our carried-Shift
+problem). kanata does not intercept right Option (`ralt`) — only `rmet` drives the symbols layer —
+so `ralt` passes straight through as a real Option, and ralt+e/i/n/... just work as the macOS dead
+keys, no kanata accent layer involved. And with `macos_option_as_alt left` in kitty
+(`kitty/turing.conf`), right Option stays a native Option inside kitty too (left Option remains Alt
+for Linux-CLI compatibility), so this is usable where most typing happens. So on macOS this is
+available essentially for free, alongside our symbols-layer reimplementation.
 
-- It is macOS-specific: there is no equivalent on Linux, so it would not survive the eventual
-  cross-platform goal (the kanata-internal dead keys do). Also unclear how cleanly kanata could even
-  express "send Option+letter and let the OS compose" portably.
-- kitty is set to map Option to Alt (`macos_option_as_alt`) for better Linux-CLI compatibility, so
-  inside kitty (where most typing happens) the OS Option dead keys are not available at all — there
-  we would still need our reimplementation. The native approach would only help outside kitty.
+It is macOS-only, though: there is no OS-level equivalent on Linux. For the eventual cross-platform
+goal, the idea is to emulate the same _ergonomics_ in kanata itself — ralt+letter entering a dead
+layer that `fork`+`unicode`s the accented codepoint — rather than relying on OS compose. That is
+essentially our existing dead-key machinery, just keyed off ralt+letter macOS-style (e=acute,
+i=circumflex, n=tilde, \`=grave, u=umlaut) instead of the symbols-layer `` ` `` key and Shift+6.
+Such an emulation would run on both platforms and not depend on OS compose; the native macOS Option
+dead keys would then just be a redundant convenience on the Mac. A bonus: every macOS-style trigger
+(Option+e/i/n/\`/u) is **unshifted**, so the dead layer would be entered without Shift and nothing
+would be carried onto the vowel — case would come cleanly from Shift at the vowel and uppercase
+would work for free, no Caps Lock needed (unlike our current Shift+`` ` ``/Shift+6 tilde and
+circumflex). That makes this a candidate not just for Linux but as a uppercase fix on macOS too.
 
 ### Function keys / media keys
 
