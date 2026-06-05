@@ -103,15 +103,41 @@ Read `./kanata.kbd`.
 - symbols layer step 2a = Portuguese acutes and cedilla, direct unicode: e=é a=á u=ú i=í o=ó on the
   letter keys, comma=ç. Each is a `(fork (unicode lower) (unicode UPPER) (lsft rsft))` so Shift
   selects the uppercase codepoint (a held unicode codepoint is not uppercased by the OS; see the
-  unicode note under Decisions). Confirmed on turing in multiple apps. The `` ` ``/`~`/`^` keys
-  still emit literal symbols; they become dead-key entry points in step 2b.
+  unicode note under Decisions). Confirmed on turing in multiple apps. The `` ` ``/`~`/`^` keys on
+  `j`/`m`/`n` keep emitting literal symbols (programming needs them); the dead keys go on the native
+  `` ` `` key instead (step 2b below).
   - Uppercase ergonomics (debug-traced, not a bug): when rmet is just tapped, the symbols layer
     lives only on the oneshot timer (reset to the most recent chained oneshot's value on each press,
     200ms here) — holding Shift does NOT extend it. So the robust uppercase recipe is to **hold rmet
     and Shift together, then the letter** (both held = layer-while-held + real modifier, no timer
-    involved). Tapping ralt then leisurely pressing Shift and the letter races the timer and yields
+    involved). Tapping rmet then leisurely pressing Shift and the letter races the timer and yields
     e.g. E instead of É once the letter lands after the layer reverts; that's expected oneshot
     behaviour, matching how AltGr-style layers want the layer key held.
+- symbols layer step 2b/2c = three dead keys (grave, tilde, circumflex), each an internal one-shot
+  layer reproducing keyd's `altgr-intl` delegation. Entry keys, all in the symbols layer: the native
+  `` ` `` key (leftmost on the number row) = `@grave-key` (unshifted -> dead grave à; Shift -> dead
+  tilde ã/õ); Shift+6 = dead circumflex (â/ê/ô), with unshifted 6 = literal 6. Literal
+  `` ` ``/`~`/`^` for programming stay on `j`/`m`/`n`, so a non-vowel after a dead key just types
+  through (no literal-commit fallback). Lowercase confirmed on turing; **uppercase deferred** (see
+  CASE below).
+  - The `` ` `` dead key reaches kanata as `lsgt`, not `grv`: the ISO backtick fix's grv<->lsgt swap
+    makes the `lsgt` slot the one that emits a literal backtick, so `@grave-key` sits on the
+    _second_ entry of the symbols-layer grv/lsgt pair. (First wiring put it on `grv` and the key
+    fell through to a literal `` ` ``.)
+  - **CASE (and why uppercase is deferred):** a kanata one-shot carries the modifiers held when it
+    activates onto the key that consumes it. Grave is entered with **no** Shift, so nothing is
+    carried and its fork does both cases: à = `` ` `` a; À = `` ` `` Shift+a. Tilde and circumflex
+    are entered **with** Shift (`~` = Shift+`` ` ``, dead `^` = Shift+6), so that Shift is carried
+    onto the vowel however quickly it is released — the vowel is permanently "shifted" and the case
+    is locked, fork direction notwithstanding. We pick the locked case = lowercase by **inverting**
+    those forks (upper codepoint on the never-reached no-Shift branch). So ã/õ/â/ê/ô work; Ã/Õ/Â/Ê/Ô
+    do not yet. (Confirmed empirically: normal fork -> always Ã, inverted -> always ã; nothing in
+    kanata cleanly prevents the carry for a layer one-shot — checked one-shot variants, `unmod`,
+    chords.)
+  - **Uppercase plan:** bring back Caps Lock (planned, toggled from the nav layer's left Shift) and
+    have the dead-vowel forks read Caps for case. Caps is a toggle _state_, not a carried modifier,
+    so it is immune to the one-shot carry. This also has to handle the acutes/cedilla, whose unicode
+    output already ignores Caps Lock (they fork on Shift only) — revisit all of them together.
 
 ---
 
@@ -188,12 +214,19 @@ In rough priority order:
    - shift+mod nav sublayers: w=S+meta, e=S+alt, r=S+ctrl (for shift+nav combos)
    - `f1` (or equivalent) = enter control layer
 
-2. **Symbols layer — dead keys** (step 2b; the ASCII symbols, right-Option activation, and the
-   direct-unicode acutes + cedilla are done, see "tested and working"). Remaining:
-   - dead-key entry points and their sublayers:
-     - grave key → dead-grave layer (à + upper)
-     - tilde key → dead-tilde layer (ã õ + upper)
-     - circumflex → dead-circumflex layer (â ê ô + upper); no key assigned yet in keyd
+2. **Symbols layer — dead-key uppercase** (the dead keys themselves are done; see "tested and
+   working"). All three dead layers exist: grave on the native `` ` `` key (unshifted), tilde on
+   Shift+`` ` ``, circumflex on Shift+6 (`6` was added to `defsrc` for this, so every layer's number
+   row gained a sixth slot). Grave does both cases; **tilde and circumflex are lowercase-only** for
+   now because the one-shot carries the entry Shift onto the vowel (full explanation under "tested
+   and working" → CASE). Remaining:
+   - Uppercase Ã/Õ/Â/Ê/Ô. Blocked on bringing back **Caps Lock** (item 3 below): switch the
+     dead-vowel forks (and likely the acutes/cedilla too) to read Caps for case, since Caps is a
+     toggle state the one-shot can't carry. Do all the accented letters together.
+
+3. **Caps Lock** — removed when the Caps key became `@cap` (tap Esc / hold nav). Bring it back as a
+   toggle, planned binding: the nav layer's left Shift (`nav[lsft]`). Needed both for normal Caps
+   Lock use and as the uppercase mechanism for the unicode accented letters (item 2).
 
 ---
 

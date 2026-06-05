@@ -10,7 +10,7 @@
   caps
   lsft rsft
   rmet
-  1    2    3    4    5
+  1    2    3    4    5    6
   q    w    e    r    t
   a    s    d    f    g
   z    x    c    v    b
@@ -60,6 +60,45 @@
   ccedil  (fork (unicode ç) (unicode Ç) (lsft rsft))
 )
 
+;; Dead keys (symbols layer, step 2b/2c). Three dead keys, each an internal
+;; one-shot layer (keyd delegated these to the altgr-intl OS layout, its
+;; [symbols:G] AltGr fallback; we have no AltGr layer). The literal ` ~ ^ for
+;; programming stay on j/m/n, so a non-vowel after a dead key just types through
+;; -- no literal-commit fallback needed. Entry keys (all in the symbols layer):
+;;   ` key  unshifted -> dead grave (à) ;  Shift -> dead tilde (ã/õ)
+;;   6 key  Shift     -> dead circumflex (â/ê/ô)   (unshifted 6 = literal 6)
+;; The ` key reaches kanata as `lsgt`, not `grv`: the ISO backtick fix's
+;; grv<->lsgt swap makes the lsgt slot the one emitting a literal backtick, so
+;; @grave-key sits on the SECOND entry of the symbols-layer grv/lsgt pair.
+;;
+;; CASE, and why uppercase is deferred: a one-shot carries the modifiers held at
+;; activation onto the key that consumes it. Grave is entered with no Shift, so
+;; nothing is carried and its fork works both ways: à = ` a, À = ` Shift+a.
+;; Tilde and circumflex are entered WITH Shift (~ = Shift+`, dead ^ = Shift+6),
+;; so that Shift is carried onto the vowel no matter when it is physically
+;; released -- the vowel is permanently "shifted" and the case is locked. We pick
+;; the locked case = lowercase by INVERTING those forks (upper codepoint on the
+;; never-reached no-Shift branch). So ã/õ/â/ê/ô work now; Ã/Õ/Â/Ê/Ô do not. The
+;; fix waits on Caps Lock (planned, toggled from nav): Caps is a toggle state,
+;; not a carried modifier, so the forks can then read Caps for case.
+(defalias
+  d-grave (one-shot 1000 (layer-while-held deadgrave))
+  d-tilde (one-shot 1000 (layer-while-held deadtilde))
+  d-circ  (one-shot 1000 (layer-while-held deadcirc))
+  grave-key (fork @d-grave @d-tilde (lsft rsft))
+  ;; 6 key: unshifted = literal 6; Shift = enter dead circumflex (^ = Shift+6).
+  circ-key (fork 6 @d-circ (lsft rsft))
+
+  ;; Grave: normal fork (both cases; unshifted entry carries nothing).
+  a-grave (fork (unicode à) (unicode À) (lsft rsft))
+  ;; Tilde + circumflex: INVERTED forks (lowercase-only; see CASE note above).
+  a-tilde (fork (unicode Ã) (unicode ã) (lsft rsft))
+  o-tilde (fork (unicode Õ) (unicode õ) (lsft rsft))
+  a-circ  (fork (unicode Â) (unicode â) (lsft rsft))
+  e-circ  (fork (unicode Ê) (unicode ê) (lsft rsft))
+  o-circ  (fork (unicode Ô) (unicode ô) (lsft rsft))
+)
+
 ;; ISO backtick fix: on this Austrian/ISO MacBook under the US OS layout, macOS
 ;; swaps the grave key (left of 1) and the non-US backslash key (left of z), so
 ;; backtick lands left of z. Swap the two outputs to put backtick back left of 1
@@ -72,7 +111,7 @@
   @cap
   @o-lsft @o-rsft
   @o-sym
-  _    _    _    _    _
+  _    _    _    _    _    _
   _    _    _    _    _
   _    _    _    _    _
   _    _    _    _    _
@@ -89,7 +128,7 @@
   _
   _    _
   _
-  _    _    _    _    _
+  _    _    _    _    _    _
   _    _    _    _    _
   _    _    _    _    _
   _    _    _    _    _
@@ -110,7 +149,7 @@
   _
   _    _
   _
-  _    _    _    _    _
+  _    _    _    _    _    _
   _    _    _    _    _
   _    _    _    _    _
   _    _    _    _    _
@@ -131,7 +170,7 @@
   _
   _    _
   _
-  _    _    _    _    _
+  _    _    _    _    _    _
   _    _    _    _    _
   _    _    _    _    _
   _    _    _    _    _
@@ -140,18 +179,42 @@
   _    _    _    _
 )
 
-;; Symbols layer (held/oneshot via right Command): programming symbols and (in a
-;; later step) Portuguese accents. Ports keyd's [symbols] layer. Unlike keyd, it
-;; does not rely on an AltGr OS layout; each key outputs its symbol directly.
-;; Backtick and tilde are emitted as grv / S-grv: on this keyboard the grave
-;; usage (0x35) is what the OS maps to ` / ~ (see the ISO backtick fix above).
+;; Symbols layer (held/oneshot via right Command): programming symbols plus
+;; Portuguese accents. Ports keyd's [symbols] layer. Unlike keyd, it does not
+;; rely on an AltGr OS layout; each key outputs its symbol directly. Backtick and
+;; tilde are emitted as grv / S-grv: on this keyboard the grave usage (0x35) is
+;; what the OS maps to ` / ~ (see the ISO backtick fix above).
 ;;
-;; Layout (acutes/cedilla are live as of step 2a; ` ~ ^ become dead keys in 2b):
-;;             ! @ # $ %
-;;             | = é & *        ú í ó
-;;             á _ ( ) -        ` \ 0
-;;             [ ] { } +        ^ ~ ç
+;; Layout (acutes/cedilla since 2a; dead keys in 2b/2c). The leftmost number-row
+;; key (native ` key) is the dead grave/tilde entry (unshifted -> à, Shift ->
+;; ã/õ); Shift+6 is the dead circumflex entry (â/ê/ô). Literal ` ~ ^ stay on
+;; j/m/n. Tilde and circumflex are lowercase-only for now (see the dead-key CASE
+;; note above); grave does both cases.
+;;          [`~] ! @ # $ % [^]
+;;               | = é & *        ú í ó
+;;               á _ ( ) -        ` \ 0
+;;               [ ] { } +        ^ ~ ç
 (deflayer symbols
+  _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    @grave-key
+  _    _
+  _
+  _    _
+  _
+  S-1  S-2  S-3  S-4  S-5  @circ-key
+  S-bksl eql  @e-acute S-7  S-8
+  @a-acute S-min S-9  S-0  min
+  lbrc rbrc S-lbrc S-rbrc S-eql
+  S-6  S-grv @ccedil
+  _    grv  bksl 0
+  _    @u-acute @i-acute @o-acute
+)
+
+;; Dead-grave sublayer (entered via the symbols-layer ` key, unshifted). Only a
+;; carries a Portuguese grave (à); every other key types through normally, which
+;; cancels the dead key without committing a literal (the literal ` lives on j).
+(deflayer deadgrave
   _
   _    _    _    _    _    _    _    _    _    _    _    _
   _    _
@@ -159,11 +222,49 @@
   _
   _    _
   _
-  S-1  S-2  S-3  S-4  S-5
-  S-bksl eql  @e-acute S-7  S-8
-  @a-acute S-min S-9  S-0  min
-  lbrc rbrc S-lbrc S-rbrc S-eql
-  S-6  S-grv @ccedil
-  _    grv  bksl 0
-  _    @u-acute @i-acute @o-acute
+  _    _    _    _    _    _
+  _    _    _    _    _
+  @a-grave _    _    _    _
+  _    _    _    _    _
+  _    _    _
+  _    _    _    _
+  _    _    _    _
+)
+
+;; Dead-tilde sublayer (entered via the symbols-layer ` key, shifted). Portuguese
+;; tildes live on a (ã) and o (õ); other keys type through.
+(deflayer deadtilde
+  _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _
+  _    _
+  _
+  _    _
+  _
+  _    _    _    _    _    _
+  _    _    _    _    _
+  @a-tilde _    _    _    _
+  _    _    _    _    _
+  _    _    _
+  _    _    _    _
+  _    _    _    @o-tilde
+)
+
+;; Dead-circumflex sublayer (entered via the symbols-layer Shift+6). Portuguese
+;; circumflexes live on a (â), e (ê) and o (ô); other keys type through.
+(deflayer deadcirc
+  _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _
+  _    _
+  _
+  _    _
+  _
+  _    _    _    _    _    _
+  _    _    @e-circ _    _
+  @a-circ _    _    _    _
+  _    _    _    _    _
+  _    _    _
+  _    _    _    _
+  _    _    _    @o-circ
 )
