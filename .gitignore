@@ -1,1 +1,4 @@
 .dots
+
+# kanata debug captures
+kanata/*.log
