@@ -113,11 +113,18 @@
   lctl  @fnl  _     _     _     @o-sym _    _     _     _     _
 )
 
+;; Navigation layer (held via caps): hjkl arrows and yuio paging, plus a handful
+;; of editing keys. p = forward delete (the MacBook lacks a forward-delete key);
+;; bspc = delete word back; ret = Shift+Enter and ' = " -- the caps key sits
+;; where Shift does, so those last two are easy to fumble for.
+;; NOTE: nav[bspc] is macOS-specific. Word-delete-back is Option+Backspace here
+;; but Control+Backspace on Linux, so A-bspc will need to become C-bspc when this
+;; config goes cross-platform.
 (deflayer nav
   _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     home  pgdn  pgup  end   _     _     _
-  _     _     _     _     _     _     left  down  up    right _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _     A-bspc
+  _     _     _     _     _     _     home  pgdn  pgup  end   del   _     _
+  _     _     _     _     _     _     left  down  up    right _     S-'   _     S-ret
   _     _     _     _     _     _     _     _     _     _     _     _     _
   _     _     _     _     _     _     _     _     _     _     _
 )

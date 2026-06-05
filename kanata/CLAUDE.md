@@ -82,7 +82,9 @@ Read `./kanata.kbd`.
   Needs a light revisit when the Aula F75 (ANSI, fewer keys) is wired in.
 - `fn` ↔ `lctl` swap (fn/Globe and Control keys swapped)
 - `caps` tap=Esc, hold=nav layer (using `tap-hold-press` at 200ms)
-- nav layer: hjkl=arrows, yuio=home/pgdn/pgup/end
+- nav layer (held via caps): hjkl=arrows, yuio=home/pgdn/pgup/end, plus editing keys p=forward
+  delete, bspc=delete word back, ret=Shift+Enter, '=". The bspc binding is `A-bspc` (macOS
+  Option+Backspace); a `NOTE:` in the config flags that Linux wants `C-bspc` instead.
 - ISO backtick fix: `grv` ↔ `lsgt` swap, so backtick/tilde sits left of 1 (not left of z) under the
   US OS layout (may become unnecessary once the symbols layer handles grave/tilde)
 - oneshot modifiers (tap = oneshot, hold = normal modifier; 200ms, chaining works): left/right Shift
@@ -234,12 +236,8 @@ In rough priority order:
 1. **Nav layer — remaining keys.** Only hjkl/yuio are mapped so far. The Linux source to port is
    `common`'s `[nav]` _merged with_ `nav_mods`'s `[nav]` overrides (every machine includes both;
    `home_row_mods` stays off unless toggled from the config layer). Triaged 2026-06-05:
-   - **To add (decided, simple; the keys `p`, `bspc`, `ret`, `'` are already in the full `defsrc`,
-     so this is just nav-layer slots):**
-     - `p` = `del` (forward delete; the MacBook has no forward-delete key)
-     - `backspace` = `A-bspc` (delete word back). macOS adjustment: word-delete is
-       **Option**+Backspace, not keyd's `C-backspace`.
-     - `enter` = `S-enter`; `'` = `"` (`S-'`). Conveniences for the caps≈shift position confusion.
+   - **Added (done; see "tested and working" above):** `p` = `del`, `bspc` = `A-bspc` (macOS
+     word-delete; Linux wants `C-bspc`), `ret` = `S-enter`, `'` = `"`.
    - **Dropped:**
      - kitty `e` = `C-{`, `r` = `C-}`: overridden by `nav_mods` on Linux, so never actually active
        (hence keyd's "maybe no longer in use"); kitty's Mac bindings differ anyway.
