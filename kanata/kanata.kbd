@@ -2,21 +2,21 @@
   process-unmapped-keys yes
 )
 
+;; defsrc models the whole MacBook Air (turing) ISO keyboard, physical layout.
+;; Order is cosmetic; what matters is that every deflayer has one entry per key,
+;; in this same order. Keys we don't remap are `_` (passthrough) in every layer;
+;; they're listed anyway so the grid mirrors the real keyboard and adding a remap
+;; later needs no defsrc/layer churn. ISO specifics: `lsgt` is the <> key left of
+;; z (HID 102nd); `bksl` is the #/~ key left of Enter (Enter is L-shaped). The
+;; Touch ID / power button is not a remappable key and is omitted. This will need
+;; a light revisit when the Aula F75 (ANSI, fewer keys) is wired in.
 (defsrc
-  esc
-  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
-  grv  lsgt
-  fn   lctl
-  caps
-  lsft rsft
-  rmet
-  1    2    3    4    5    6
-  q    w    e    r    t
-  a    s    d    f    g
-  z    x    c    v    b
-  n    m    comm
-  h    j    k    l
-  y    u    i    o
+  esc   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  grv   1     2     3     4     5     6     7     8     9     0     min   eql   bspc
+  tab   q     w     e     r     t     y     u     i     o     p     lbrc  rbrc
+  caps  a     s     d     f     g     h     j     k     l     scln  '     bksl  ret
+  lsft  lsgt  z     x     c     v     b     n     m     comm  .     /     rsft
+  fn    lctl  lalt  lmet  spc   rmet  ralt  left  up    down  rght
 )
 
 (defalias
@@ -68,8 +68,8 @@
 ;;   ` key  unshifted -> dead grave (à) ;  Shift -> dead tilde (ã/õ)
 ;;   6 key  Shift     -> dead circumflex (â/ê/ô)   (unshifted 6 = literal 6)
 ;; The ` key reaches kanata as `lsgt`, not `grv`: the ISO backtick fix's
-;; grv<->lsgt swap makes the lsgt slot the one emitting a literal backtick, so
-;; @grave-key sits on the SECOND entry of the symbols-layer grv/lsgt pair.
+;; grv<->lsgt swap makes the lsgt slot (now in the bottom row, left of z) the one
+;; emitting a literal backtick, so @grave-key sits on lsgt, not on grv.
 ;;
 ;; CASE, and why uppercase is deferred: a one-shot carries the modifiers held at
 ;; activation onto the key that consumes it. Grave is entered with no Shift, so
@@ -103,38 +103,23 @@
 ;; swaps the grave key (left of 1) and the non-US backslash key (left of z), so
 ;; backtick lands left of z. Swap the two outputs to put backtick back left of 1
 ;; (the same usages hidutil's canonical fix swaps: 0x35 grave <-> 0x64 non-US \).
+;; Here that means grv -> lsgt and lsgt -> grv in the default layer.
 (deflayer default
-  @esc-ctl
-  _    _    _    _    _    _    _    _    _    _    _    _
-  lsgt grv
-  lctl @fnl
-  @cap
-  @o-lsft @o-rsft
-  @o-sym
-  _    _    _    _    _    _
-  _    _    _    _    _
-  _    _    _    _    _
-  _    _    _    _    _
-  _    _    _
-  _    _    _    _
-  _    _    _    _
+  @esc-ctl _     _     _     _     _     _     _     _     _     _     _     _
+  lsgt  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  @cap  _     _     _     _     _     _     _     _     _     _     _     _     _
+  @o-lsft grv  _     _     _     _     _     _     _     _     _     _     @o-rsft
+  lctl  @fnl  _     _     _     @o-sym _    _     _     _     _
 )
 
 (deflayer nav
-  _
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _
-  _    _
-  _
-  _    _
-  _
-  _    _    _    _    _    _
-  _    _    _    _    _
-  _    _    _    _    _
-  _    _    _    _    _
-  _    _    _
-  left down up   right
-  home pgdn pgup end
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     home  pgdn  pgup  end   _     _     _
+  _     _     _     _     _     _     left  down  up    right _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _
 )
 
 ;; Control layer (held via esc): media + volume on the Mac's F7-F12 positions,
@@ -142,20 +127,12 @@
 ;; is the layer to use on non-MacBook keyboards, which have no mac fn key.
 ;; mctl/sls are macOS-specific; confirmed working through the VHID on turing.
 (deflayer control
-  _
-  _    _    mctl sls  lrld _    prev pp   next mute vold volu
-  _    _
-  _    _
-  _
-  _    _
-  _
-  _    _    _    _    _    _
-  _    _    _    _    _
-  _    _    _    _    _
-  _    _    _    _    _
-  _    _    _
-  _    _    _    _
-  _    _    _    _
+  _     _     _     mctl  sls   lrld  _     prev  pp    next  mute  vold  volu
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _
 )
 
 ;; fn-row layer (held via the moved fn key): the MacBook's native function row,
@@ -163,20 +140,12 @@
 ;; (Dictation, Do Not Disturb). The macOS-specific actions (brightness, mission
 ;; control, spotlight, dictation, dnd) are confirmed working via the VHID on turing.
 (deflayer fnrow
-  _
-  brdown brup mctl sls  dtn  dnd  prev pp   next mute vold volu
-  _    _
-  _    _
-  _
-  _    _
-  _
-  _    _    _    _    _    _
-  _    _    _    _    _
-  _    _    _    _    _
-  _    _    _    _    _
-  _    _    _
-  _    _    _    _
-  _    _    _    _
+  _     brdown brup mctl  sls   dtn   dnd   prev  pp    next  mute  vold  volu
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _
 )
 
 ;; Symbols layer (held/oneshot via right Command): programming symbols plus
@@ -185,86 +154,54 @@
 ;; tilde are emitted as grv / S-grv: on this keyboard the grave usage (0x35) is
 ;; what the OS maps to ` / ~ (see the ISO backtick fix above).
 ;;
-;; Layout (acutes/cedilla since 2a; dead keys in 2b/2c). The leftmost number-row
-;; key (native ` key) is the dead grave/tilde entry (unshifted -> à, Shift ->
+;; Layout (acutes/cedilla since 2a; dead keys in 2b/2c). The dead grave/tilde
+;; entry is the <> key (lsgt, bottom row left of z; unshifted -> à, Shift ->
 ;; ã/õ); Shift+6 is the dead circumflex entry (â/ê/ô). Literal ` ~ ^ stay on
 ;; j/m/n. Tilde and circumflex are lowercase-only for now (see the dead-key CASE
 ;; note above); grave does both cases.
 ;;          [`~] ! @ # $ % [^]
 ;;               | = é & *        ú í ó
 ;;               á _ ( ) -        ` \ 0
-;;               [ ] { } +        ^ ~ ç
+;;          [`~] [ ] { } +        ^ ~ ç
 (deflayer symbols
-  _
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    @grave-key
-  _    _
-  _
-  _    _
-  _
-  S-1  S-2  S-3  S-4  S-5  @circ-key
-  S-bksl eql  @e-acute S-7  S-8
-  @a-acute S-min S-9  S-0  min
-  lbrc rbrc S-lbrc S-rbrc S-eql
-  S-6  S-grv @ccedil
-  _    grv  bksl 0
-  _    @u-acute @i-acute @o-acute
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     S-1   S-2   S-3   S-4   S-5   @circ-key   _     _     _     _     _     _     _
+  _     S-bksl eql  @e-acute S-7  S-8   _     @u-acute @i-acute @o-acute _     _     _
+  _     @a-acute S-min S-9  S-0   min   _     grv   bksl  0     _     _     _     _
+  _     @grave-key lbrc rbrc S-lbrc S-rbrc S-eql S-6  S-grv @ccedil _     _     _
+  _     _     _     _     _     _     _     _     _     _     _
 )
 
-;; Dead-grave sublayer (entered via the symbols-layer ` key, unshifted). Only a
+;; Dead-grave sublayer (entered via the symbols-layer <> key, unshifted). Only a
 ;; carries a Portuguese grave (à); every other key types through normally, which
 ;; cancels the dead key without committing a literal (the literal ` lives on j).
 (deflayer deadgrave
-  _
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _
-  _    _
-  _
-  _    _
-  _
-  _    _    _    _    _    _
-  _    _    _    _    _
-  @a-grave _    _    _    _
-  _    _    _    _    _
-  _    _    _
-  _    _    _    _
-  _    _    _    _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     @a-grave _   _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _
 )
 
-;; Dead-tilde sublayer (entered via the symbols-layer ` key, shifted). Portuguese
+;; Dead-tilde sublayer (entered via the symbols-layer <> key, shifted). Portuguese
 ;; tildes live on a (ã) and o (õ); other keys type through.
 (deflayer deadtilde
-  _
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _
-  _    _
-  _
-  _    _
-  _
-  _    _    _    _    _    _
-  _    _    _    _    _
-  @a-tilde _    _    _    _
-  _    _    _    _    _
-  _    _    _
-  _    _    _    _
-  _    _    _    @o-tilde
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     @o-tilde _     _     _
+  _     @a-tilde _   _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _
 )
 
 ;; Dead-circumflex sublayer (entered via the symbols-layer Shift+6). Portuguese
 ;; circumflexes live on a (â), e (ê) and o (ô); other keys type through.
 (deflayer deadcirc
-  _
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _
-  _    _
-  _
-  _    _
-  _
-  _    _    _    _    _    _
-  _    _    @e-circ _    _
-  @a-circ _    _    _    _
-  _    _    _    _    _
-  _    _    _
-  _    _    _    _
-  _    _    _    @o-circ
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     @e-circ _   _     _     _     _     @o-circ _     _     _
+  _     @a-circ _   _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _     _     _
 )

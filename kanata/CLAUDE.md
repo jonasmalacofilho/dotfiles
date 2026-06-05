@@ -74,6 +74,12 @@ Read `./kanata.kbd`.
 
 ### What's tested and working
 
+- `defsrc` models the whole MacBook ISO keyboard (every physical key, in a six-row grid; Touch
+  ID/power omitted). Keys we don't remap are `_` passthrough in every layer, so behavior is
+  unchanged but adding a future remap needs no `defsrc`/layer churn. ISO keys: `lsgt` = the `<>` key
+  left of z (HID 102nd), `bksl` = the `#`/`~` key left of Enter. Validate edits offline with
+  `kanata --check -c kanata.kbd` (also catches any layer whose entry count drifts from `defsrc`).
+  Needs a light revisit when the Aula F75 (ANSI, fewer keys) is wired in.
 - `fn` ↔ `lctl` swap (fn/Globe and Control keys swapped)
 - `caps` tap=Esc, hold=nav layer (using `tap-hold-press` at 200ms)
 - nav layer: hjkl=arrows, yuio=home/pgdn/pgup/end
@@ -225,18 +231,36 @@ circumflex). That makes this a candidate not just for Linux but as a uppercase f
 
 In rough priority order:
 
-1. **Nav layer — remaining keys** (currently only hjkl/yuio are mapped; some of these may be dropped
-   or adjusted):
-   - `p` = delete
-   - `backspace` = C-backspace (delete word)
-   - `enter` = S-enter
-   - `'` = `"`
-   - `e` = C-{ (kitty: new window)
-   - `r` = C-} (kitty: close window)
-   - `rightshift` = capslock
-   - mod activators on home row: s=meta, d=alt, f=ctrl, g=shift, space=shift
-   - shift+mod nav sublayers: w=S+meta, e=S+alt, r=S+ctrl (for shift+nav combos)
-   - `f1` (or equivalent) = enter control layer
+1. **Nav layer — remaining keys.** Only hjkl/yuio are mapped so far. The Linux source to port is
+   `common`'s `[nav]` _merged with_ `nav_mods`'s `[nav]` overrides (every machine includes both;
+   `home_row_mods` stays off unless toggled from the config layer). Triaged 2026-06-05:
+   - **To add (decided, simple; the keys `p`, `bspc`, `ret`, `'` are already in the full `defsrc`,
+     so this is just nav-layer slots):**
+     - `p` = `del` (forward delete; the MacBook has no forward-delete key)
+     - `backspace` = `A-bspc` (delete word back). macOS adjustment: word-delete is
+       **Option**+Backspace, not keyd's `C-backspace`.
+     - `enter` = `S-enter`; `'` = `"` (`S-'`). Conveniences for the caps≈shift position confusion.
+   - **Dropped:**
+     - kitty `e` = `C-{`, `r` = `C-}`: overridden by `nav_mods` on Linux, so never actually active
+       (hence keyd's "maybe no longer in use"); kitty's Mac bindings differ anyway.
+     - `f1` = `layer(config)`: the control layer is already reachable via esc-hold on the Mac.
+       Revisit only when the Aula (firmware-Esc edge case) is wired in.
+   - **Deferred (open decisions):**
+     - **Home-row mod activators** `s`/`d`/`f`/`g`/`space`/`t` (keyd: meta/alt/control/shift). The
+       point is modified arrows (e.g. word-left). macOS modifier semantics differ from Linux:
+       word-wise = **Option**+arrow (not Ctrl), line/doc = **Cmd**+arrow, and **Ctrl+arrow is taken
+       by Mission Control / Spaces** — so a literal `f`=Control port switches spaces instead of
+       jumping words. Open: macOS-semantic remap (preserve the action: d=Option, s=Cmd) vs literal
+       port vs drop. Implementation note: kanata needs no keyd `layer(meta)` machinery — a bare
+       modifier on the key in the nav layer (e.g. `f` -> `lctl`) composes with `h` -> `left` to emit
+       the combo.
+     - **Shift+nav selection sublayers** `w`/`e`/`r` -> `S-mod-`+arrows (keyd's
+       `nav-mods-shift-{meta,alt,control}`). Experimental in the source; same modifier-semantics
+       issue, three layers deep. Drop vs rebuild minimally for shifted word/line selection.
+     - `a` = `q` = noop in keyd's nav (dead-keyed to avoid misfires when reaching for the home-row
+       mods). Tied to the mod-activator question; defer with it. Until then they stay passthrough.
+   - **Belongs with item 3:** `rightshift` = `capslock` (keyd put Caps here; this doc floats
+     `nav[lsft]`). Decide with the Caps Lock work.
 
 2. **Symbols layer — dead-key uppercase** (the dead keys themselves are done; see "tested and
    working"). All three dead layers exist: grave on the native `` ` `` key (unshifted), tilde on
