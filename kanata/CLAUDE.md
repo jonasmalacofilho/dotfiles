@@ -92,8 +92,8 @@ Read `./kanata.kbd`.
   Option so the OS gets a bare Delete, not Option+Delete (which macOS reads as delete-word-forward);
   confirmed stripping works on turing. Plain Backspace and `ralt` as a real Option (the macOS dead
   keys) are both unaffected.
-- ISO backtick fix: `grv` ↔ `lsgt` swap, so backtick/tilde sits left of 1 (not left of z) under the
-  US OS layout (may become unnecessary once the symbols layer handles grave/tilde)
+- ISO backtick fix: `grv` ↔ `lsgt` swap, so the literal backtick/tilde key sits left of 1 (not left
+  of z) under the US OS layout
 - oneshot modifiers (tap = oneshot, hold = normal modifier; 200ms, chaining works): left/right Shift
   only. This deviates from keyd, which also made Control and Alt oneshot; on the Mac those stay as
   plain modifiers for now.
@@ -119,8 +119,8 @@ Read `./kanata.kbd`.
   letter keys, comma=ç. Each is a `(fork (unicode lower) (unicode UPPER) (lsft rsft))` so Shift
   selects the uppercase codepoint (a held unicode codepoint is not uppercased by the OS; see the
   unicode note under Decisions). Confirmed on turing in multiple apps. The `` ` ``/`~`/`^` keys on
-  `j`/`m`/`n` keep emitting literal symbols (programming needs them); the dead keys go on the native
-  `` ` `` key instead (step 2b below).
+  `j`/`m`/`n` keep emitting literal symbols (programming needs them); the dead keys go on the `lsgt`
+  (`<>`) key instead (step 2b below).
   - Uppercase ergonomics (debug-traced, not a bug): when rmet is just tapped, the symbols layer
     lives only on the oneshot timer (reset to the most recent chained oneshot's value on each press,
     200ms here) — holding Shift does NOT extend it. So the robust uppercase recipe is to **hold rmet
@@ -129,16 +129,13 @@ Read `./kanata.kbd`.
     e.g. E instead of É once the letter lands after the layer reverts; that's expected oneshot
     behaviour, matching how AltGr-style layers want the layer key held.
 - symbols layer step 2b/2c = three dead keys (grave, tilde, circumflex), each an internal one-shot
-  layer reproducing keyd's `altgr-intl` delegation. Entry keys, all in the symbols layer: the native
-  `` ` `` key (leftmost on the number row) = `@grave-key` (unshifted -> dead grave à; Shift -> dead
-  tilde ã/õ); Shift+6 = dead circumflex (â/ê/ô), with unshifted 6 = literal 6. Literal
-  `` ` ``/`~`/`^` for programming stay on `j`/`m`/`n`, so a non-vowel after a dead key just types
-  through (no literal-commit fallback). Lowercase confirmed on turing; **uppercase deferred** (see
-  CASE below).
-  - The `` ` `` dead key reaches kanata as `lsgt`, not `grv`: the ISO backtick fix's grv<->lsgt swap
-    makes the `lsgt` slot the one that emits a literal backtick, so `@grave-key` sits on the
-    _second_ entry of the symbols-layer grv/lsgt pair. (First wiring put it on `grv` and the key
-    fell through to a literal `` ` ``.)
+  layer reproducing keyd's `altgr-intl` delegation. Entry keys, all in the symbols layer: the `lsgt`
+  (`<>`) key = `@grave-key` (unshifted -> dead grave à; Shift -> dead tilde ã/õ); Shift+6 = dead
+  circumflex (â/ê/ô), with unshifted 6 = literal 6. Literal `` ` ``/`~`/`^` for programming stay on
+  `j`/`m`/`n`, so a non-vowel after a dead key just types through (no literal-commit fallback).
+  Lowercase confirmed on turing; **uppercase deferred** (see CASE below).
+  - The dead-grave key reaches kanata as `lsgt`, not `grv`: the ISO backtick fix's grv<->lsgt swap
+    makes the `lsgt` slot carry the literal backtick, so `@grave-key` sits on `lsgt`, not `grv`.
   - **CASE (and why uppercase is deferred):** a kanata one-shot carries the modifiers held when it
     activates onto the key that consumes it. Grave is entered with **no** Shift, so nothing is
     carried and its fork does both cases: à = `` ` `` a; À = `` ` `` Shift+a. Tilde and circumflex
@@ -160,9 +157,10 @@ Read `./kanata.kbd`.
 
 ### General
 
-- macOS-only config for now (no cross-platform with Linux yet)
+- macOS-first; only runs on macOS for now, but cross-platform deltas with Linux are noted inline as
+  they come up (e.g. nav `bspc` and `ralt+bspc`), not yet exercised
 - QWERTY only (no layout switching)
-- no home row mods (not in use in Linux, can be added a later point)
+- no home row mods (not in use on Linux, can be added at a later point)
 - `tap-hold-press` is the right variant for overload-style behavior (hold triggers on next key
   press, not just timeout) — matches keyd's `overload`
 - for now, kanata is run as: `sudo kanata --cfg ~/.config/kanata/kanata.kbd`
@@ -224,8 +222,9 @@ circumflex). That makes this a candidate not just for Linux but as a uppercase f
 
 - Known limitation: Karabiner virtual keyboard breaks fn+Fkey media control behavior — fn key state
   is lost through the virtual HID device
-- Solution: map media keys (brightness, volume) explicitly in the control layer rather than relying
-  on fn+Fkey (done for volume/playback on F7-F12; brightness on F1/F2 not added yet)
+- Solution: map media keys (brightness, volume) explicitly rather than relying on fn+Fkey. Volume
+  and playback are on F7-F12 in both the control and fnrow layers; brightness is on F1/F2 in the
+  fnrow layer (the control layer omits it, since that layer targets non-Mac keyboards).
 
 ### Multiple keyboards
 
@@ -268,11 +267,10 @@ In rough priority order:
      `nav[lsft]`). Decide with the Caps Lock work.
 
 2. **Symbols layer — dead-key uppercase** (the dead keys themselves are done; see "tested and
-   working"). All three dead layers exist: grave on the native `` ` `` key (unshifted), tilde on
-   Shift+`` ` ``, circumflex on Shift+6 (`6` was added to `defsrc` for this, so every layer's number
-   row gained a sixth slot). Grave does both cases; **tilde and circumflex are lowercase-only** for
-   now because the one-shot carries the entry Shift onto the vowel (full explanation under "tested
-   and working" → CASE). Remaining:
+   working"). All three dead layers exist: grave on the `lsgt` (`<>`) key (unshifted), tilde on
+   Shift+that key, circumflex on Shift+6. Grave does both cases; **tilde and circumflex are
+   lowercase-only** for now because the one-shot carries the entry Shift onto the vowel (full
+   explanation under "tested and working" → CASE). Remaining:
    - Uppercase Ã/Õ/Â/Ê/Ô. Blocked on bringing back **Caps Lock** (item 3 below): switch the
      dead-vowel forks (and likely the acutes/cedilla too) to read Caps for case, since Caps is a
      toggle state the one-shot can't carry. Do all the accented letters together.

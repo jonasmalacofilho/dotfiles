@@ -178,7 +178,7 @@
 ;; ã/õ); Shift+6 is the dead circumflex entry (â/ê/ô). Literal ` ~ ^ stay on
 ;; j/m/n. Tilde and circumflex are lowercase-only for now (see the dead-key CASE
 ;; note above); grave does both cases.
-;;          [`~] ! @ # $ % [^]
+;;               ! @ # $ % [^]
 ;;               | = é & *        ú í ó
 ;;               á _ ( ) -        ` \ 0
 ;;          [`~] [ ] { } +        ^ ~ ç
