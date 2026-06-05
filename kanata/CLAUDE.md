@@ -181,6 +181,22 @@ Read `./kanata.kbd`.
   - Grave: à (+ uppercase), via dead-grave layer
   - Cedilla: ç Ç (direct)
 
+#### Alternative not taken: lean on the macOS US-layout Option dead keys
+
+Instead of reimplementing dead keys in kanata, we could route to the dead keys macOS already
+provides in its US layout: Option+e = dead acute, Option+i = dead circumflex, Option+n = dead tilde,
+Option+\` = dead grave, Option+u = dead umlaut, each then composing with the next vowel (and the OS
+handles case from Shift natively, sidestepping our whole carried-Shift problem). kanata would just
+need right Option (`ralt`) + the letter to reach the OS as Option+letter, e.g. ralt+e -> dead ´,
+ralt+i -> dead ^, ralt+n -> dead ~. Worth keeping in mind. Caveats:
+
+- It is macOS-specific: there is no equivalent on Linux, so it would not survive the eventual
+  cross-platform goal (the kanata-internal dead keys do). Also unclear how cleanly kanata could even
+  express "send Option+letter and let the OS compose" portably.
+- kitty is set to map Option to Alt (`macos_option_as_alt`) for better Linux-CLI compatibility, so
+  inside kitty (where most typing happens) the OS Option dead keys are not available at all — there
+  we would still need our reimplementation. The native approach would only help outside kitty.
+
 ### Function keys / media keys
 
 - Known limitation: Karabiner virtual keyboard breaks fn+Fkey media control behavior — fn key state
