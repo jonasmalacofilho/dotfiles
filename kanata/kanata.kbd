@@ -2,20 +2,39 @@
   process-unmapped-keys yes
 )
 
+;; macOS hands kanata the grave key (left of 1) and the ISO <> key (left of z)
+;; with their scancodes swapped versus the usual ISO assignment: on turing the
+;; backtick key reports OsCode 86 (normally lsgt) and the <> key reports 41
+;; (normally grv). Name each physical key here so defsrc/layers stay
+;; position-honest and portable (bktk = the backtick key, iso = the <> key),
+;; isolating this macOS-only quirk. deflocalkeys maps a name to a scancode for
+;; BOTH input and output, so we must NOT reuse grv/lsgt for these keys -- that
+;; would hijack their output and make literal ` and the symbols layer come out
+;; wrong (tested). grv/lsgt stay output-only; the default layer remaps bktk -> grv
+;; and iso -> lsgt to emit the right characters. This replaces the old in-layer
+;; ISO backtick fix. When the Aula (ANSI, Linux) is wired in, a deflocalkeys-linux
+;; will map bktk/iso to their Linux codes (left-of-1 grave = 41; the Aula has no
+;; <> key).
+(deflocalkeys-macos
+  bktk 86
+  iso  41
+)
+
 ;; defsrc models the whole MacBook Air (turing) ISO keyboard, physical layout.
 ;; Order is cosmetic; what matters is that every deflayer has one entry per key,
 ;; in this same order. Keys we don't remap are `_` (passthrough) in every layer;
 ;; they're listed anyway so the grid mirrors the real keyboard and adding a remap
 ;; later needs no defsrc/layer churn. ISO specifics: `lsgt` is the <> key left of
-;; z (HID 102nd); `bksl` is the #/~ key left of Enter (Enter is L-shaped). The
-;; Touch ID / power button is not a remappable key and is omitted. This will need
-;; a light revisit when the Aula F75 (ANSI, fewer keys) is wired in.
+;; z (named via the deflocalkeys-macos block above: bktk = backtick key left of
+;; 1, iso = <> key left of z); `bksl` is the #/~ key left of Enter (Enter is
+;; L-shaped). The Touch ID / power button is not a remappable key and is omitted.
+;; This will need a light revisit when the Aula F75 (ANSI, fewer keys) is wired in.
 (defsrc
   esc   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
-  grv   1     2     3     4     5     6     7     8     9     0     min   eql   bspc
+  bktk  1     2     3     4     5     6     7     8     9     0     min   eql   bspc
   tab   q     w     e     r     t     y     u     i     o     p     lbrc  rbrc
   caps  a     s     d     f     g     h     j     k     l     scln  '     bksl  ret
-  lsft  lsgt  z     x     c     v     b     n     m     comm  .     /     rsft
+  lsft  iso   z     x     c     v     b     n     m     comm  .     /     rsft
   fn    lctl  lalt  lmet  spc   rmet  ralt  left  up    down  rght
 )
 
@@ -79,9 +98,9 @@
 ;; -- no literal-commit fallback needed. Entry keys (all in the symbols layer):
 ;;   ` key  unshifted -> dead grave (à) ;  Shift -> dead tilde (ã/õ)
 ;;   6 key  Shift     -> dead circumflex (â/ê/ô)   (unshifted 6 = literal 6)
-;; The ` key reaches kanata as `lsgt`, not `grv`: the ISO backtick fix's
-;; grv<->lsgt swap makes the lsgt slot (now in the bottom row, left of z) the one
-;; emitting a literal backtick, so @grave-key sits on lsgt, not on grv.
+;; The ` key (left of 1) is named `bktk` by the deflocalkeys-macos block at the
+;; top (it reports OsCode 86, which would otherwise decode as lsgt), so
+;; @grave-key sits on `bktk`.
 ;;
 ;; CASE, and why uppercase is deferred: a one-shot carries the modifiers held at
 ;; activation onto the key that consumes it. Grave is entered with no Shift, so
@@ -111,17 +130,17 @@
   o-circ  (fork (unicode Ô) (unicode ô) (lsft rsft))
 )
 
-;; ISO backtick fix: on this Austrian/ISO MacBook under the US OS layout, macOS
-;; swaps the grave key (left of 1) and the non-US backslash key (left of z), so
-;; backtick lands left of z. Swap the two outputs to put backtick back left of 1
-;; (the same usages hidutil's canonical fix swaps: 0x35 grave <-> 0x64 non-US \).
-;; Here that means grv -> lsgt and lsgt -> grv in the default layer.
+;; Default layer. The backtick key (bktk) emits a real backtick by outputting
+;; grv, and the <> key (iso) outputs lsgt (non-US backslash / §). These two
+;; remaps put the right character on each key now that deflocalkeys-macos has
+;; given the physical keys honest names; together they replace the old in-layer
+;; ISO backtick fix.
 (deflayer default
   @esc-ctl _     _     _     _     _     _     _     _     _     _     _     _
-  lsgt  _     _     _     _     _     _     _     _     _     _     _     _     @del-on-ralt
+  grv   _     _     _     _     _     _     _     _     _     _     _     _     @del-on-ralt
   _     _     _     _     _     _     _     _     _     _     _     _     _
   @cap  _     _     _     _     _     _     _     _     _     _     _     _     _
-  @o-lsft grv  _     _     _     _     _     _     _     _     _     _     @o-rsft
+  @o-lsft lsgt _     _     _     _     _     _     _     _     _     _     @o-rsft
   lctl  @fnl  _     _     _     @o-sym _    _     _     _     _
 )
 
@@ -170,28 +189,27 @@
 ;; Symbols layer (held/oneshot via right Command): programming symbols plus
 ;; Portuguese accents. Ports keyd's [symbols] layer. Unlike keyd, it does not
 ;; rely on an AltGr OS layout; each key outputs its symbol directly. Backtick and
-;; tilde are emitted as grv / S-grv: on this keyboard the grave usage (0x35) is
-;; what the OS maps to ` / ~ (see the ISO backtick fix above).
+;; tilde are emitted as grv / S-grv (the grave usage the OS maps to ` / ~).
 ;;
 ;; Layout (acutes/cedilla since 2a; dead keys in 2b/2c). The dead grave/tilde
-;; entry is the <> key (lsgt, bottom row left of z; unshifted -> à, Shift ->
+;; entry is the bktk key (the backtick key, left of 1; unshifted -> à, Shift ->
 ;; ã/õ); Shift+6 is the dead circumflex entry (â/ê/ô). Literal ` ~ ^ stay on
 ;; j/m/n. Tilde and circumflex are lowercase-only for now (see the dead-key CASE
 ;; note above); grave does both cases.
-;;               ! @ # $ % [^]
+;;          [`~] ! @ # $ % [^]
 ;;               | = é & *        ú í ó
 ;;               á _ ( ) -        ` \ 0
-;;          [`~] [ ] { } +        ^ ~ ç
+;;               [ ] { } +        ^ ~ ç
 (deflayer symbols
   _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     S-1   S-2   S-3   S-4   S-5   @circ-key   _     _     _     _     _     _     _
+  @grave-key S-1 S-2 S-3 S-4 S-5 @circ-key _     _     _     _     _     _     _
   _     S-bksl eql  @e-acute S-7  S-8   _     @u-acute @i-acute @o-acute _     _     _
   _     @a-acute S-min S-9  S-0   min   _     grv   bksl  0     _     _     _     _
-  _     @grave-key lbrc rbrc S-lbrc S-rbrc S-eql S-6  S-grv @ccedil _     _     _
+  _     _     lbrc rbrc S-lbrc S-rbrc S-eql S-6  S-grv @ccedil _     _     _
   _     _     _     _     _     _     _     _     _     _     _
 )
 
-;; Dead-grave sublayer (entered via the symbols-layer <> key, unshifted). Only a
+;; Dead-grave sublayer (entered via the symbols-layer bktk key, left of 1, unshifted). Only a
 ;; carries a Portuguese grave (à); every other key types through normally, which
 ;; cancels the dead key without committing a literal (the literal ` lives on j).
 (deflayer deadgrave
@@ -203,7 +221,7 @@
   _     _     _     _     _     _     _     _     _     _     _
 )
 
-;; Dead-tilde sublayer (entered via the symbols-layer <> key, shifted). Portuguese
+;; Dead-tilde sublayer (entered via the symbols-layer bktk key, left of 1, shifted). Portuguese
 ;; tildes live on a (ã) and o (õ); other keys type through.
 (deflayer deadtilde
   _     _     _     _     _     _     _     _     _     _     _     _     _

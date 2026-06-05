@@ -76,8 +76,10 @@ Read `./kanata.kbd`.
 
 - `defsrc` models the whole MacBook ISO keyboard (every physical key, in a six-row grid; Touch
   ID/power omitted). Keys we don't remap are `_` passthrough in every layer, so behavior is
-  unchanged but adding a future remap needs no `defsrc`/layer churn. ISO keys: `lsgt` = the `<>` key
-  left of z (HID 102nd), `bksl` = the `#`/`~` key left of Enter. Validate edits offline with
+  unchanged but adding a future remap needs no `defsrc`/layer churn. The two ISO oddities: on turing
+  macOS reports the backtick key (left of 1) and the `<>` key (left of z) with swapped scancodes, so
+  a `deflocalkeys-macos` block names them `bktk` and `iso` (see "ISO scancode swap" under
+  Decisions); `bksl` = the `#`/`~` key left of Enter. Validate edits offline with
   `kanata --check -c kanata.kbd` (also catches any layer whose entry count drifts from `defsrc`).
   Needs a light revisit when the Aula F75 (ANSI, fewer keys) is wired in.
 - `fn` ↔ `lctl` swap (fn/Globe and Control keys swapped)
@@ -92,8 +94,10 @@ Read `./kanata.kbd`.
   Option so the OS gets a bare Delete, not Option+Delete (which macOS reads as delete-word-forward);
   confirmed stripping works on turing. Plain Backspace and `ralt` as a real Option (the macOS dead
   keys) are both unaffected.
-- ISO backtick fix: `grv` ↔ `lsgt` swap, so the literal backtick/tilde key sits left of 1 (not left
-  of z) under the US OS layout
+- ISO backtick fix, now via `deflocalkeys-macos`: the block names the swapped physical keys
+  (`bktk`/`iso`), and the default layer outputs `grv`/`lsgt` from them, so the backtick key sits
+  left of 1. This replaced the former in-layer `grv`↔`lsgt` swap (see "ISO scancode swap" under
+  Decisions for why a plain `deflocalkeys` rename did not work).
 - oneshot modifiers (tap = oneshot, hold = normal modifier; 200ms, chaining works): left/right Shift
   only. This deviates from keyd, which also made Control and Alt oneshot; on the Mac those stay as
   plain modifiers for now.
@@ -119,8 +123,8 @@ Read `./kanata.kbd`.
   letter keys, comma=ç. Each is a `(fork (unicode lower) (unicode UPPER) (lsft rsft))` so Shift
   selects the uppercase codepoint (a held unicode codepoint is not uppercased by the OS; see the
   unicode note under Decisions). Confirmed on turing in multiple apps. The `` ` ``/`~`/`^` keys on
-  `j`/`m`/`n` keep emitting literal symbols (programming needs them); the dead keys go on the `lsgt`
-  (`<>`) key instead (step 2b below).
+  `j`/`m`/`n` keep emitting literal symbols (programming needs them); the dead keys go on the `bktk`
+  (backtick) key instead (step 2b below).
   - Uppercase ergonomics (debug-traced, not a bug): when rmet is just tapped, the symbols layer
     lives only on the oneshot timer (reset to the most recent chained oneshot's value on each press,
     200ms here) — holding Shift does NOT extend it. So the robust uppercase recipe is to **hold rmet
@@ -129,13 +133,13 @@ Read `./kanata.kbd`.
     e.g. E instead of É once the letter lands after the layer reverts; that's expected oneshot
     behaviour, matching how AltGr-style layers want the layer key held.
 - symbols layer step 2b/2c = three dead keys (grave, tilde, circumflex), each an internal one-shot
-  layer reproducing keyd's `altgr-intl` delegation. Entry keys, all in the symbols layer: the `lsgt`
-  (`<>`) key = `@grave-key` (unshifted -> dead grave à; Shift -> dead tilde ã/õ); Shift+6 = dead
-  circumflex (â/ê/ô), with unshifted 6 = literal 6. Literal `` ` ``/`~`/`^` for programming stay on
-  `j`/`m`/`n`, so a non-vowel after a dead key just types through (no literal-commit fallback).
-  Lowercase confirmed on turing; **uppercase deferred** (see CASE below).
-  - The dead-grave key reaches kanata as `lsgt`, not `grv`: the ISO backtick fix's grv<->lsgt swap
-    makes the `lsgt` slot carry the literal backtick, so `@grave-key` sits on `lsgt`, not `grv`.
+  layer reproducing keyd's `altgr-intl` delegation. Entry keys, all in the symbols layer: the `bktk`
+  (backtick, left of 1) key = `@grave-key` (unshifted -> dead grave à; Shift -> dead tilde ã/õ);
+  Shift+6 = dead circumflex (â/ê/ô), with unshifted 6 = literal 6. Literal `` ` ``/`~`/`^` for
+  programming stay on `j`/`m`/`n`, so a non-vowel after a dead key just types through (no
+  literal-commit fallback). Lowercase confirmed on turing; **uppercase deferred** (see CASE below).
+  - `@grave-key` sits on `bktk` (the backtick key, left of 1). That physical key reports OsCode 86,
+    which `deflocalkeys-macos` names `bktk`; without the rename it would decode as `lsgt`.
   - **CASE (and why uppercase is deferred):** a kanata one-shot carries the modifiers held when it
     activates onto the key that consumes it. Grave is entered with **no** Shift, so nothing is
     carried and its fork does both cases: à = `` ` `` a; À = `` ` `` Shift+a. Tilde and circumflex
@@ -164,6 +168,25 @@ Read `./kanata.kbd`.
 - `tap-hold-press` is the right variant for overload-style behavior (hold triggers on next key
   press, not just timeout) — matches keyd's `overload`
 - for now, kanata is run as: `sudo kanata --cfg ~/.config/kanata/kanata.kbd`
+
+### ISO scancode swap (deflocalkeys)
+
+On turing, macOS reports the backtick key (left of 1, labelled `^`) as OsCode 86 and the ISO `<>`
+key (left of z, labelled `<`) as OsCode 41 — the inverse of the usual ISO assignment (`grv` = 41,
+`lsgt` = 86). The fix is a `deflocalkeys-macos` block, the idiomatic place to isolate a per-OS
+scancode quirk so `defsrc` and the layers stay portable.
+
+The non-obvious part, found by testing: **`deflocalkeys` maps a name to a scancode for both input
+and output**, not input only. So renaming `grv` to 86 also made `grv` _output_ 86, which broke the
+literal backtick and the symbols layer (anything emitting `grv` typed `§`). The working design names
+the two physical keys with **custom** names instead — `bktk` (backtick key) and `iso` (the `<>` key)
+— leaving `grv`/`lsgt` as untouched output names. The default layer then remaps `bktk -> grv` and
+`iso -> lsgt` to emit the right characters. This is portable: `bktk -> grv` types a backtick on any
+OS, and the scancode difference lives only in `deflocalkeys`.
+
+Cross-platform follow-up: when the Aula (ANSI, Linux) is wired in, add a `deflocalkeys-linux`
+mapping `bktk`/`iso` to their Linux codes (left-of-1 grave = 41; the Aula has no `<>` key), since
+`defsrc` now uses those custom names.
 
 ### Portuguese characters / symbols layer
 
@@ -267,7 +290,7 @@ In rough priority order:
      `nav[lsft]`). Decide with the Caps Lock work.
 
 2. **Symbols layer — dead-key uppercase** (the dead keys themselves are done; see "tested and
-   working"). All three dead layers exist: grave on the `lsgt` (`<>`) key (unshifted), tilde on
+   working"). All three dead layers exist: grave on the `bktk` (backtick) key (unshifted), tilde on
    Shift+that key, circumflex on Shift+6. Grave does both cases; **tilde and circumflex are
    lowercase-only** for now because the one-shot carries the entry Shift onto the vowel (full
    explanation under "tested and working" → CASE). Remaining:
