@@ -105,29 +105,27 @@
 ;; CASE, and why uppercase is deferred: a one-shot carries the modifiers held at
 ;; activation onto the key that consumes it. Grave is entered with no Shift, so
 ;; nothing is carried and its fork works both ways: à = ` a, À = ` Shift+a.
-;; Tilde and circumflex are entered WITH Shift (~ = Shift+`, dead ^ = Shift+6),
-;; so that Shift is carried onto the vowel no matter when it is physically
-;; released -- the vowel is permanently "shifted" and the case is locked. We pick
-;; the locked case = lowercase by INVERTING those forks (upper codepoint on the
-;; never-reached no-Shift branch). So ã/õ/â/ê/ô work now; Ã/Õ/Â/Ê/Ô do not. The
-;; fix waits on Caps Lock (planned, toggled from nav): Caps is a toggle state,
-;; not a carried modifier, so the forks can then read Caps for case.
+;; Tilde is entered WITH Shift (~ = Shift+`, dead ^ = Shift+6), so that Shift is
+;; carried onto the vowel no matter when it is physically released -- the vowel
+;; is permanently "shifted" and the case is locked. We pick the locked case =
+;; lowercase by INVERTING those forks (upper codepoint on the never-reached
+;; no-Shift branch). So ã/õ work now; Ã/Õ do not. The fix waits on Caps Lock
+;; (planned, toggled from nav): Caps is a toggle state, not a carried modifier,
+;; so the forks can then read Caps for case.
 (defalias
   d-grave (one-shot 1000 (layer-while-held deadgrave))
   d-tilde (one-shot 1000 (layer-while-held deadtilde))
   d-circ  (one-shot 1000 (layer-while-held deadcirc))
   grave-key (fork @d-grave @d-tilde (lsft rsft))
-  ;; 6 key: unshifted = literal 6; Shift = enter dead circumflex (^ = Shift+6).
-  circ-key (fork 6 @d-circ (lsft rsft))
 
-  ;; Grave: normal fork (both cases; unshifted entry carries nothing).
+  ;; Grave + circumflex: normal fork (both cases; unshifted entry carries nothing).
   a-grave (fork (unicode à) (unicode À) (lsft rsft))
-  ;; Tilde + circumflex: INVERTED forks (lowercase-only; see CASE note above).
+  a-circ  (fork (unicode â) (unicode Â) (lsft rsft))
+  e-circ  (fork (unicode ê) (unicode Ê) (lsft rsft))
+  o-circ  (fork (unicode ô) (unicode Ô) (lsft rsft))
+  ;; Tilde: INVERTED forks (lowercase-only; see CASE note above).
   a-tilde (fork (unicode Ã) (unicode ã) (lsft rsft))
   o-tilde (fork (unicode Õ) (unicode õ) (lsft rsft))
-  a-circ  (fork (unicode Â) (unicode â) (lsft rsft))
-  e-circ  (fork (unicode Ê) (unicode ê) (lsft rsft))
-  o-circ  (fork (unicode Ô) (unicode ô) (lsft rsft))
 )
 
 ;; Default layer. The backtick key (bktk) emits a real backtick by outputting
@@ -202,7 +200,7 @@
 ;;               [ ] { } +        ^ ~ ç
 (deflayer symbols
   _     _     _     _     _     _     _     _     _     _     _     _     _
-  @grave-key S-1 S-2 S-3 S-4 S-5 @circ-key _     _     _     _     _     _     _
+  @grave-key S-1 S-2 S-3 S-4 S-5 @d-circ  _     _     _     _     _     _     _
   _     S-bksl eql  @e-acute S-7  S-8   _     @u-acute @i-acute @o-acute _     _     _
   _     @a-acute S-min S-9  S-0   min   _     grv   bksl  0     _     _     _     _
   _     _     lbrc rbrc S-lbrc S-rbrc S-eql S-6  S-grv @ccedil _     _     _
