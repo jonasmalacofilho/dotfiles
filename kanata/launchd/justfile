@@ -1,0 +1,73 @@
+# Autostart for the Karabiner VHID driver activation, its daemon, and kanata, as root
+# LaunchDaemons. All install/uninstall/reload recipes touch /Library/LaunchDaemons and
+# the system launchd domain, so they use sudo and will prompt for a password. Read the
+# README before running any of these; the TCC permission grants it describes are manual
+# and have no recipe (a daemon can't raise the GUI prompt).
+
+# source_directory() (not justfile_directory()) so paths resolve to this folder even
+# when these recipes are invoked through the root justfile's `mod kanata` import.
+src      := source_directory()
+dest     := "/Library/LaunchDaemons"
+manager  := "com.jonasmalaco.karabiner-vhid-manager"
+daemon   := "com.jonasmalaco.karabiner-vhid-daemon"
+kanata   := "com.jonasmalaco.kanata"
+
+# Load order: manager (activate the dext), then daemon, then kanata. Reverse to unload.
+# kanata also retries the VHID connection itself, so strict ordering isn't essential.
+order    := manager + " " + daemon + " " + kanata
+
+# List recipes (default).
+default:
+    @just --list
+
+# Validate plist syntax (no sudo, no system changes).
+lint:
+    plutil -lint {{src}}/{{manager}}.plist {{src}}/{{daemon}}.plist {{src}}/{{kanata}}.plist
+
+# Copy all three plists into place, fix ownership/permissions, and load them in order.
+install: lint
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for label in {{order}}; do
+        sudo cp "{{src}}/$label.plist" "{{dest}}/$label.plist"
+        sudo chown root:wheel "{{dest}}/$label.plist"
+        sudo chmod 644 "{{dest}}/$label.plist"
+    done
+    for label in {{order}}; do
+        sudo launchctl bootstrap system "{{dest}}/$label.plist"
+    done
+    @echo "Loaded. Verify with: just status"
+
+# Unload all three (reverse order) and remove the installed plists.
+uninstall:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for label in {{kanata}} {{daemon}} {{manager}}; do
+        sudo launchctl bootout "system/$label" || true
+        sudo rm -f "{{dest}}/$label.plist"
+    done
+    @echo "Removed."
+
+# Reload after editing a plist: bootout, recopy, bootstrap. Pass the label, e.g.
+#   just reload com.jonasmalaco.kanata
+reload label:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [[ ! -f "{{src}}/{{label}}.plist" ]]; then
+        echo "no such plist: {{src}}/{{label}}.plist" >&2; exit 1
+    fi
+    sudo launchctl bootout "system/{{label}}" || true
+    sudo cp "{{src}}/{{label}}.plist" "{{dest}}/{{label}}.plist"
+    sudo chown root:wheel "{{dest}}/{{label}}.plist"
+    sudo chmod 644 "{{dest}}/{{label}}.plist"
+    sudo launchctl bootstrap system "{{dest}}/{{label}}.plist"
+
+# Show whether each job is loaded and running (manager is one-shot: shows exited, status 0).
+status:
+    -sudo launchctl print system/{{manager}}
+    -sudo launchctl print system/{{daemon}}
+    -sudo launchctl print system/{{kanata}}
+
+# Tail kanata's log (config-load and runtime output).
+logs:
+    tail -f /var/log/kanata.log

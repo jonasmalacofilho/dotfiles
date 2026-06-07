@@ -1,3 +1,6 @@
+# kanata autostart (launchd LaunchDaemons); see kanata/launchd/README.md
+mod kanata 'kanata/launchd'
+
 link:
     bombadil link -p macos
 

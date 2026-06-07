@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.jonasmalaco.karabiner-vhid-daemon</string>
+
+	<!-- The Karabiner DriverKit VirtualHIDDevice daemon. Must be running before kanata can
+	     open the virtual keyboard. The driver itself is already activated via the Manager app;
+	     this only autostarts the userspace daemon that mediates between kanata and the driver. -->
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Library/Application Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice/Applications/Karabiner-VirtualHIDDevice-Daemon.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Daemon</string>
+	</array>
+
+	<key>RunAtLoad</key>
+	<true/>
+
+	<!-- Always relaunch (plain KeepAlive, unlike kanata's exit-code-gated policy).
+	     This daemon is pure infrastructure with no intentional-exit story: if it dies
+	     while kanata is still running, kanata's output sink vanishes and keystrokes
+	     get swallowed -- a worse state than the default layout -- so we want it up
+	     unconditionally. -->
+	<key>KeepAlive</key>
+	<true/>
+
+	<key>StandardOutPath</key>
+	<string>/var/log/karabiner-vhid-daemon.log</string>
+	<key>StandardErrorPath</key>
+	<string>/var/log/karabiner-vhid-daemon.log</string>
+</dict>
+</plist>
