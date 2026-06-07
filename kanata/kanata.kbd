@@ -46,7 +46,9 @@
   fnl (tap-hold-press 200 200 fn (layer-while-held fnrow))
 
   ;; Oneshot modifiers: tap applies the mod to the next key, hold acts as a normal modifier. Mirrors
-  ;; keyd's oneshot(...) at oneshot_timeout 200.
+  ;; keyd's oneshot(...) at oneshot_timeout 200. NOTE: the symbols layer overrides lsft/rsft back to
+  ;; plain (non-oneshot) Shift, so the oneshot's 200ms tail can't chain onto a dead-key vowel and
+  ;; force uppercase (see the dead-key CASE note).
   olsft (one-shot 200 lsft)
   orsft (one-shot 200 rsft)
 
@@ -131,14 +133,21 @@
 ;; The ` key (left of 1) is named `bktk` by the deflocalkeys-macos block at the top (it reports
 ;; OsCode 86, which would otherwise decode as lsgt), so @gkey sits on `bktk`.
 ;;
-;; CASE: a one-shot carries the modifiers held at activation onto the key that consumes it. Grave and
-;; circumflex are entered with no Shift, so nothing is carried; their forks read real Shift (Shift ->
-;; uppercase) with the no-Shift branch reading the capsvk Caps-Lock flag -- i.e. Shift-OR-Caps, to
-;; match macOS (where Caps + Shift stays uppercase): à = ` a, À = ` Shift+a (or Caps + ` a); â = 6 a,
-;; Â = 6 Shift+a. Tilde is entered WITH Shift (~ = Shift+`), so that Shift is carried onto the vowel
-;; however it is released -- the vowel always looks "shifted", making Shift unreadable there. So tilde
-;; takes its case from Caps Lock ALONE (capsvk): ã/õ with Caps off, Ã/Õ with Caps on. Caps is a toggle
-;; state, not a carried modifier, so the carry can't reach it.
+;; CASE: all three accents read Shift-OR-Caps (Shift -> uppercase, the no-Shift branch reads the
+;; capsvk Caps-Lock flag), matching macOS where Caps + Shift stays uppercase. Two opposite Shift
+;; subtleties fall out of one kanata rule: a one-shot is consumed by any non-one-shot key, and only
+;; other one-shots chain with it.
+;;   - Tilde enters WITH Shift (~ = Shift+`). While the default-layer Shift was a one-shot, its 200ms
+;;     tail chained through the deadtilde one-shot onto the vowel and forced uppercase unless you were
+;;     slow enough for the tail to expire (a timing lottery; traced in a debug capture). Fix: the
+;;     symbols layer makes Shift a PLAIN modifier, so there is no tail -- hold Shift through the vowel
+;;     for Ã/Õ, release before for ã/õ.
+;;   - Grave enters UNSHIFTED (Shift+bktk would mean tilde), so its uppercase Shift can only come
+;;     AFTER entry -- and a plain Shift there would consume the deadgrave one-shot, dropping you onto
+;;     the symbols-layer acute (À -> Á). Fix: lsft/rsft are one-shot Shift INSIDE the dead layers, so
+;;     a post-entry Shift chains with the dead-key one-shot instead of consuming it. (Circumflex dodges
+;;     the question entirely: unshifted entry on 6, with Shift simply held from before.)
+;; Caps Lock works for any of them regardless of Shift.
 (defalias
   dgrv (one-shot 1000 (layer-while-held deadgrave))
   dtil (one-shot 1000 (layer-while-held deadtilde))
@@ -163,11 +172,18 @@
     (switch ((input virtual capsvk)) (unicode Ô) break () (unicode ô) break)
     (unicode Ô)
     (lsft rsft))
-  ;; Tilde: entered with Shift (~ = Shift+`), and the one-shot carries that Shift onto the vowel, so
-  ;; Shift is unreadable here (always looks held). Case comes from capsvk ALONE: Caps Lock is the only
-  ;; way to get Ã/Õ. This replaces the old inverted-fork lowercase-only workaround.
-  atil (switch ((input virtual capsvk)) (unicode Ã) break () (unicode ã) break)
-  otil (switch ((input virtual capsvk)) (unicode Õ) break () (unicode õ) break)
+  ;; Tilde: same Shift-OR-Caps fork as the others, now that the symbols layer makes Shift a plain
+  ;; modifier (not the oneshot whose 200ms tail used to chain through the deadtilde one-shot and force
+  ;; the vowel uppercase). With plain Shift, holding it through the vowel gives Ã/Õ and releasing it
+  ;; before gives ã/õ; Caps Lock still works too.
+  atil (fork
+    (switch ((input virtual capsvk)) (unicode Ã) break () (unicode ã) break)
+    (unicode Ã)
+    (lsft rsft))
+  otil (fork
+    (switch ((input virtual capsvk)) (unicode Õ) break () (unicode õ) break)
+    (unicode Õ)
+    (lsft rsft))
 )
 
 ;; Default layer. The backtick key (bktk) emits a real backtick by outputting grv, and the <> key
@@ -237,8 +253,9 @@
 ;;
 ;; Layout (acutes/cedilla since 2a; dead keys in 2b/2c). The dead grave/tilde entry is the bktk key
 ;; (the backtick key, left of 1; unshifted -> à, Shift -> ã/õ); unshifted 6 is the dead circumflex
-;; entry (â/ê/ô). Literal ` ~ ^ stay on j/m/n. Grave and circumflex do both cases from Shift or Caps;
-;; tilde does both from Caps Lock only (its entry Shift is unreadable -- see the dead-key CASE note).
+;; entry (â/ê/ô). Literal ` ~ ^ stay on j/m/n. All three do both cases from Shift or Caps; Shift is a
+;; plain modifier inside this layer (lsft/rsft below, not the default-layer oneshot), so the tilde
+;; entry Shift no longer leaks onto the vowel -- see the dead-key CASE note.
 ;;          [`~] ! @ # $ % [^]
 ;;               | = é & *        ú í ó
 ;;               á _ ( ) -        ` \ 0
@@ -248,41 +265,45 @@
   @gkey  S-1    S-2    S-3    S-4    S-5    @dcir  _      _      _      _      _      _      _
   _      S-bksl eql    @eacu  S-7    S-8    _      @uacu  @iacu  @oacu  _      _      _
   _      @aacu  S-min  S-9    S-0    min    _      grv    bksl   0      _      _      _      _
-  _      _      lbrc   rbrc   S-lbrc S-rbrc S-eql  S-6    S-grv  @cced  _      _      _
+  lsft   _      lbrc   rbrc   S-lbrc S-rbrc S-eql  S-6    S-grv  @cced  _      _      rsft
   _      _      _      _      _      _      _      _      _      _      _
 )
 
 ;; Dead-grave sublayer (entered via the symbols-layer bktk key, left of 1, unshifted). Only a
 ;; carries a Portuguese grave (à); every other key types through normally, which cancels the dead
-;; key without committing a literal (the literal ` lives on j).
+;; key without committing a literal (the literal ` lives on j). lsft/rsft are one-shot Shift here
+;; (not passthrough) so a Shift pressed AFTER this unshifted entry chains with the dead-key one-shot
+;; instead of consuming it -- the only route to À, since Shift+bktk would mean tilde (see CASE note).
 (deflayer deadgrave
   _      _      _      _      _      _      _      _      _      _      _      _      _
   _      _      _      _      _      _      _      _      _      _      _      _      _      _
   _      _      _      _      _      _      _      _      _      _      _      _      _
   _      @agrv  _      _      _      _      _      _      _      _      _      _      _      _
-  _      _      _      _      _      _      _      _      _      _      _      _      _
+  @olsft _      _      _      _      _      _      _      _      _      _      _      @orsft
   _      _      _      _      _      _      _      _      _      _      _
 )
 
 ;; Dead-tilde sublayer (entered via the symbols-layer bktk key, left of 1, shifted). Portuguese
-;; tildes live on a (ã) and o (õ); other keys type through.
+;; tildes live on a (ã) and o (õ); other keys type through. lsft/rsft are one-shot Shift (see the
+;; dead-grave note) so re-pressing or switching Shift mid-sequence chains instead of dropping it.
 (deflayer deadtilde
   _      _      _      _      _      _      _      _      _      _      _      _      _
   _      _      _      _      _      _      _      _      _      _      _      _      _      _
   _      _      _      _      _      _      _      _      _      @otil  _      _      _
   _      @atil  _      _      _      _      _      _      _      _      _      _      _      _
-  _      _      _      _      _      _      _      _      _      _      _      _      _
+  @olsft _      _      _      _      _      _      _      _      _      _      _      @orsft
   _      _      _      _      _      _      _      _      _      _      _
 )
 
 ;; Dead-circumflex sublayer (entered via the symbols-layer 6 key, unshifted). Portuguese
-;; circumflexes live on a (â), e (ê) and o (ô); other keys type through.
+;; circumflexes live on a (â), e (ê) and o (ô); other keys type through. lsft/rsft are one-shot
+;; Shift (see the dead-grave note) so a post-entry or switched Shift chains instead of dropping it.
 (deflayer deadcirc
   _      _      _      _      _      _      _      _      _      _      _      _      _
   _      _      _      _      _      _      _      _      _      _      _      _      _      _
   _      _      _      @ecir  _      _      _      _      _      @ocir  _      _      _
   _      @acir  _      _      _      _      _      _      _      _      _      _      _      _
-  _      _      _      _      _      _      _      _      _      _      _      _      _
+  @olsft _      _      _      _      _      _      _      _      _      _      _      @orsft
   _      _      _      _      _      _      _      _      _      _      _
 )
 
