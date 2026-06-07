@@ -72,6 +72,27 @@ kanata's own terminal is unreliable, since physical Control is remapped to fn in
 
 Read `./kanata.kbd`.
 
+### File conventions
+
+The config follows a few formatting and naming conventions; keep edits consistent with them.
+
+- **Comment width.** A `;; vim: ft=lisp tw=100` modeline closes the file, and prose comments are
+  wrapped to 100 columns. Left verbatim (never reflowed): the ASCII layout diagram in the
+  symbols-layer comment, bullet lists, and the aligned dead-key entry table.
+- **Grid alignment.** `defsrc` and every `deflayer` share one column grid. Each cell is padded to a
+  uniform fixed-width stride (currently 7 chars, the widest token plus one space), so a given
+  physical key sits in the same column across `defsrc` and all layers, and even the widest 14-key
+  row stays under 100. Re-pad the whole grid after an edit if the widest token changes.
+- **Alias names stay <= 5 chars** (<= 6 with the `@`) so any alias fits one grid cell without
+  widening the shared stride. Scheme:
+  - Accented letters are `<vowel><accent>`, accent one of `acu` (acute), `grv` (grave), `cir`
+    (circumflex), `til` (tilde): e.g. `aacu` = á, `agrv` = à, `acir` = â, `atil` = ã. Cedilla is
+    `cced`.
+  - Dead-key one-shot layers are `d<accent>`: `dgrv` `dtil` `dcir`. `gkey` is the grave/tilde entry
+    fork on the `bktk` key (replaces the old `grave-key`).
+  - Overloads and oneshots: `cap` `esctl` `fnl`, `olsft`/`orsft` (oneshot Shift), `osym` (oneshot
+    symbols), `rdel` (ralt+Backspace forward delete).
+
 ### What's tested and working
 
 - `defsrc` models the whole MacBook ISO keyboard (every physical key, in a six-row grid; Touch
@@ -134,12 +155,12 @@ Read `./kanata.kbd`.
     behaviour, matching how AltGr-style layers want the layer key held.
 - symbols layer step 2b/2c = three dead keys (grave, tilde, circumflex), each an internal one-shot
   layer reproducing keyd's `altgr-intl` delegation. Entry keys, all in the symbols layer: the `bktk`
-  (backtick, left of 1) key = `@grave-key` (unshifted -> dead grave à; Shift -> dead tilde ã/õ);
-  Shift+6 = dead circumflex (â/ê/ô), with unshifted 6 = literal 6. Literal `` ` ``/`~`/`^` for
-  programming stay on `j`/`m`/`n`, so a non-vowel after a dead key just types through (no
-  literal-commit fallback). Lowercase confirmed on turing; **uppercase deferred** (see CASE below).
-  - `@grave-key` sits on `bktk` (the backtick key, left of 1). That physical key reports OsCode 86,
-    which `deflocalkeys-macos` names `bktk`; without the rename it would decode as `lsgt`.
+  (backtick, left of 1) key = `@gkey` (unshifted -> dead grave à; Shift -> dead tilde ã/õ); Shift+6
+  = dead circumflex (â/ê/ô), with unshifted 6 = literal 6. Literal `` ` ``/`~`/`^` for programming
+  stay on `j`/`m`/`n`, so a non-vowel after a dead key just types through (no literal-commit
+  fallback). Lowercase confirmed on turing; **uppercase deferred** (see CASE below).
+  - `@gkey` sits on `bktk` (the backtick key, left of 1). That physical key reports OsCode 86, which
+    `deflocalkeys-macos` names `bktk`; without the rename it would decode as `lsgt`.
   - **CASE (and why uppercase is deferred):** a kanata one-shot carries the modifiers held when it
     activates onto the key that consumes it. Grave is entered with **no** Shift, so nothing is
     carried and its fork does both cases: à = `` ` `` a; À = `` ` `` Shift+a. Tilde and circumflex

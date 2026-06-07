@@ -2,70 +2,64 @@
   process-unmapped-keys yes
 )
 
-;; macOS hands kanata the grave key (left of 1) and the ISO <> key (left of z)
-;; with their scancodes swapped versus the usual ISO assignment: on turing the
-;; backtick key reports OsCode 86 (normally lsgt) and the <> key reports 41
-;; (normally grv). Name each physical key here so defsrc/layers stay
-;; position-honest and portable (bktk = the backtick key, iso = the <> key),
-;; isolating this macOS-only quirk. deflocalkeys maps a name to a scancode for
-;; BOTH input and output, so we must NOT reuse grv/lsgt for these keys -- that
-;; would hijack their output and make literal ` and the symbols layer come out
-;; wrong (tested). grv/lsgt stay output-only; the default layer remaps bktk -> grv
-;; and iso -> lsgt to emit the right characters. This replaces the old in-layer
-;; ISO backtick fix. When the Aula (ANSI, Linux) is wired in, a deflocalkeys-linux
-;; will map bktk/iso to their Linux codes (left-of-1 grave = 41; the Aula has no
-;; <> key).
+;; macOS hands kanata the grave key (left of 1) and the ISO <> key (left of z) with their scancodes
+;; swapped versus the usual ISO assignment: on turing the backtick key reports OsCode 86 (normally
+;; lsgt) and the <> key reports 41 (normally grv). Name each physical key here so defsrc/layers stay
+;; position-honest and portable (bktk = the backtick key, iso = the <> key), isolating this
+;; macOS-only quirk. deflocalkeys maps a name to a scancode for BOTH input and output, so we must
+;; NOT reuse grv/lsgt for these keys -- that would hijack their output and make literal ` and the
+;; symbols layer come out wrong (tested). grv/lsgt stay output-only; the default layer remaps bktk
+;; -> grv and iso -> lsgt to emit the right characters. This replaces the old in-layer ISO backtick
+;; fix. When the Aula (ANSI, Linux) is wired in, a deflocalkeys-linux will map bktk/iso to their
+;; Linux codes (left-of-1 grave = 41; the Aula has no <> key).
 (deflocalkeys-macos
   bktk 86
   iso  41
 )
 
-;; defsrc models the whole MacBook Air (turing) ISO keyboard, physical layout.
-;; Order is cosmetic; what matters is that every deflayer has one entry per key,
-;; in this same order. Keys we don't remap are `_` (passthrough) in every layer;
-;; they're listed anyway so the grid mirrors the real keyboard and adding a remap
-;; later needs no defsrc/layer churn. ISO specifics: `lsgt` is the <> key left of
-;; z (named via the deflocalkeys-macos block above: bktk = backtick key left of
-;; 1, iso = <> key left of z); `bksl` is the #/~ key left of Enter (Enter is
-;; L-shaped). The Touch ID / power button is not a remappable key and is omitted.
-;; This will need a light revisit when the Aula F75 (ANSI, fewer keys) is wired in.
+;; defsrc models the whole MacBook Air (turing) ISO keyboard, physical layout. Order is cosmetic;
+;; what matters is that every deflayer has one entry per key, in this same order. Keys we don't
+;; remap are `_` (passthrough) in every layer; they're listed anyway so the grid mirrors the real
+;; keyboard and adding a remap later needs no defsrc/layer churn. ISO specifics: `lsgt` is the <>
+;; key left of z (named via the deflocalkeys-macos block above: bktk = backtick key left of 1, iso =
+;; <> key left of z); `bksl` is the #/~ key left of Enter (Enter is L-shaped). The Touch ID / power
+;; button is not a remappable key and is omitted. This will need a light revisit when the Aula F75
+;; (ANSI, fewer keys) is wired in.
 (defsrc
-  esc   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
-  bktk  1     2     3     4     5     6     7     8     9     0     min   eql   bspc
-  tab   q     w     e     r     t     y     u     i     o     p     lbrc  rbrc
-  caps  a     s     d     f     g     h     j     k     l     scln  '     bksl  ret
-  lsft  iso   z     x     c     v     b     n     m     comm  .     /     rsft
-  fn    lctl  lalt  lmet  spc   rmet  ralt  left  up    down  rght
+  esc    f1     f2     f3     f4     f5     f6     f7     f8     f9     f10    f11    f12
+  bktk   1      2      3      4      5      6      7      8      9      0      min    eql    bspc
+  tab    q      w      e      r      t      y      u      i      o      p      lbrc   rbrc
+  caps   a      s      d      f      g      h      j      k      l      scln   '      bksl   ret
+  lsft   iso    z      x      c      v      b      n      m      comm   .      /      rsft
+  fn     lctl   lalt   lmet   spc    rmet   ralt   left   up     down   rght
 )
 
 (defalias
   cap (tap-hold-press 200 200 esc (layer-while-held nav))
 
   ;; esc: tap = Esc, hold = control layer (same overload pattern as caps).
-  esc-ctl (tap-hold-press 200 200 esc (layer-while-held control))
+  esctl (tap-hold-press 200 200 esc (layer-while-held control))
 
-  ;; Moved fn key (the physical Control-labelled key, which the fn<->lctl swap
-  ;; turns into fn): tap = fn, hold = fnrow layer. fnrow reproduces the MacBook's
-  ;; native function row, which the Karabiner VHID otherwise drops for fn+Fkey.
-  ;; Only useful on the MacBook's own keyboard.
+  ;; Moved fn key (the physical Control-labelled key, which the fn<->lctl swap turns into fn): tap =
+  ;; fn, hold = fnrow layer. fnrow reproduces the MacBook's native function row, which the Karabiner
+  ;; VHID otherwise drops for fn+Fkey. Only useful on the MacBook's own keyboard.
   fnl (tap-hold-press 200 200 fn (layer-while-held fnrow))
 
-  ;; Oneshot modifiers: tap applies the mod to the next key, hold acts as a
-  ;; normal modifier. Mirrors keyd's oneshot(...) at oneshot_timeout 200.
-  o-lsft (one-shot 200 lsft)
-  o-rsft (one-shot 200 rsft)
+  ;; Oneshot modifiers: tap applies the mod to the next key, hold acts as a normal modifier. Mirrors
+  ;; keyd's oneshot(...) at oneshot_timeout 200.
+  olsft (one-shot 200 lsft)
+  orsft (one-shot 200 rsft)
 
-  ;; Right Command = oneshot symbols layer: tap for the next key, hold while
-  ;; typing several. (keyd used rightalt = oneshot(symbols); on the Mac right
-  ;; Option stays a plain modifier and right Command drives the layer instead.)
-  ;; Note: holding a oneshot key does NOT extend its timer (the layer still
-  ;; reverts on timeout). For an uppercase accent, hold rmet + Shift together
-  ;; then press the letter, so no oneshot timer is in play.
-  o-sym (one-shot 200 (layer-while-held symbols))
+  ;; Right Command = oneshot symbols layer: tap for the next key, hold while typing several. (keyd
+  ;; used rightalt = oneshot(symbols); on the Mac right Option stays a plain modifier and right
+  ;; Command drives the layer instead.) Note: holding a oneshot key does NOT extend its timer (the
+  ;; layer still reverts on timeout). For an uppercase accent, hold rmet + Shift together then press
+  ;; the letter, so no oneshot timer is in play.
+  osym (one-shot 200 (layer-while-held symbols))
 )
 
-;; Forward delete. The MacBook has no forward-delete key, and the fn<->lctl swap
-;; took the native fn+Backspace shortcut with it. Two routes back:
+;; Forward delete. The MacBook has no forward-delete key, and the fn<->lctl swap took the native
+;; fn+Backspace shortcut with it. Two routes back:
 ;;   - fn+bspc: restored in the fnrow layer (held via the relocated fn key);
 ;;     MacBook-only, like the rest of that layer.
 ;;   - ralt+bspc: cross-platform (right Option on macOS, right Alt on Linux).
@@ -73,172 +67,166 @@
 ;;     gets a bare Delete -- otherwise macOS would read Option+Delete as
 ;;     delete-word-forward. Plain bspc (no ralt) is unaffected.
 (defalias
-  del-on-ralt (fork bspc (unmod del) (ralt))
+  rdel (fork bspc (unmod del) (ralt))
 )
 
-;; Portuguese accents (symbols layer, step 2a): direct-unicode acutes and
-;; cedilla. Each emits the codepoint via CGEventPost (the only kanata output
-;; that bypasses the Karabiner VHID; it needs Accessibility on the process that
-;; launched kanata). Because the codepoint is injected literally, a held Shift
-;; does NOT uppercase it -- so fork picks the uppercase codepoint when lsft/rsft
-;; is active (our oneshot Shift counts as active for the next key).
+;; Portuguese accents (symbols layer, step 2a): direct-unicode acutes and cedilla. Each emits the
+;; codepoint via CGEventPost (the only kanata output that bypasses the Karabiner VHID; it needs
+;; Accessibility on the process that launched kanata). Because the codepoint is injected literally,
+;; a held Shift does NOT uppercase it -- so fork picks the uppercase codepoint when lsft/rsft is
+;; active (our oneshot Shift counts as active for the next key).
 (defalias
-  e-acute (fork (unicode é) (unicode É) (lsft rsft))
-  a-acute (fork (unicode á) (unicode Á) (lsft rsft))
-  u-acute (fork (unicode ú) (unicode Ú) (lsft rsft))
-  i-acute (fork (unicode í) (unicode Í) (lsft rsft))
-  o-acute (fork (unicode ó) (unicode Ó) (lsft rsft))
-  ccedil  (fork (unicode ç) (unicode Ç) (lsft rsft))
+  eacu (fork (unicode é) (unicode É) (lsft rsft))
+  aacu (fork (unicode á) (unicode Á) (lsft rsft))
+  uacu (fork (unicode ú) (unicode Ú) (lsft rsft))
+  iacu (fork (unicode í) (unicode Í) (lsft rsft))
+  oacu (fork (unicode ó) (unicode Ó) (lsft rsft))
+  cced (fork (unicode ç) (unicode Ç) (lsft rsft))
 )
 
-;; Dead keys (symbols layer, step 2b/2c). Three dead keys, each an internal
-;; one-shot layer (keyd delegated these to the altgr-intl OS layout, its
-;; [symbols:G] AltGr fallback; we have no AltGr layer). The literal ` ~ ^ for
-;; programming stay on j/m/n, so a non-vowel after a dead key just types through
-;; -- no literal-commit fallback needed. Entry keys (all in the symbols layer):
+;; Dead keys (symbols layer, step 2b/2c). Three dead keys, each an internal one-shot layer (keyd
+;; delegated these to the altgr-intl OS layout, its [symbols:G] AltGr fallback; we have no AltGr
+;; layer). The literal ` ~ ^ for programming stay on j/m/n, so a non-vowel after a dead key just
+;; types through -- no literal-commit fallback needed. Entry keys (all in the symbols layer):
 ;;   ` key  unshifted -> dead grave (à) ;  Shift -> dead tilde (ã/õ)
 ;;   6 key  Shift     -> dead circumflex (â/ê/ô)   (unshifted 6 = literal 6)
-;; The ` key (left of 1) is named `bktk` by the deflocalkeys-macos block at the
-;; top (it reports OsCode 86, which would otherwise decode as lsgt), so
-;; @grave-key sits on `bktk`.
+;; The ` key (left of 1) is named `bktk` by the deflocalkeys-macos block at the top (it reports
+;; OsCode 86, which would otherwise decode as lsgt), so @gkey sits on `bktk`.
 ;;
-;; CASE, and why uppercase is deferred: a one-shot carries the modifiers held at
-;; activation onto the key that consumes it. Grave is entered with no Shift, so
-;; nothing is carried and its fork works both ways: à = ` a, À = ` Shift+a.
-;; Tilde is entered WITH Shift (~ = Shift+`, dead ^ = Shift+6), so that Shift is
-;; carried onto the vowel no matter when it is physically released -- the vowel
-;; is permanently "shifted" and the case is locked. We pick the locked case =
-;; lowercase by INVERTING those forks (upper codepoint on the never-reached
-;; no-Shift branch). So ã/õ work now; Ã/Õ do not. The fix waits on Caps Lock
-;; (planned, toggled from nav): Caps is a toggle state, not a carried modifier,
-;; so the forks can then read Caps for case.
+;; CASE, and why uppercase is deferred: a one-shot carries the modifiers held at activation onto the
+;; key that consumes it. Grave is entered with no Shift, so nothing is carried and its fork works
+;; both ways: à = ` a, À = ` Shift+a. Tilde is entered WITH Shift (~ = Shift+`, dead ^ = Shift+6),
+;; so that Shift is carried onto the vowel no matter when it is physically released -- the vowel is
+;; permanently "shifted" and the case is locked. We pick the locked case = lowercase by INVERTING
+;; those forks (upper codepoint on the never-reached no-Shift branch). So ã/õ work now; Ã/Õ do not.
+;; The fix waits on Caps Lock (planned, toggled from nav): Caps is a toggle state, not a carried
+;; modifier, so the forks can then read Caps for case.
 (defalias
-  d-grave (one-shot 1000 (layer-while-held deadgrave))
-  d-tilde (one-shot 1000 (layer-while-held deadtilde))
-  d-circ  (one-shot 1000 (layer-while-held deadcirc))
-  grave-key (fork @d-grave @d-tilde (lsft rsft))
+  dgrv (one-shot 1000 (layer-while-held deadgrave))
+  dtil (one-shot 1000 (layer-while-held deadtilde))
+  dcir (one-shot 1000 (layer-while-held deadcirc))
+  gkey (fork @dgrv @dtil (lsft rsft))
 
   ;; Grave + circumflex: normal fork (both cases; unshifted entry carries nothing).
-  a-grave (fork (unicode à) (unicode À) (lsft rsft))
-  a-circ  (fork (unicode â) (unicode Â) (lsft rsft))
-  e-circ  (fork (unicode ê) (unicode Ê) (lsft rsft))
-  o-circ  (fork (unicode ô) (unicode Ô) (lsft rsft))
+  agrv (fork (unicode à) (unicode À) (lsft rsft))
+  acir (fork (unicode â) (unicode Â) (lsft rsft))
+  ecir (fork (unicode ê) (unicode Ê) (lsft rsft))
+  ocir (fork (unicode ô) (unicode Ô) (lsft rsft))
   ;; Tilde: INVERTED forks (lowercase-only; see CASE note above).
-  a-tilde (fork (unicode Ã) (unicode ã) (lsft rsft))
-  o-tilde (fork (unicode Õ) (unicode õ) (lsft rsft))
+  atil (fork (unicode Ã) (unicode ã) (lsft rsft))
+  otil (fork (unicode Õ) (unicode õ) (lsft rsft))
 )
 
-;; Default layer. The backtick key (bktk) emits a real backtick by outputting
-;; grv, and the <> key (iso) outputs lsgt (non-US backslash / §). These two
-;; remaps put the right character on each key now that deflocalkeys-macos has
-;; given the physical keys honest names; together they replace the old in-layer
-;; ISO backtick fix.
+;; Default layer. The backtick key (bktk) emits a real backtick by outputting grv, and the <> key
+;; (iso) outputs lsgt (non-US backslash / §). These two remaps put the right character on each key
+;; now that deflocalkeys-macos has given the physical keys honest names; together they replace the
+;; old in-layer ISO backtick fix.
 (deflayer default
-  @esc-ctl _     _     _     _     _     _     _     _     _     _     _     _
-  grv   _     _     _     _     _     _     _     _     _     _     _     _     @del-on-ralt
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  @cap  _     _     _     _     _     _     _     _     _     _     _     _     _
-  @o-lsft lsgt _     _     _     _     _     _     _     _     _     _     @o-rsft
-  lctl  @fnl  _     _     _     @o-sym _    _     _     _     _
+  @esctl _      _      _      _      _      _      _      _      _      _      _      _
+  grv    _      _      _      _      _      _      _      _      _      _      _      _      @rdel
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  @cap   _      _      _      _      _      _      _      _      _      _      _      _      _
+  @olsft lsgt   _      _      _      _      _      _      _      _      _      _      @orsft
+  lctl   @fnl   _      _      _      @osym  _      _      _      _      _
 )
 
-;; Navigation layer (held via caps): hjkl arrows and yuio paging, plus a handful
-;; of editing keys. p = forward delete (the MacBook lacks a forward-delete key);
-;; bspc = delete word back; ret = Shift+Enter and ' = " -- the caps key sits
-;; where Shift does, so those last two are easy to fumble for.
-;; NOTE: nav[bspc] is macOS-specific. Word-delete-back is Option+Backspace here
-;; but Control+Backspace on Linux, so A-bspc will need to become C-bspc when this
-;; config goes cross-platform.
-(deflayer nav
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _     A-bspc
-  _     _     _     _     _     _     home  pgdn  pgup  end   del   _     _
-  _     _     _     _     _     _     left  down  up    right _     S-'   _     S-ret
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _
-)
-
-;; Control layer (held via esc): media + volume on the Mac's F7-F12 positions,
-;; plus Mission Control (F3), Spotlight (F4), and live config reload (F5). This
-;; is the layer to use on non-MacBook keyboards, which have no mac fn key.
-;; mctl/sls are macOS-specific; confirmed working through the VHID on turing.
-(deflayer control
-  _     _     _     mctl  sls   lrld  _     prev  pp    next  mute  vold  volu
-  _     _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _
-)
-
-;; fn-row layer (held via the moved fn key): the MacBook's native function row,
-;; for use on the MacBook's own keyboard. F5/F6 assume the modern layout
-;; (Dictation, Do Not Disturb). The macOS-specific actions (brightness, mission
-;; control, spotlight, dictation, dnd) are confirmed working via the VHID on turing.
-(deflayer fnrow
-  _     brdown brup mctl  sls   dtn   dnd   prev  pp    next  mute  vold  volu
-  _     _     _     _     _     _     _     _     _     _     _     _     _     del
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _
-)
-
-;; Symbols layer (held/oneshot via right Command): programming symbols plus
-;; Portuguese accents. Ports keyd's [symbols] layer. Unlike keyd, it does not
-;; rely on an AltGr OS layout; each key outputs its symbol directly. Backtick and
-;; tilde are emitted as grv / S-grv (the grave usage the OS maps to ` / ~).
+;; Navigation layer (held via caps): hjkl arrows and yuio paging, plus a handful of editing keys. p
+;; = forward delete (the MacBook lacks a forward-delete key); bspc = delete word back; ret =
+;; Shift+Enter and ' = " -- the caps key sits where Shift does, so those last two are easy to fumble
+;; for.
 ;;
-;; Layout (acutes/cedilla since 2a; dead keys in 2b/2c). The dead grave/tilde
-;; entry is the bktk key (the backtick key, left of 1; unshifted -> à, Shift ->
-;; ã/õ); Shift+6 is the dead circumflex entry (â/ê/ô). Literal ` ~ ^ stay on
-;; j/m/n. Tilde and circumflex are lowercase-only for now (see the dead-key CASE
-;; note above); grave does both cases.
+;; NOTE: nav[bspc] is macOS-specific. Word-delete-back is Option+Backspace here but
+;; Control+Backspace on Linux, so A-bspc will need to become C-bspc when this config goes
+;; cross-platform.
+(deflayer nav
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _      A-bspc
+  _      _      _      _      _      _      home   pgdn   pgup   end    del    _      _
+  _      _      _      _      _      _      left   down   up     right  _      S-'    _      S-ret
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _
+)
+
+;; Control layer (held via esc): media + volume on the Mac's F7-F12 positions, plus Mission Control
+;; (F3), Spotlight (F4), and live config reload (F5). This is the layer to use on non-MacBook
+;; keyboards, which have no mac fn key. mctl/sls are macOS-specific; confirmed working through the
+;; VHID on turing.
+(deflayer control
+  _      _      _      mctl   sls    lrld   _      prev   pp     next   mute   vold   volu
+  _      _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _
+)
+
+;; fn-row layer (held via the moved fn key): the MacBook's native function row, for use on the
+;; MacBook's own keyboard. F5/F6 assume the modern layout (Dictation, Do Not Disturb). The
+;; macOS-specific actions (brightness, mission control, spotlight, dictation, dnd) are confirmed
+;; working via the VHID on turing.
+(deflayer fnrow
+  _      brdown brup   mctl   sls    dtn    dnd    prev   pp     next   mute   vold   volu
+  _      _      _      _      _      _      _      _      _      _      _      _      _      del
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _
+)
+
+;; Symbols layer (held/oneshot via right Command): programming symbols plus Portuguese accents.
+;; Ports keyd's [symbols] layer. Unlike keyd, it does not rely on an AltGr OS layout; each key
+;; outputs its symbol directly. Backtick and tilde are emitted as grv / S-grv (the grave usage the
+;; OS maps to ` / ~).
+;;
+;; Layout (acutes/cedilla since 2a; dead keys in 2b/2c). The dead grave/tilde entry is the bktk key
+;; (the backtick key, left of 1; unshifted -> à, Shift -> ã/õ); Shift+6 is the dead circumflex entry
+;; (â/ê/ô). Literal ` ~ ^ stay on j/m/n. Tilde and circumflex are lowercase-only for now (see the
+;; dead-key CASE note above); grave does both cases.
 ;;          [`~] ! @ # $ % [^]
 ;;               | = é & *        ú í ó
 ;;               á _ ( ) -        ` \ 0
 ;;               [ ] { } +        ^ ~ ç
 (deflayer symbols
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  @grave-key S-1 S-2 S-3 S-4 S-5 @d-circ  _     _     _     _     _     _     _
-  _     S-bksl eql  @e-acute S-7  S-8   _     @u-acute @i-acute @o-acute _     _     _
-  _     @a-acute S-min S-9  S-0   min   _     grv   bksl  0     _     _     _     _
-  _     _     lbrc rbrc S-lbrc S-rbrc S-eql S-6  S-grv @ccedil _     _     _
-  _     _     _     _     _     _     _     _     _     _     _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  @gkey  S-1    S-2    S-3    S-4    S-5    @dcir  _      _      _      _      _      _      _
+  _      S-bksl eql    @eacu  S-7    S-8    _      @uacu  @iacu  @oacu  _      _      _
+  _      @aacu  S-min  S-9    S-0    min    _      grv    bksl   0      _      _      _      _
+  _      _      lbrc   rbrc   S-lbrc S-rbrc S-eql  S-6    S-grv  @cced  _      _      _
+  _      _      _      _      _      _      _      _      _      _      _
 )
 
 ;; Dead-grave sublayer (entered via the symbols-layer bktk key, left of 1, unshifted). Only a
-;; carries a Portuguese grave (à); every other key types through normally, which
-;; cancels the dead key without committing a literal (the literal ` lives on j).
+;; carries a Portuguese grave (à); every other key types through normally, which cancels the dead
+;; key without committing a literal (the literal ` lives on j).
 (deflayer deadgrave
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     @a-grave _   _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      @agrv  _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _
 )
 
 ;; Dead-tilde sublayer (entered via the symbols-layer bktk key, left of 1, shifted). Portuguese
 ;; tildes live on a (ã) and o (õ); other keys type through.
 (deflayer deadtilde
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     @o-tilde _     _     _
-  _     @a-tilde _   _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      @otil  _      _      _
+  _      @atil  _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _
 )
 
-;; Dead-circumflex sublayer (entered via the symbols-layer Shift+6). Portuguese
-;; circumflexes live on a (â), e (ê) and o (ô); other keys type through.
+;; Dead-circumflex sublayer (entered via the symbols-layer Shift+6). Portuguese circumflexes live on
+;; a (â), e (ê) and o (ô); other keys type through.
 (deflayer deadcirc
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     @e-circ _   _     _     _     _     @o-circ _     _     _
-  _     @a-circ _   _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _     _     _
-  _     _     _     _     _     _     _     _     _     _     _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      @ecir  _      _      _      _      _      @ocir  _      _      _
+  _      @acir  _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _
 )
 
 ;; vim: ft=lisp tw=100
