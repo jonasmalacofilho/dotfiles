@@ -56,6 +56,24 @@
   ;; layer still reverts on timeout). For an uppercase accent, hold rmet + Shift together then press
   ;; the letter, so no oneshot timer is in play.
   osym (one-shot 200 (layer-while-held symbols))
+
+  ;; Caps Lock (nav layer's right Shift): tap toggles the OS Caps Lock for normal letters AND flips
+  ;; the capsvk virtual key in lockstep, so the unicode accents -- which (unicode ...) injects
+  ;; literally, ignoring the OS Caps state a fork can't read anyway -- can read capsvk for case.
+  ;; GOTCHA: capsvk and the OS Caps Lock are two independent toggles kept in phase only because this
+  ;; one key flips both. capsvk resets to off on every config (re)load, but the OS Caps state persists
+  ;; across an esc+F5 reload -- so reloading while Caps is ON leaves them inverted (accents come out
+  ;; wrong-cased), and a tap can't fix it (flipping both preserves the phase error). Fix: toggle Caps
+  ;; OFF, then reload. Rule of thumb: always reload with Caps Lock off. kanata can't read the OS Caps
+  ;; state to self-correct. The LED stays dark regardless -- a VHID limitation (kanata #1364).
+  cpsl (multi caps (on-press toggle-virtualkey capsvk))
+)
+
+;; capsvk: a no-op virtual key used purely as a readable Caps Lock flag (see @cpsl). nop0 emits
+;; nothing while the key is toggled "pressed"; only its state is read, via (input virtual capsvk) in
+;; the accent forks/switches below.
+(defvirtualkeys
+  capsvk nop0
 )
 
 ;; Forward delete. The MacBook has no forward-delete key, and the fn<->lctl swap took the native
@@ -73,15 +91,35 @@
 ;; Portuguese accents (symbols layer, step 2a): direct-unicode acutes and cedilla. Each emits the
 ;; codepoint via CGEventPost (the only kanata output that bypasses the Karabiner VHID; it needs
 ;; Accessibility on the process that launched kanata). Because the codepoint is injected literally,
-;; a held Shift does NOT uppercase it -- so fork picks the uppercase codepoint when lsft/rsft is
-;; active (our oneshot Shift counts as active for the next key).
+;; neither a held Shift nor the OS Caps Lock uppercases it -- we choose the case ourselves. We follow
+;; macOS, where Shift OR Caps uppercases (Caps + Shift stays uppercase, unlike Linux/Windows): the
+;; fork's Shift branch is the plain uppercase codepoint, and its no-Shift branch reads the capsvk
+;; Caps-Lock flag (the fork still sees our oneshot Shift as active for the next key).
 (defalias
-  eacu (fork (unicode é) (unicode É) (lsft rsft))
-  aacu (fork (unicode á) (unicode Á) (lsft rsft))
-  uacu (fork (unicode ú) (unicode Ú) (lsft rsft))
-  iacu (fork (unicode í) (unicode Í) (lsft rsft))
-  oacu (fork (unicode ó) (unicode Ó) (lsft rsft))
-  cced (fork (unicode ç) (unicode Ç) (lsft rsft))
+  eacu (fork
+    (switch ((input virtual capsvk)) (unicode É) break () (unicode é) break)
+    (unicode É)
+    (lsft rsft))
+  aacu (fork
+    (switch ((input virtual capsvk)) (unicode Á) break () (unicode á) break)
+    (unicode Á)
+    (lsft rsft))
+  uacu (fork
+    (switch ((input virtual capsvk)) (unicode Ú) break () (unicode ú) break)
+    (unicode Ú)
+    (lsft rsft))
+  iacu (fork
+    (switch ((input virtual capsvk)) (unicode Í) break () (unicode í) break)
+    (unicode Í)
+    (lsft rsft))
+  oacu (fork
+    (switch ((input virtual capsvk)) (unicode Ó) break () (unicode ó) break)
+    (unicode Ó)
+    (lsft rsft))
+  cced (fork
+    (switch ((input virtual capsvk)) (unicode Ç) break () (unicode ç) break)
+    (unicode Ç)
+    (lsft rsft))
 )
 
 ;; Dead keys (symbols layer, step 2b/2c). Three dead keys, each an internal one-shot layer (keyd
@@ -93,28 +131,43 @@
 ;; The ` key (left of 1) is named `bktk` by the deflocalkeys-macos block at the top (it reports
 ;; OsCode 86, which would otherwise decode as lsgt), so @gkey sits on `bktk`.
 ;;
-;; CASE, and why tilde uppercase is deferred: a one-shot carries the modifiers held at activation
-;; onto the key that consumes it. Grave and circumflex are entered with no Shift, so nothing is
-;; carried and their forks work both ways: à = ` a, À = ` Shift+a; â = 6 a, Â = 6 Shift+a. Tilde is
-;; entered WITH Shift (~ = Shift+`), so that Shift is carried onto the vowel no matter when it is
-;; physically released -- the vowel is permanently "shifted" and the case is locked. We pick the
-;; locked case = lowercase by INVERTING its forks (upper codepoint on the never-reached no-Shift
-;; branch). So ã/õ work now; Ã/Õ do not. The fix waits on Caps Lock (planned, toggled from nav):
-;; Caps is a toggle state, not a carried modifier, so the forks can then read Caps for case.
+;; CASE: a one-shot carries the modifiers held at activation onto the key that consumes it. Grave and
+;; circumflex are entered with no Shift, so nothing is carried; their forks read real Shift (Shift ->
+;; uppercase) with the no-Shift branch reading the capsvk Caps-Lock flag -- i.e. Shift-OR-Caps, to
+;; match macOS (where Caps + Shift stays uppercase): à = ` a, À = ` Shift+a (or Caps + ` a); â = 6 a,
+;; Â = 6 Shift+a. Tilde is entered WITH Shift (~ = Shift+`), so that Shift is carried onto the vowel
+;; however it is released -- the vowel always looks "shifted", making Shift unreadable there. So tilde
+;; takes its case from Caps Lock ALONE (capsvk): ã/õ with Caps off, Ã/Õ with Caps on. Caps is a toggle
+;; state, not a carried modifier, so the carry can't reach it.
 (defalias
   dgrv (one-shot 1000 (layer-while-held deadgrave))
   dtil (one-shot 1000 (layer-while-held deadtilde))
   dcir (one-shot 1000 (layer-while-held deadcirc))
   gkey (fork @dgrv @dtil (lsft rsft))
 
-  ;; Grave + circumflex: normal fork (both cases; unshifted entry carries nothing).
-  agrv (fork (unicode à) (unicode À) (lsft rsft))
-  acir (fork (unicode â) (unicode Â) (lsft rsft))
-  ecir (fork (unicode ê) (unicode Ê) (lsft rsft))
-  ocir (fork (unicode ô) (unicode Ô) (lsft rsft))
-  ;; Tilde: INVERTED forks (lowercase-only; see CASE note above).
-  atil (fork (unicode Ã) (unicode ã) (lsft rsft))
-  otil (fork (unicode Õ) (unicode õ) (lsft rsft))
+  ;; Grave + circumflex: unshifted entry carries no Shift, so the fork reads real Shift (-> the plain
+  ;; uppercase codepoint) with its no-Shift branch reading capsvk -> Shift-OR-Caps to match macOS.
+  agrv (fork
+    (switch ((input virtual capsvk)) (unicode À) break () (unicode à) break)
+    (unicode À)
+    (lsft rsft))
+  acir (fork
+    (switch ((input virtual capsvk)) (unicode Â) break () (unicode â) break)
+    (unicode Â)
+    (lsft rsft))
+  ecir (fork
+    (switch ((input virtual capsvk)) (unicode Ê) break () (unicode ê) break)
+    (unicode Ê)
+    (lsft rsft))
+  ocir (fork
+    (switch ((input virtual capsvk)) (unicode Ô) break () (unicode ô) break)
+    (unicode Ô)
+    (lsft rsft))
+  ;; Tilde: entered with Shift (~ = Shift+`), and the one-shot carries that Shift onto the vowel, so
+  ;; Shift is unreadable here (always looks held). Case comes from capsvk ALONE: Caps Lock is the only
+  ;; way to get Ã/Õ. This replaces the old inverted-fork lowercase-only workaround.
+  atil (switch ((input virtual capsvk)) (unicode Ã) break () (unicode ã) break)
+  otil (switch ((input virtual capsvk)) (unicode Õ) break () (unicode õ) break)
 )
 
 ;; Default layer. The backtick key (bktk) emits a real backtick by outputting grv, and the <> key
@@ -133,7 +186,11 @@
 ;; Navigation layer (held via caps): hjkl arrows and yuio paging, plus a handful of editing keys. p
 ;; = forward delete (the MacBook lacks a forward-delete key); bspc = delete word back; ret =
 ;; Shift+Enter and ' = " -- the caps key sits where Shift does, so those last two are easy to fumble
-;; for.
+;; for. rsft = @cpsl = Caps Lock: the physical Caps key now holds nav (tap = Esc), so a real Caps
+;; Lock toggle returns on the right Shift while nav is held (hold caps, tap right Shift); right Shift
+;; keeps its default-layer oneshot-Shift role outside nav. @cpsl both taps the OS Caps Lock (for
+;; normal letters) and mirrors it into the capsvk virtual key, which the unicode accents read for
+;; case. The physical Caps LED stays dark -- a VHID limitation (kanata #1364), not fixable here.
 ;;
 ;; NOTE: nav[bspc] is macOS-specific. Word-delete-back is Option+Backspace here but
 ;; Control+Backspace on Linux, so A-bspc will need to become C-bspc when this config goes
@@ -143,7 +200,7 @@
   _      _      _      _      _      _      _      _      _      _      _      _      _      A-bspc
   _      _      _      _      _      _      home   pgdn   pgup   end    del    _      _
   _      _      _      _      _      _      left   down   up     right  _      S-'    _      S-ret
-  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      _      _      _      _      _      @cpsl
   _      _      _      _      _      _      _      _      _      _      _
 )
 
@@ -180,8 +237,8 @@
 ;;
 ;; Layout (acutes/cedilla since 2a; dead keys in 2b/2c). The dead grave/tilde entry is the bktk key
 ;; (the backtick key, left of 1; unshifted -> à, Shift -> ã/õ); unshifted 6 is the dead circumflex
-;; entry (â/ê/ô). Literal ` ~ ^ stay on j/m/n. Tilde is lowercase-only for now (see the dead-key
-;; CASE note above); grave and circumflex do both cases.
+;; entry (â/ê/ô). Literal ` ~ ^ stay on j/m/n. Grave and circumflex do both cases from Shift or Caps;
+;; tilde does both from Caps Lock only (its entry Shift is unreadable -- see the dead-key CASE note).
 ;;          [`~] ! @ # $ % [^]
 ;;               | = é & *        ú í ó
 ;;               á _ ( ) -        ` \ 0

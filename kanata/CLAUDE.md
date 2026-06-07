@@ -158,8 +158,10 @@ The config follows a few formatting and naming conventions; keep edits consisten
   (backtick, left of 1) key = `@gkey` (unshifted -> dead grave à; Shift -> dead tilde ã/õ);
   unshifted 6 = dead circumflex (â/ê/ô). Literal `` ` ``/`~`/`^` for programming stay on
   `j`/`m`/`n`, so a non-vowel after a dead key just types through (no literal-commit fallback).
-  Confirmed on turing; grave and circumflex do both cases, but **tilde uppercase is deferred** (see
-  CASE below).
+  Confirmed on turing through step 2c. Case handling was then reworked for Caps Lock (item 2 in
+  "Features Still To Port"): grave/circumflex (and the acutes/cedilla) now do Shift-OR-Caps to match
+  macOS, and **tilde uppercase (Ã/Õ) is no longer deferred** — it comes from Caps Lock alone. The
+  OR-vs-XOR question and the Caps mirror are hardware-confirmed; see CASE below and item 2.
   - `@gkey` sits on `bktk` (the backtick key, left of 1). That physical key reports OsCode 86, which
     `deflocalkeys-macos` names `bktk`; without the rename it would decode as `lsgt`.
   - **CASE (and why tilde uppercase is deferred):** a kanata one-shot carries the modifiers held
@@ -173,10 +175,12 @@ The config follows a few formatting and naming conventions; keep edits consisten
     kanata cleanly prevents the carry for a layer one-shot — checked one-shot variants, `unmod`,
     chords. Moving circumflex to unshifted 6 sidesteps the carry entirely, which is why Â/Ê/Ô now
     work.)
-  - **Uppercase plan:** bring back Caps Lock (planned, toggled from the nav layer's left Shift) and
-    have the tilde forks read Caps for case. Caps is a toggle _state_, not a carried modifier, so it
-    is immune to the one-shot carry. This also has to handle the acutes/cedilla, whose unicode
-    output already ignores Caps Lock (they fork on Shift only) — revisit all of them together.
+  - **Uppercase (done, config-valid):** Caps Lock is back on `nav[rsft]` as `@cpsl`, which mirrors
+    the OS toggle into the `capsvk` virtual key. The tilde reads `capsvk` alone (a `switch`); the
+    other accents keep their Shift `fork` (Shift -> uppercase) and read `capsvk` on the no-Shift
+    branch for Shift-OR-Caps, matching macOS. Caps is a toggle _state_, not a carried modifier, so
+    it is immune to the one-shot carry. See
+    item 2 in "Features Still To Port" for the full mechanism and the open hardware checks.
 
 ---
 
@@ -230,7 +234,14 @@ mapping `bktk`/`iso` to their Linux codes (left-of-1 grave = 41; the Aula has no
     responsible process, so Accessibility will need granting to kanata/the daemon instead (revisit
     at the autostart step).
   - Because the codepoint is injected literally, a held Shift does not uppercase it; uppercase needs
-    its own codepoint, which is why the accents use `fork` on `(lsft rsft)`.
+    its own codepoint, which is why the accents pick case explicitly (a `fork` on `(lsft rsft)` for
+    Shift, plus a `switch` on the `capsvk` virtual key for Caps Lock).
+  - **macOS Caps + Shift = uppercase (case semantics).** macOS keeps letters uppercase when Shift is
+    held with Caps Lock on (Shift then only affects numbers/punctuation), with no setting to invert
+    — unlike Linux/Windows, where Shift cancels Caps to lowercase. So the accents uppercase on Shift
+    **OR** Caps (not XOR), to agree with every normal letter on the Mac. Making normal letters do XOR
+    would mean re-casing every alpha key in kanata (impractical), so OR is the consistent choice.
+    Cross-platform follow-up: Linux would want XOR instead.
   - The v1.8.0 unicode NUL-byte regression (issue #1546) was fixed by PR #1604, included since well
     before v1.11.0, so our build is unaffected.
 - Characters needed for Brazilian Portuguese:
@@ -310,23 +321,71 @@ In rough priority order:
        issue, three layers deep. Drop vs rebuild minimally for shifted word/line selection.
      - `a` = `q` = noop in keyd's nav (dead-keyed to avoid misfires when reaching for the home-row
        mods). Tied to the mod-activator question; defer with it. Until then they stay passthrough.
-   - **Belongs with item 3:** `rightshift` = `capslock` (keyd put Caps here; this doc floats
-     `nav[lsft]`). Decide with the Caps Lock work.
+   - **Belongs with item 3 (resolved):** `rightshift` = `capslock` (keyd put Caps here; this doc
+     floated `nav[lsft]`). Decided in favor of `nav[rsft]` = `caps` (right Shift within the nav
+     layer, echoing keyd); see item 3.
 
 2. **Symbols layer — dead-key uppercase** (the dead keys themselves are done; see "tested and
    working"). All three dead layers exist: grave on the `bktk` (backtick) key (unshifted), tilde on
    Shift+that key, circumflex on unshifted 6. Grave and circumflex do both cases; **tilde is
    lowercase-only** for now because the one-shot carries the entry Shift onto the vowel (full
    explanation under "tested and working" → CASE). Remaining:
-   - Uppercase Ã/Õ. Blocked on bringing back **Caps Lock** (item 3 below): switch the tilde forks
-     (and likely the acutes/cedilla too) to read Caps for case, since Caps is a toggle state the
-     one-shot can't carry. Do all the accented letters together.
+   - Uppercase Ã/Õ — **done (config-valid; hardware confirmation pending)**. `@cpsl` (the
+     `nav[rsft]` Caps Lock) now does `(multi caps (on-press toggle-virtualkey capsvk))`: it taps the
+     OS Caps Lock *and* mirrors the state into the `capsvk` virtual key (`(defvirtualkeys capsvk
+     nop0)`), which a `switch` *can* read (`(input virtual capsvk)`) even though a `fork` and the OS
+     Caps state cannot. All accents were rewritten:
+     - Acutes/cedilla and grave/circumflex (unshifted entry): `(fork <noshift-caps-switch> <upper>
+       (lsft rsft))`. The fork keeps reading real/oneshot Shift (-> the plain uppercase codepoint);
+       the no-Shift branch reads `capsvk`, giving **Shift-OR-Caps** to match macOS. (We first built
+       XOR, but macOS keeps Caps + Shift = uppercase for every normal key and offers no setting to
+       invert, so XOR made the accents disagree with normal letters; switched to OR. See the macOS
+       Caps+Shift note under Decisions.)
+     - Tilde (`atil`/`otil`): a bare `switch` on `capsvk` only. Its entry Shift (`~` = Shift+`` ` ``)
+       is carried onto the vowel and unreadable, so Caps Lock is the *only* way to get Ã/Õ. Replaces
+       the old inverted-fork lowercase-only workaround.
+     - **To verify on hardware:** (a) Ã/Õ via Caps; (b) Shift-XOR-Caps on the other accents; (c)
+       that the fork still catches **oneshot** Shift (held Shift is certain; oneshot-via-`@olsft` is
+       the open question — if it regresses, only the hold-Shift uppercase path is affected); (d)
+       `capsvk`/OS-caps stay in sync in normal use.
 
-3. **Caps Lock** — removed when the Caps key became `@cap` (tap Esc / hold nav). Bring it back as a
-   toggle, planned binding: the nav layer's left Shift (`nav[lsft]`). Needed both for normal Caps
-   Lock use and as the uppercase mechanism for the unicode accented letters (item 2).
+3. **Caps Lock** — ~~removed when the Caps key became `@cap`~~ **done (config-valid; hardware
+   confirmation pending)**. Bound to `nav[rsft]` = `@cpsl` = `(multi caps (on-press toggle-virtualkey
+   capsvk))`: the physical Caps key holds nav (tap = Esc), so a real Caps Lock toggle returns on the
+   right Shift while nav is held (hold caps, tap right Shift). This lands the toggle on the right
+   Shift like keyd's `rightshift = capslock`, but scoped to the nav layer, so the default-layer
+   `@orsft` oneshot on the right Shift is untouched.
+   - **Item-2 hook (done):** `@cpsl` also mirrors the toggle into the `capsvk` virtual key
+     (`(defvirtualkeys capsvk nop0)`), because a `fork` and the OS Caps state aren't readable but
+     `(input virtual capsvk)` in a `switch` is. The accents read `capsvk` for case; see item 2.
+   - **Gotcha — reload with Caps OFF.** `capsvk` and the OS Caps Lock are independent toggles kept in
+     phase only by `@cpsl`. `capsvk` resets to off on every config load, but the OS Caps state
+     persists across an `esc`+F5 reload, so reloading while Caps is ON inverts them (accents come out
+     wrong-cased) and a tap can't resync (it flips both, preserving the error). Fix: Caps off, then
+     reload. Decided 2026-06-06 to keep the real OS Caps Lock + mirror and adopt the reload-off habit,
+     rather than a deterministic kanata-owned Caps (wanted later — see "Future ideas"). kanata can't
+     read the OS Caps state to self-correct.
+   - **Known limitation — Caps LED stays dark.** kanata toggles caps through the Karabiner VHID,
+     which never lights the MacBook's internal Caps Lock LED (kanata
+     [#1364](https://github.com/jtroo/kanata/issues/1364); the maintainer has no Macs). Karabiner-
+     *Elements* has dedicated "Manipulate caps lock LED" code, but we run only the DriverKit VHID +
+     kanata, and kanata has no macOS LED action. No clean config fix; accepted (use an on-screen
+     caps indicator if feedback is wanted). Functionality is unaffected — only the LED.
 
 ---
+
+## Future ideas (kanata-native, not from keyd)
+
+Wanted later, explicitly out of scope for now (noted 2026-06-06):
+
+- **kanata-owned Caps Lock.** Replace the OS-Caps-Lock + `capsvk` mirror (item 3) with a single
+  kanata-internal state: `@cpsl` toggles `capsvk` plus a `caps` base-layer mapping `a..z -> S-a..S-z`,
+  dropping the OS Caps Lock entirely. Deterministic across reloads — it removes the phase error that
+  makes the mirror fragile today (item 3's gotcha) — at the cost of real OS Caps Lock (no OS
+  caps-field warnings; the LED is already dead anyway).
+- **caps-word.** Try kanata's `(caps-word ...)` (auto-shift the next word, releasing on
+  space/punctuation) for the common "one capitalized token" case — as a lighter complement to, or
+  partial replacement for, a full Caps Lock.
 
 ## Operational Setup (not from keyd)
 
