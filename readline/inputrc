@@ -1,3 +1,11 @@
 $include /etc/inputrc
 
-"\b": backward-kill-word
+# Delete the word before the cursor with nav[backspace] -- which outputs Control+Backspace (Linux)
+# or Alt+Backspace (macOS) in kitty with my keyd/kanata setups, in line with each platform's
+# conventions.
+#
+# Kitty sends those to readline apps as ^H (\C-h) and ESC-DEL (\e\x7f) respectively; \e\x7f is
+# already readline's default backward-kill-word, but bind it explicitly alongside \C-h so both
+# platforms work regardless of the inherited keymap.
+"\C-h": backward-kill-word
+"\e\x7f": backward-kill-word

@@ -10,8 +10,11 @@ if status is-interactive
 
     fish_config theme choose "Catppuccin Mocha"
 
-    # Delete one word backwards with C-BS
-    bind \b backward-kill-word
+    # Delete the word before the cursor with nav[backspace] -- which outputs Control+Backspace
+    # (Linux) or Alt+Backspace (macOS) in kitty with my keyd/kanata setups, in line with each
+    # platform's conventions. Rebinds Alt+Backspace to word (not token) deletion.
+    bind ctrl-backspace backward-kill-word
+    bind alt-backspace backward-kill-word
 
     # Find the default command runner in the current directory.
     function find_cmd_runner

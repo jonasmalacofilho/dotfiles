@@ -146,8 +146,12 @@ vim.keymap.set('', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = 'Smar
 vim.keymap.set('n', '<S-ScrollWheelDown>', 'z6l')
 vim.keymap.set('n', '<S-ScrollWheelUp>', 'z6h')
 
--- Delete the word before the cursor with C-BS.
-vim.keymap.set({ 'i', 'c' }, '<C-BS>', '<C-w>', { desc = 'Delete the word before the cursor' })
+-- Delete the word before the cursor with nav[backspace] -- which outputs Control+Backspace (Linux)
+-- or Alt+Backspace (macOS) in kitty with my keyd/kanata setups, in line with each platform's
+-- conventions.
+for _, lhs in ipairs { '<C-BS>', '<A-BS>' } do
+  vim.keymap.set({ 'i', 'c' }, lhs, '<C-w>', { desc = 'Delete the word before the cursor' })
+end
 
 -- Trim trailing whitespace.
 vim.keymap.set('n', '<leader>$', [[:%s/\s\+$//<CR>]], { desc = 'Trim trailing whitespace' })
@@ -659,8 +663,10 @@ require('lazy').setup({
         defaults = {
           mappings = {
             i = {
-              -- Not sure why it needs to be C-s-w, instead of C-w, like in "normal" insert mode.
+              -- Match global mappings to delete the word before the cursor with nav[backspace]. Not
+              -- sure why it needs to be C-s-w here, instead of C-w, like in "normal" insert mode.
               ['<C-BS>'] = { '<C-s-w>', type = 'command', opts = { desc = 'Delete the word before the cursor' } },
+              ['<A-BS>'] = { '<C-s-w>', type = 'command', opts = { desc = 'Delete the word before the cursor' } },
             },
           },
         },
