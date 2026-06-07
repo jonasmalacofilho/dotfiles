@@ -199,25 +199,45 @@
   lctl   @fnl   _      _      _      @osym  _      _      _      _      _
 )
 
-;; Navigation layer (held via caps): hjkl arrows and yuio paging, plus a handful of editing keys. p
-;; = forward delete (the MacBook lacks a forward-delete key); bspc = delete word back; ret =
-;; Shift+Enter and ' = " -- the caps key sits where Shift does, so those last two are easy to fumble
-;; for. rsft = @cpsl = Caps Lock: the physical Caps key now holds nav (tap = Esc), so a real Caps
-;; Lock toggle returns on the right Shift while nav is held (hold caps, tap right Shift); right Shift
-;; keeps its default-layer oneshot-Shift role outside nav. @cpsl both taps the OS Caps Lock (for
-;; normal letters) and mirrors it into the capsvk virtual key, which the unicode accents read for
-;; case. The physical Caps LED stays dark -- a VHID limitation (kanata #1364), not fixable here.
+;; Navigation layer (held via caps), split between the hands. The RIGHT hand moves on hjkl (arrows)
+;; and yuio (home/pgdn/pgup/end); the LEFT hand -- already holding caps -- scales that movement with
+;; a modifier on d/f/space. On macOS one modifier spans both axes, so just two movement mods plus
+;; Shift cover the whole char/word/paragraph/line/document grid, in move and select, without keyd's
+;; over-ambitious "any mod + nav" goal:
+;;   d   = lalt (Option) -> word on h/l, paragraph on j/k
+;;   f   = lmet (Cmd)    -> line edge on h/l, document edge on j/k
+;;   spc = lsft (Shift)  -> selection; on the thumb so it composes with d/f (spc+d+l = select word
+;;                          right). Plain Shift here, not the default-layer oneshot.
+;; a/s/g are XX (no-op): holding caps pulls the left pinky off home, and these sit under the
+;; reaching fingers, so swallowing them keeps a fumble from leaking a stray letter.
 ;;
-;; NOTE: nav[bspc] is macOS-specific. Word-delete-back is Option+Backspace here but
-;; Control+Backspace on Linux, so A-bspc will need to become C-bspc when this config goes
-;; cross-platform.
+;; Editing extras: p = forward delete (the MacBook lacks a forward-delete key); bspc = delete word
+;; back; ret = Shift+Enter; ' = " (the caps key sits where Shift does, so those two are easy to
+;; fumble for). rsft = @cpsl = Caps Lock: the physical Caps key now holds nav (tap = Esc), so a real
+;; Caps Lock toggle returns on the right Shift while nav is held (hold caps, tap right Shift); right
+;; Shift keeps its default-layer oneshot-Shift role outside nav. @cpsl both taps the OS Caps Lock
+;; (for normal letters) and mirrors it into the capsvk virtual key, which the unicode accents read
+;; for case. The physical Caps LED stays dark -- a VHID limitation (kanata #1364), not fixable here.
+;;
+;; CROSS-PLATFORM. The d/f/space key CHOICE is platform-independent; only their emitted actions
+;; change, because Linux/Windows put line/document on dedicated keys, not a modifier. kanata has no
+;; inline per-OS action switch (deflocalkeys only remaps scancodes), so these are manual swaps when
+;; the config goes cross-platform:
+;;   - d (word + paragraph): lalt -> lctl. Ctrl+arrows give word (h/l) and paragraph (j/k), so d
+;;     stays a single held modifier, same shape as macOS.
+;;   - f (line + document): not a modifier swap. There line edge = Home/End and document edge =
+;;     Ctrl+Home/Ctrl+End, so f becomes (layer-while-held navline) with h->home, l->end, k->C-home,
+;;     j->C-end (rest _). Selection still works for free: spc = lsft is a real held modifier, so it
+;;     composes onto navline's keys as S-home/S-end/etc.
+;;   - bspc (delete word back): A-bspc (Option+Backspace) here, C-bspc on Linux/Windows.
+;;   - spc (Shift) is identical everywhere.
 (deflayer nav
   _      _      _      _      _      _      _      _      _      _      _      _      _
   _      _      _      _      _      _      _      _      _      _      _      _      _      A-bspc
   _      _      _      _      _      _      home   pgdn   pgup   end    del    _      _
-  _      _      _      _      _      _      left   down   up     right  _      S-'    _      S-ret
+  _      XX     XX     lalt   lmet   XX     left   down   up     right  _      S-'    _      S-ret
   _      _      _      _      _      _      _      _      _      _      _      _      @cpsl
-  _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      lsft   _      _      _      _      _      _
 )
 
 ;; Control layer (held via esc): media + volume on the Mac's F7-F12 positions, plus Mission Control
