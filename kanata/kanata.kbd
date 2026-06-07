@@ -213,11 +213,12 @@
 ;;
 ;; Editing extras: p = forward delete (the MacBook lacks a forward-delete key); bspc = delete word
 ;; back; ret = Shift+Enter; ' = " (the caps key sits where Shift does, so those two are easy to
-;; fumble for). rsft = @cpsl = Caps Lock: the physical Caps key now holds nav (tap = Esc), so a real
-;; Caps Lock toggle returns on the right Shift while nav is held (hold caps, tap right Shift); right
-;; Shift keeps its default-layer oneshot-Shift role outside nav. @cpsl both taps the OS Caps Lock
-;; (for normal letters) and mirrors it into the capsvk virtual key, which the unicode accents read
-;; for case. The physical Caps LED stays dark -- a VHID limitation (kanata #1364), not fixable here.
+;; fumble for); x/c/v = cut/copy/paste (M-x/M-c/M-v) on their usual positions. rsft = @cpsl = Caps
+;; Lock: the physical Caps key now holds nav (tap = Esc), so a real Caps Lock toggle returns on the
+;; right Shift while nav is held (hold caps, tap right Shift); right Shift keeps its default-layer
+;; oneshot-Shift role outside nav. @cpsl both taps the OS Caps Lock (for normal letters) and mirrors
+;; it into the capsvk virtual key, which the unicode accents read for case. The physical Caps LED
+;; stays dark -- a VHID limitation (kanata #1364), not fixable here.
 ;;
 ;; CROSS-PLATFORM. The d/f/space key CHOICE is platform-independent; only their emitted actions
 ;; change, because Linux/Windows put line/document on dedicated keys, not a modifier. kanata has no
@@ -230,13 +231,14 @@
 ;;     j->C-end (rest _). Selection still works for free: spc = lsft is a real held modifier, so it
 ;;     composes onto navline's keys as S-home/S-end/etc.
 ;;   - bspc (delete word back): A-bspc (Option+Backspace) here, C-bspc on Linux/Windows.
+;;   - x/c/v (cut/copy/paste): M-x/M-c/M-v (Command) here, C-x/C-c/C-v (Control) on Linux/Windows.
 ;;   - spc (Shift) is identical everywhere.
 (deflayer nav
   _      _      _      _      _      _      _      _      _      _      _      _      _
   _      _      _      _      _      _      _      _      _      _      _      _      _      A-bspc
   _      _      _      _      _      _      home   pgdn   pgup   end    del    _      _
   _      XX     XX     lalt   lmet   XX     left   down   up     right  _      S-'    _      S-ret
-  _      _      _      _      _      _      _      _      _      _      _      _      @cpsl
+  _      _      _      M-x    M-c    M-v    _      _      _      _      _      _      @cpsl
   _      _      _      _      lsft   _      _      _      _      _      _
 )
 
