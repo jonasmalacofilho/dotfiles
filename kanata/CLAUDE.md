@@ -106,8 +106,11 @@ The config follows a few formatting and naming conventions; keep edits consisten
 - `fn` ↔ `lctl` swap (fn/Globe and Control keys swapped)
 - `caps` tap=Esc, hold=nav layer (using `tap-hold-press` at 200ms)
 - nav layer (held via caps): hjkl=arrows, yuio=home/pgdn/pgup/end, plus editing keys p=forward
-  delete, bspc=delete word back, ret=Shift+Enter, '=". The bspc binding is `A-bspc` (macOS
-  Option+Backspace); a `NOTE:` in the config flags that Linux wants `C-bspc` instead.
+  delete, bspc=delete word back, ret=Shift+Enter, '=", x/c/v=cut/copy/paste. The bspc binding is
+  `A-bspc` (macOS Option+Backspace); a `NOTE:` in the config flags that Linux wants `C-bspc`
+  instead. The left hand scales movement with held mods: d=Option (word/paragraph), f=Cmd
+  (line/document edge), spc=Shift (selection, composing with d/f); a/s/g are no-ops. All
+  hardware-confirmed.
 - forward delete on Backspace (the MacBook lacks a forward-delete key, and the fn<->lctl swap took
   native fn+Backspace with it). Two routes back: `fn+bspc` is restored in the fnrow layer
   (`fnrow[bspc]` = `del`, MacBook-only); `ralt+bspc` is cross-platform via
@@ -395,11 +398,11 @@ In rough priority order:
        (hence keyd's "maybe no longer in use"); kitty's Mac bindings differ anyway.
      - `f1` = `layer(config)`: the control layer is already reachable via esc-hold on the Mac.
        Revisit only when the Aula (firmware-Esc edge case) is wired in.
-   - **Movement/selection mods (done 2026-06-07; config-valid, hardware-pending).** Resolved the
-     deferred mod-activator/selection/noop questions by _narrowing the goal_: not keyd's "any mod
-     plus nav" over-reach, just text movement and selection. On macOS one modifier spans both axes,
-     so two movement mods and Shift cover the whole char/word/paragraph/line/document grid in move
-     and select. The left hand drives them (it already holds caps); the right hand stays on hjkl:
+   - **Movement/selection mods (done 2026-06-07; hardware-confirmed).** Resolved the deferred
+     mod-activator/selection/noop questions by _narrowing the goal_: not keyd's "any mod plus nav"
+     over-reach, just text movement and selection. On macOS one modifier spans both axes, so two
+     movement mods and Shift cover the whole char/word/paragraph/line/document grid in move and
+     select. The left hand drives them (it already holds caps); the right hand stays on hjkl:
      - `d` = `lalt` (Option) gives word (h/l) and paragraph (j/k); `f` = `lmet` (Cmd) gives line
        edge (h/l) and document edge (j/k); `spc` = `lsft` (Shift, on the thumb) gives selection,
        composing with d/f (`spc` `d` `l` = select word right). Plain modifiers, no keyd
@@ -443,13 +446,13 @@ In rough priority order:
    - Tunable left open: that ~200ms dead-layer Shift window could get a dedicated longer one-shot if
      it ever feels tight in use.
 
-3. **Caps Lock** — ~~removed when the Caps key became `@cap`~~ **done (config-valid; hardware
-   confirmation pending)**. Bound to `nav[rsft]` = `@cpsl` =
-   `(multi caps (on-press toggle-virtualkey
-   capsvk))`: the physical Caps key holds nav (tap =
-   Esc), so a real Caps Lock toggle returns on the right Shift while nav is held (hold caps, tap
-   right Shift). This lands the toggle on the right Shift like keyd's `rightshift = capslock`, but
-   scoped to the nav layer, so the default-layer `@orsft` oneshot on the right Shift is untouched.
+3. **Caps Lock** — ~~removed when the Caps key became `@cap`~~ **done (hardware-confirmed)**. Bound
+   to `nav[rsft]` = `@cpsl` = `(multi caps (on-press toggle-virtualkey
+   capsvk))`: the physical
+   Caps key holds nav (tap = Esc), so a real Caps Lock toggle returns on the right Shift while nav
+   is held (hold caps, tap right Shift). This lands the toggle on the right Shift like keyd's
+   `rightshift = capslock`, but scoped to the nav layer, so the default-layer `@orsft` oneshot on
+   the right Shift is untouched.
    - **Item-2 hook (done):** `@cpsl` also mirrors the toggle into the `capsvk` virtual key
      (`(defvirtualkeys capsvk nop0)`), because a `fork` and the OS Caps state aren't readable but
      `(input virtual capsvk)` in a `switch` is. The accents read `capsvk` for case; see item 2.
@@ -499,6 +502,11 @@ Wanted later, explicitly out of scope for now (noted 2026-06-06):
     kitty_mod wants plain Ctrl and workspace nav wants Ctrl+Alt. Either way the per-OS definition
     can branch within one config via `(platform ...)` (see the General decision on cross-platform
     conditionals), not a hand-edited swap.
+- **Numpad layer.** A held or toggled layer turning the right-hand home cluster into a numeric
+  keypad (e.g. `uiojklm,.` -> `789456123` with `0`/decimal nearby), for entering numbers without
+  reaching the number row. Open questions: which key activates it (a free tap-hold, or a toggle so
+  it stays on for a run of digits) and the exact key map. Keyboard-agnostic, so it would just live
+  in the shared config.
 
 ## Operational Setup (not from keyd)
 
