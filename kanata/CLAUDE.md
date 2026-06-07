@@ -191,7 +191,15 @@ The config follows a few formatting and naming conventions; keep edits consisten
 ### General
 
 - macOS-first; only runs on macOS for now, but cross-platform deltas with Linux are noted inline as
-  they come up (e.g. nav `bspc` and `ralt+bspc`), not yet exercised
+  they come up (e.g. nav `bspc` and `ralt+bspc`), not yet exercised. When the config does go
+  cross-platform, kanata can branch _actions_ per OS within one file via
+  `(environment (VAR value)
+  ...)` blocks (the older `defaliasenvcond` is the alias-only
+  equivalent), conditioned on an env var read once at startup — so the noted deltas can become real
+  per-OS `defalias` definitions behind a single shared `deflayer`, not hand-edited swaps. (This is
+  separate from `deflocalkeys`, which only renames scancodes.) Caveat: `sudo` scrubs the
+  environment, so the var needs `sudo VAR=... kanata`, `sudo -E`, or the launchd plist's
+  `EnvironmentVariables` once autostart lands.
 - QWERTY only (no layout switching)
 - no home row mods (not in use on Linux, can be added at a later point)
 - `tap-hold-press` is the right variant for overload-style behavior (hold triggers on next key
@@ -324,12 +332,13 @@ In rough priority order:
      - **Dropped the Shift+nav selection sublayers** (`w`/`e`/`r`, keyd's
        `nav-mods-shift-{meta,alt,control}`): redundant once `spc`=Shift is a real held modifier
        composing onto the d/f movement — selection is just `spc`, a movement mod, and an arrow.
-     - **Cross-platform** is a manual swap (kanata has no inline per-OS action switch, only
-       `deflocalkeys` for scancodes): `d` -> `lctl` (Ctrl+arrows give word and paragraph) is
-       trivial; `f` is not, since Linux/Win line=Home/End and doc=Ctrl+Home/End are dedicated keys,
-       not a modifier, so `f` must become a `navline` `layer-while-held` (h->home, l->end,
-       k->C-home, j->C-end) with `spc`=Shift composing for free (S-home/S-end). Full note in the
-       nav-layer comment in `kanata.kbd`.
+     - **Cross-platform** branches within one config via `(environment ...)`/`defaliasenvcond`
+       selecting per-OS `defalias` definitions behind this single `deflayer` (see the General
+       decision on `environment`), not hand-edited swaps: `d` -> `lctl` (Ctrl+arrows give word and
+       paragraph) is trivial; `f` is not, since Linux/Win line=Home/End and doc=Ctrl+Home/End are
+       dedicated keys, not a modifier, so `f` must become a `navline` `layer-while-held` (h->home,
+       l->end, k->C-home, j->C-end) with `spc`=Shift composing for free (S-home/S-end). Full note in
+       the nav-layer comment in `kanata.kbd`.
    - **Belongs with item 3 (resolved):** `rightshift` = `capslock` (keyd put Caps here; this doc
      floated `nav[lsft]`). Decided in favor of `nav[rsft]` = `caps` (right Shift within the nav
      layer, echoing keyd); see item 3.
@@ -409,8 +418,9 @@ Wanted later, explicitly out of scope for now (noted 2026-06-06):
     Super+PgUp/Dn), so `s` would need Ctrl+Alt, not plain Ctrl — diverging from the kitty case
     above.
   - So on macOS both motivations land on `s` = `lctl` (no conflict); on Linux pick one, since
-    kitty_mod wants plain Ctrl and workspace nav wants Ctrl+Alt. Either way it's a manual per-OS
-    swap (kanata has no inline per-OS action switch).
+    kitty_mod wants plain Ctrl and workspace nav wants Ctrl+Alt. Either way the per-OS definition
+    can branch within one config via `(environment ...)`/`defaliasenvcond` (see the General decision
+    on `environment`), not a hand-edited swap.
 
 ## Operational Setup (not from keyd)
 
