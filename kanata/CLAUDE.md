@@ -121,7 +121,9 @@ The config follows a few formatting and naming conventions; keep edits consisten
   Decisions for why a plain `deflocalkeys` rename did not work).
 - oneshot modifiers (tap = oneshot, hold = normal modifier; 200ms, chaining works): left/right Shift
   only. This deviates from keyd, which also made Control and Alt oneshot; on the Mac those stay as
-  plain modifiers for now.
+  plain modifiers for now. The accent layers override this per the dead-key CASE note: Shift is plain
+  in the symbols layer (so the tilde entry Shift has no oneshot tail) and one-shot again inside the
+  dead layers (so a post-entry Shift chains rather than dropping the dead key).
 - esc: tap = Esc, hold = control layer (overload, 200ms), same pattern as caps
 - control layer (held via esc): media + volume on the Mac's F7-F12 (prev / play-pause / next, mute,
   vol- / vol+), plus Mission Control (F3) and Spotlight (F4). keyd's equivalent layer was empty, so
@@ -141,46 +143,45 @@ The config follows a few formatting and naming conventions; keep edits consisten
   the Mac the layer key is right Command (`rmet`), so right Option stays a plain Option and no
   longer needs intercepting. Right Command no longer types Command (left Command still does).
 - symbols layer step 2a = Portuguese acutes and cedilla, direct unicode: e=é a=á u=ú i=í o=ó on the
-  letter keys, comma=ç. Each is a `(fork (unicode lower) (unicode UPPER) (lsft rsft))` so Shift
+  letter keys, comma=ç. Each is `(fork <noshift-caps-switch> (unicode UPPER) (lsft rsft))`: Shift
   selects the uppercase codepoint (a held unicode codepoint is not uppercased by the OS; see the
-  unicode note under Decisions). Confirmed on turing in multiple apps. The `` ` ``/`~`/`^` keys on
+  unicode note under Decisions), and the no-Shift branch reads the `capsvk` Caps-Lock flag, so case
+  is Shift-OR-Caps (item 2). Confirmed on turing in multiple apps. The `` ` ``/`~`/`^` keys on
   `j`/`m`/`n` keep emitting literal symbols (programming needs them); the dead keys go on the `bktk`
   (backtick) key instead (step 2b below).
-  - Uppercase ergonomics (debug-traced, not a bug): when rmet is just tapped, the symbols layer
-    lives only on the oneshot timer (reset to the most recent chained oneshot's value on each press,
-    200ms here) — holding Shift does NOT extend it. So the robust uppercase recipe is to **hold rmet
-    and Shift together, then the letter** (both held = layer-while-held + real modifier, no timer
-    involved). Tapping rmet then leisurely pressing Shift and the letter races the timer and yields
-    e.g. E instead of É once the letter lands after the layer reverts; that's expected oneshot
-    behaviour, matching how AltGr-style layers want the layer key held.
+  - Uppercase ergonomics: hold `rmet` and Shift together, then the letter. Shift is now a plain
+    modifier inside the symbols layer (it used to be a oneshot whose 200ms tail caused timer races
+    and the tilde carry — see item 2 / the dead-key CASE note), so held Shift cleanly selects
+    uppercase. Tapping `rmet` instead of holding it still leaves the symbols layer on its own 200ms
+    oneshot timer, so holding `rmet` stays the robust habit.
 - symbols layer step 2b/2c = three dead keys (grave, tilde, circumflex), each an internal one-shot
   layer reproducing keyd's `altgr-intl` delegation. Entry keys, all in the symbols layer: the `bktk`
   (backtick, left of 1) key = `@gkey` (unshifted -> dead grave à; Shift -> dead tilde ã/õ);
   unshifted 6 = dead circumflex (â/ê/ô). Literal `` ` ``/`~`/`^` for programming stay on
   `j`/`m`/`n`, so a non-vowel after a dead key just types through (no literal-commit fallback).
-  Confirmed on turing through step 2c. Case handling was then reworked for Caps Lock (item 2 in
-  "Features Still To Port"): grave/circumflex (and the acutes/cedilla) now do Shift-OR-Caps to match
-  macOS, and **tilde uppercase (Ã/Õ) is no longer deferred** — it comes from Caps Lock alone. The
-  OR-vs-XOR question and the Caps mirror are hardware-confirmed; see CASE below and item 2.
+  Confirmed on turing. Case handling went through several iterations (item 2 in "Features Still To
+  Port") and settled on **Shift-OR-Caps for all three dead keys**, matching macOS (Caps + Shift stays
+  uppercase). Tilde uppercase (Ã/Õ) is no longer deferred. All hardware-confirmed.
   - `@gkey` sits on `bktk` (the backtick key, left of 1). That physical key reports OsCode 86, which
     `deflocalkeys-macos` names `bktk`; without the rename it would decode as `lsgt`.
-  - **CASE (and why tilde uppercase is deferred):** a kanata one-shot carries the modifiers held
-    when it activates onto the key that consumes it. Grave and circumflex are entered with **no**
-    Shift, so nothing is carried and their forks do both cases: à = `` ` `` a, À = `` ` `` Shift+a;
-    â = `6` a, Â = `6` Shift+a. Tilde is entered **with** Shift (`~` = Shift+`` ` ``), so that Shift
-    is carried onto the vowel however quickly it is released — the vowel is permanently "shifted"
-    and the case is locked, fork direction notwithstanding. We pick the locked case = lowercase by
-    **inverting** its forks (upper codepoint on the never-reached no-Shift branch). So ã/õ work; Ã/Õ
-    do not yet. (Confirmed empirically: normal fork -> always Ã, inverted -> always ã; nothing in
-    kanata cleanly prevents the carry for a layer one-shot — checked one-shot variants, `unmod`,
-    chords. Moving circumflex to unshifted 6 sidesteps the carry entirely, which is why Â/Ê/Ô now
-    work.)
-  - **Uppercase (done, config-valid):** Caps Lock is back on `nav[rsft]` as `@cpsl`, which mirrors
-    the OS toggle into the `capsvk` virtual key. The tilde reads `capsvk` alone (a `switch`); the
-    other accents keep their Shift `fork` (Shift -> uppercase) and read `capsvk` on the no-Shift
-    branch for Shift-OR-Caps, matching macOS. Caps is a toggle _state_, not a carried modifier, so
-    it is immune to the one-shot carry. See
-    item 2 in "Features Still To Port" for the full mechanism and the open hardware checks.
+  - **CASE (Shift handling, settled).** All three dead keys read Shift-OR-Caps. Two opposite Shift
+    subtleties fall out of one kanata rule — a one-shot is consumed by any non-one-shot key; only
+    other one-shots chain with it:
+    - **Tilde** enters WITH Shift (`~` = Shift+`` ` ``). The old "always Ã, can't get ã" was the
+      default-layer **oneshot** Shift's 200ms tail chaining through the deadtilde one-shot onto the
+      vowel — a debug capture caught a rare ã when the vowel landed after the tail expired, proving
+      it was the oneshot tail, not a physical-hold carry (this corrects the earlier claim here).
+      Fix: the **symbols layer makes Shift a plain modifier**, so there is no tail — hold Shift
+      through the vowel for Ã/Õ, release before for ã/õ.
+    - **Grave** enters UNSHIFTED (Shift+bktk is the tilde fork), so its uppercase Shift can only come
+      AFTER entry, and a plain Shift there *consumed* the deadgrave one-shot, landing on the symbols
+      acute (À -> Á). Fix: **lsft/rsft are one-shot Shift inside the three dead layers**
+      (`@olsft`/`@orsft`), so a post-entry or switched-hand Shift chains with the dead-key one-shot
+      instead of consuming it. Small cost: a ~200ms window to land the vowel after pressing Shift.
+    - **Circumflex** dodges both: unshifted entry on 6 with Shift simply held from before.
+  - **Caps Lock path (independent of Shift):** `@cpsl` (`nav[rsft]`) mirrors the OS Caps Lock into
+    the `capsvk` virtual key, which each accent's no-Shift fork branch reads — so Caps Lock
+    uppercases any accent without touching Shift. See item 3 for the mirror and its reload-off gotcha.
 
 ---
 
@@ -325,29 +326,24 @@ In rough priority order:
      floated `nav[lsft]`). Decided in favor of `nav[rsft]` = `caps` (right Shift within the nav
      layer, echoing keyd); see item 3.
 
-2. **Symbols layer — dead-key uppercase** (the dead keys themselves are done; see "tested and
-   working"). All three dead layers exist: grave on the `bktk` (backtick) key (unshifted), tilde on
-   Shift+that key, circumflex on unshifted 6. Grave and circumflex do both cases; **tilde is
-   lowercase-only** for now because the one-shot carries the entry Shift onto the vowel (full
-   explanation under "tested and working" → CASE). Remaining:
-   - Uppercase Ã/Õ — **done (config-valid; hardware confirmation pending)**. `@cpsl` (the
-     `nav[rsft]` Caps Lock) now does `(multi caps (on-press toggle-virtualkey capsvk))`: it taps the
-     OS Caps Lock *and* mirrors the state into the `capsvk` virtual key (`(defvirtualkeys capsvk
-     nop0)`), which a `switch` *can* read (`(input virtual capsvk)`) even though a `fork` and the OS
-     Caps state cannot. All accents were rewritten:
-     - Acutes/cedilla and grave/circumflex (unshifted entry): `(fork <noshift-caps-switch> <upper>
-       (lsft rsft))`. The fork keeps reading real/oneshot Shift (-> the plain uppercase codepoint);
-       the no-Shift branch reads `capsvk`, giving **Shift-OR-Caps** to match macOS. (We first built
-       XOR, but macOS keeps Caps + Shift = uppercase for every normal key and offers no setting to
-       invert, so XOR made the accents disagree with normal letters; switched to OR. See the macOS
-       Caps+Shift note under Decisions.)
-     - Tilde (`atil`/`otil`): a bare `switch` on `capsvk` only. Its entry Shift (`~` = Shift+`` ` ``)
-       is carried onto the vowel and unreadable, so Caps Lock is the *only* way to get Ã/Õ. Replaces
-       the old inverted-fork lowercase-only workaround.
-     - **To verify on hardware:** (a) Ã/Õ via Caps; (b) Shift-XOR-Caps on the other accents; (c)
-       that the fork still catches **oneshot** Shift (held Shift is certain; oneshot-via-`@olsft` is
-       the open question — if it regresses, only the hold-Shift uppercase path is affected); (d)
-       `capsvk`/OS-caps stay in sync in normal use.
+2. **Symbols layer — dead-key uppercase — done (hardware-confirmed).** All three dead keys do
+   Shift-OR-Caps (grave on `bktk` unshifted, tilde on Shift+`bktk`, circumflex on unshifted 6). The
+   mechanism, settled after a few iterations:
+   - **Caps Lock path.** `@cpsl` (the `nav[rsft]` Caps Lock) does `(multi caps (on-press
+     toggle-virtualkey capsvk))`: it taps the OS Caps Lock *and* mirrors the state into the `capsvk`
+     virtual key (`(defvirtualkeys capsvk nop0)`), which a `switch` can read (`(input virtual
+     capsvk)`) even though a `fork` and the OS Caps state cannot. Each accent is `(fork
+     <noshift-caps-switch> <upper> (lsft rsft))`; the no-Shift branch reads `capsvk`, so Caps + Shift
+     = uppercase, matching macOS. (We built XOR first, then switched to OR — see the Caps+Shift note
+     under Decisions.)
+   - **Shift path.** Two fixes, both from the kanata rule that a one-shot is consumed by any
+     non-one-shot key and only other one-shots chain: (1) `symbols[lsft/rsft]` are plain Shift, so
+     the tilde entry Shift has no oneshot tail to leak onto the vowel (hold through -> Ã/Õ, release
+     -> ã/õ); (2) `lsft/rsft` inside the three dead layers are one-shot Shift, so the uppercase Shift
+     grave needs *after* its unshifted entry chains with the dead-key one-shot instead of consuming
+     it (À), with a ~200ms window. Full reasoning under "tested and working" → CASE.
+   - Tunable left open: that ~200ms dead-layer Shift window could get a dedicated longer one-shot if
+     it ever feels tight in use.
 
 3. **Caps Lock** — ~~removed when the Caps key became `@cap`~~ **done (config-valid; hardware
    confirmation pending)**. Bound to `nav[rsft]` = `@cpsl` = `(multi caps (on-press toggle-virtualkey
