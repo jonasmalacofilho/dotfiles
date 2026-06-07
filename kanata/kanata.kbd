@@ -89,18 +89,18 @@
 ;; layer). The literal ` ~ ^ for programming stay on j/m/n, so a non-vowel after a dead key just
 ;; types through -- no literal-commit fallback needed. Entry keys (all in the symbols layer):
 ;;   ` key  unshifted -> dead grave (à) ;  Shift -> dead tilde (ã/õ)
-;;   6 key  Shift     -> dead circumflex (â/ê/ô)   (unshifted 6 = literal 6)
+;;   6 key  unshifted -> dead circumflex (â/ê/ô)
 ;; The ` key (left of 1) is named `bktk` by the deflocalkeys-macos block at the top (it reports
 ;; OsCode 86, which would otherwise decode as lsgt), so @gkey sits on `bktk`.
 ;;
-;; CASE, and why uppercase is deferred: a one-shot carries the modifiers held at activation onto the
-;; key that consumes it. Grave is entered with no Shift, so nothing is carried and its fork works
-;; both ways: à = ` a, À = ` Shift+a. Tilde is entered WITH Shift (~ = Shift+`, dead ^ = Shift+6),
-;; so that Shift is carried onto the vowel no matter when it is physically released -- the vowel is
-;; permanently "shifted" and the case is locked. We pick the locked case = lowercase by INVERTING
-;; those forks (upper codepoint on the never-reached no-Shift branch). So ã/õ work now; Ã/Õ do not.
-;; The fix waits on Caps Lock (planned, toggled from nav): Caps is a toggle state, not a carried
-;; modifier, so the forks can then read Caps for case.
+;; CASE, and why tilde uppercase is deferred: a one-shot carries the modifiers held at activation
+;; onto the key that consumes it. Grave and circumflex are entered with no Shift, so nothing is
+;; carried and their forks work both ways: à = ` a, À = ` Shift+a; â = 6 a, Â = 6 Shift+a. Tilde is
+;; entered WITH Shift (~ = Shift+`), so that Shift is carried onto the vowel no matter when it is
+;; physically released -- the vowel is permanently "shifted" and the case is locked. We pick the
+;; locked case = lowercase by INVERTING its forks (upper codepoint on the never-reached no-Shift
+;; branch). So ã/õ work now; Ã/Õ do not. The fix waits on Caps Lock (planned, toggled from nav):
+;; Caps is a toggle state, not a carried modifier, so the forks can then read Caps for case.
 (defalias
   dgrv (one-shot 1000 (layer-while-held deadgrave))
   dtil (one-shot 1000 (layer-while-held deadtilde))
@@ -179,9 +179,9 @@
 ;; OS maps to ` / ~).
 ;;
 ;; Layout (acutes/cedilla since 2a; dead keys in 2b/2c). The dead grave/tilde entry is the bktk key
-;; (the backtick key, left of 1; unshifted -> à, Shift -> ã/õ); Shift+6 is the dead circumflex entry
-;; (â/ê/ô). Literal ` ~ ^ stay on j/m/n. Tilde and circumflex are lowercase-only for now (see the
-;; dead-key CASE note above); grave does both cases.
+;; (the backtick key, left of 1; unshifted -> à, Shift -> ã/õ); unshifted 6 is the dead circumflex
+;; entry (â/ê/ô). Literal ` ~ ^ stay on j/m/n. Tilde is lowercase-only for now (see the dead-key
+;; CASE note above); grave and circumflex do both cases.
 ;;          [`~] ! @ # $ % [^]
 ;;               | = é & *        ú í ó
 ;;               á _ ( ) -        ` \ 0
@@ -218,8 +218,8 @@
   _      _      _      _      _      _      _      _      _      _      _
 )
 
-;; Dead-circumflex sublayer (entered via the symbols-layer Shift+6). Portuguese circumflexes live on
-;; a (â), e (ê) and o (ô); other keys type through.
+;; Dead-circumflex sublayer (entered via the symbols-layer 6 key, unshifted). Portuguese
+;; circumflexes live on a (â), e (ê) and o (ô); other keys type through.
 (deflayer deadcirc
   _      _      _      _      _      _      _      _      _      _      _      _      _
   _      _      _      _      _      _      _      _      _      _      _      _      _      _

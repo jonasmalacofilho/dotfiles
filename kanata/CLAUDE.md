@@ -155,25 +155,27 @@ The config follows a few formatting and naming conventions; keep edits consisten
     behaviour, matching how AltGr-style layers want the layer key held.
 - symbols layer step 2b/2c = three dead keys (grave, tilde, circumflex), each an internal one-shot
   layer reproducing keyd's `altgr-intl` delegation. Entry keys, all in the symbols layer: the `bktk`
-  (backtick, left of 1) key = `@gkey` (unshifted -> dead grave à; Shift -> dead tilde ã/õ); Shift+6
-  = dead circumflex (â/ê/ô), with unshifted 6 = literal 6. Literal `` ` ``/`~`/`^` for programming
-  stay on `j`/`m`/`n`, so a non-vowel after a dead key just types through (no literal-commit
-  fallback). Lowercase confirmed on turing; **uppercase deferred** (see CASE below).
+  (backtick, left of 1) key = `@gkey` (unshifted -> dead grave à; Shift -> dead tilde ã/õ);
+  unshifted 6 = dead circumflex (â/ê/ô). Literal `` ` ``/`~`/`^` for programming stay on
+  `j`/`m`/`n`, so a non-vowel after a dead key just types through (no literal-commit fallback).
+  Confirmed on turing; grave and circumflex do both cases, but **tilde uppercase is deferred** (see
+  CASE below).
   - `@gkey` sits on `bktk` (the backtick key, left of 1). That physical key reports OsCode 86, which
     `deflocalkeys-macos` names `bktk`; without the rename it would decode as `lsgt`.
-  - **CASE (and why uppercase is deferred):** a kanata one-shot carries the modifiers held when it
-    activates onto the key that consumes it. Grave is entered with **no** Shift, so nothing is
-    carried and its fork does both cases: à = `` ` `` a; À = `` ` `` Shift+a. Tilde and circumflex
-    are entered **with** Shift (`~` = Shift+`` ` ``, dead `^` = Shift+6), so that Shift is carried
-    onto the vowel however quickly it is released — the vowel is permanently "shifted" and the case
-    is locked, fork direction notwithstanding. We pick the locked case = lowercase by **inverting**
-    those forks (upper codepoint on the never-reached no-Shift branch). So ã/õ/â/ê/ô work; Ã/Õ/Â/Ê/Ô
+  - **CASE (and why tilde uppercase is deferred):** a kanata one-shot carries the modifiers held
+    when it activates onto the key that consumes it. Grave and circumflex are entered with **no**
+    Shift, so nothing is carried and their forks do both cases: à = `` ` `` a, À = `` ` `` Shift+a;
+    â = `6` a, Â = `6` Shift+a. Tilde is entered **with** Shift (`~` = Shift+`` ` ``), so that Shift
+    is carried onto the vowel however quickly it is released — the vowel is permanently "shifted"
+    and the case is locked, fork direction notwithstanding. We pick the locked case = lowercase by
+    **inverting** its forks (upper codepoint on the never-reached no-Shift branch). So ã/õ work; Ã/Õ
     do not yet. (Confirmed empirically: normal fork -> always Ã, inverted -> always ã; nothing in
     kanata cleanly prevents the carry for a layer one-shot — checked one-shot variants, `unmod`,
-    chords.)
+    chords. Moving circumflex to unshifted 6 sidesteps the carry entirely, which is why Â/Ê/Ô now
+    work.)
   - **Uppercase plan:** bring back Caps Lock (planned, toggled from the nav layer's left Shift) and
-    have the dead-vowel forks read Caps for case. Caps is a toggle _state_, not a carried modifier,
-    so it is immune to the one-shot carry. This also has to handle the acutes/cedilla, whose unicode
+    have the tilde forks read Caps for case. Caps is a toggle _state_, not a carried modifier, so it
+    is immune to the one-shot carry. This also has to handle the acutes/cedilla, whose unicode
     output already ignores Caps Lock (they fork on Shift only) — revisit all of them together.
 
 ---
@@ -254,13 +256,14 @@ It is macOS-only, though: there is no OS-level equivalent on Linux. For the even
 goal, the idea is to emulate the same _ergonomics_ in kanata itself — ralt+letter entering a dead
 layer that `fork`+`unicode`s the accented codepoint — rather than relying on OS compose. That is
 essentially our existing dead-key machinery, just keyed off ralt+letter macOS-style (e=acute,
-i=circumflex, n=tilde, \`=grave, u=umlaut) instead of the symbols-layer `` ` `` key and Shift+6.
-Such an emulation would run on both platforms and not depend on OS compose; the native macOS Option
-dead keys would then just be a redundant convenience on the Mac. A bonus: every macOS-style trigger
+i=circumflex, n=tilde, \`=grave, u=umlaut) instead of the symbols-layer `` ` `` key and 6 key. Such
+an emulation would run on both platforms and not depend on OS compose; the native macOS Option dead
+keys would then just be a redundant convenience on the Mac. A bonus: every macOS-style trigger
 (Option+e/i/n/\`/u) is **unshifted**, so the dead layer would be entered without Shift and nothing
 would be carried onto the vowel — case would come cleanly from Shift at the vowel and uppercase
-would work for free, no Caps Lock needed (unlike our current Shift+`` ` ``/Shift+6 tilde and
-circumflex). That makes this a candidate not just for Linux but as a uppercase fix on macOS too.
+would work for free, no Caps Lock needed (unlike our current Shift+`` ` `` tilde, the one accent
+still entered shifted). That makes this a candidate not just for Linux but as a uppercase fix on
+macOS too.
 
 ### Function keys / media keys
 
@@ -312,12 +315,12 @@ In rough priority order:
 
 2. **Symbols layer — dead-key uppercase** (the dead keys themselves are done; see "tested and
    working"). All three dead layers exist: grave on the `bktk` (backtick) key (unshifted), tilde on
-   Shift+that key, circumflex on Shift+6. Grave does both cases; **tilde and circumflex are
+   Shift+that key, circumflex on unshifted 6. Grave and circumflex do both cases; **tilde is
    lowercase-only** for now because the one-shot carries the entry Shift onto the vowel (full
    explanation under "tested and working" → CASE). Remaining:
-   - Uppercase Ã/Õ/Â/Ê/Ô. Blocked on bringing back **Caps Lock** (item 3 below): switch the
-     dead-vowel forks (and likely the acutes/cedilla too) to read Caps for case, since Caps is a
-     toggle state the one-shot can't carry. Do all the accented letters together.
+   - Uppercase Ã/Õ. Blocked on bringing back **Caps Lock** (item 3 below): switch the tilde forks
+     (and likely the acutes/cedilla too) to read Caps for case, since Caps is a toggle state the
+     one-shot can't carry. Do all the accented letters together.
 
 3. **Caps Lock** — removed when the Caps key became `@cap` (tap Esc / hold nav). Bring it back as a
    toggle, planned binding: the nav layer's left Shift (`nav[lsft]`). Needed both for normal Caps
