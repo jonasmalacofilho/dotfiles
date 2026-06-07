@@ -394,6 +394,23 @@ Wanted later, explicitly out of scope for now (noted 2026-06-06):
 - **caps-word.** Try kanata's `(caps-word ...)` (auto-shift the next word, releasing on
   space/punctuation) for the common "one capitalized token" case — as a lighter complement to, or
   partial replacement for, a full Caps Lock.
+- **A held mod on `nav[s]`.** Give the currently-`XX` `s` a held-modifier role. Two distinct
+  motivations want it, and they pull `s` in different directions, so the choice is between them
+  (they coincide on macOS, diverge on Linux):
+  - **Reach kitty_mod.** Fix `s` = `lctl` on _every_ OS. kitty's `kitty_mod` defaults to Ctrl+Shift
+    everywhere, so `s` plus the existing `spc`=Shift would fire kitty bindings from the nav layer
+    (caps + s + spc + key = Ctrl+Shift+key). Alternative if `s` is wanted for the use below instead:
+    remap that one kitty combo to another key in kitty.
+  - **Switch workspaces.** Compose with the hjkl arrows (`s`+h/l = prev/next space). On macOS this
+    is also just `lctl` — Ctrl+←/→ is the default "move one space" binding, the very chord we kept
+    _off_ the text-movement mods (Ctrl+arrow = Mission Control conflicts with caret nav, see the
+    nav-layer comment), so `s` here turns that conflict into a feature and reclaims a no-op. On
+    Linux it differs: GNOME/KDE workspace switch is Ctrl+Alt+←/→ (some setups Super+←/→ or
+    Super+PgUp/Dn), so `s` would need Ctrl+Alt, not plain Ctrl — diverging from the kitty case
+    above.
+  - So on macOS both motivations land on `s` = `lctl` (no conflict); on Linux pick one, since
+    kitty_mod wants plain Ctrl and workspace nav wants Ctrl+Alt. Either way it's a manual per-OS
+    swap (kanata has no inline per-OS action switch).
 
 ## Operational Setup (not from keyd)
 
