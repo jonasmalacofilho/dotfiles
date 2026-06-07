@@ -229,4 +229,4 @@
   _      _      _      _      _      _      _      _      _      _      _
 )
 
-;; vim: ft=lisp tw=100
+;; vim: set ft=lisp tw=100 sw=2 sts=2 cms=;;\ %s:
