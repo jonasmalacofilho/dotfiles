@@ -192,14 +192,20 @@ The config follows a few formatting and naming conventions; keep edits consisten
 
 - macOS-first; only runs on macOS for now, but cross-platform deltas with Linux are noted inline as
   they come up (e.g. nav `bspc` and `ralt+bspc`), not yet exercised. When the config does go
-  cross-platform, kanata can branch _actions_ per OS within one file via
-  `(environment (VAR value)
-  ...)` blocks (the older `defaliasenvcond` is the alias-only
-  equivalent), conditioned on an env var read once at startup — so the noted deltas can become real
-  per-OS `defalias` definitions behind a single shared `deflayer`, not hand-edited swaps. (This is
-  separate from `deflocalkeys`, which only renames scancodes.) Caveat: `sudo` scrubs the
-  environment, so the var needs `sudo VAR=... kanata`, `sudo -E`, or the launchd plist's
-  `EnvironmentVariables` once autostart lands.
+  cross-platform, kanata can branch _actions_ per OS within one file, so the noted deltas become
+  real per-OS definitions behind a single shared `deflayer` rather than hand-edited swaps. Two
+  mechanisms, in order of preference:
+  - **`(platform (macos) ...)`** (also `linux`, `win`/`winiov2`/`wintercept`, combinable like
+    `(platform (macos linux) ...)`) wraps any top-level item for the given OSes. This is the right
+    tool for pure per-OS branching: kanata knows its own platform, so there is no env var to set and
+    no `sudo` issue. Verified valid in 1.11.0.
+  - **`(environment (VAR value) ...)`** (older alias-only form: `defaliasenvcond`) keys on an env
+    var read once at startup — for distinctions `platform` can't express (which machine, which
+    keyboard variant on the _same_ OS). Caveat: `sudo` scrubs the environment, so the var needs
+    `sudo VAR=... kanata`, `sudo -E`, or the launchd plist's `EnvironmentVariables`.
+
+  Both are separate from `deflocalkeys`, which only renames scancodes (and globally per OS, not per
+  device — see "Multiple keyboards").
 - QWERTY only (no layout switching)
 - no home row mods (not in use on Linux, can be added at a later point)
 - `tap-hold-press` is the right variant for overload-style behavior (hold triggers on next key
@@ -296,10 +302,82 @@ macOS too.
 
 ### Multiple keyboards
 
-- An ANSI US mechanical keyboard will be added later
-- Plan: single kanata config, single instance; differences between keyboards are small enough
-  (mainly the fn key swap, which the mech won't need)
-- Revisit when the mech is actually connected
+The mech is the Aula F75 (75% ANSI/US), to be used alongside the MacBook's built-in ISO keyboard on
+turing — so this is **two keyboards on one Mac** (both seen by macOS), not the cross-platform/Linux
+scenario. Goal: one kanata setup serving both despite small layout differences. Not wired in yet;
+researched 2026-06-07.
+
+**Device identities** (`kanata --list` shows names + hashes; `definputdevices` also matches
+`vendor_id`/`product_id`):
+
+| Device                                                  | Match by                                                             | Source              |
+| ------------------------------------------------------- | -------------------------------------------------------------------- | ------------------- |
+| MacBook internal                                        | name `Apple Internal Keyboard / Trackpad`; hash `0xD4359520DA829EC8` | `kanata --list`     |
+| Karabiner VHID (never grab — it is kanata's own output) | name `Karabiner DriverKit VirtualHIDKeyboard 1.8.0`                  | `kanata --list`     |
+| Aula F75 — wired                                        | `vendor_id 0x258a product_id 0x010c` (9610 / 268)                    | keyd `aulaf75.conf` |
+| Aula F75 — 2.4 GHz dongle                               | `vendor_id 0x3554 product_id 0xfa09`                                 | keyd                |
+| Aula F75 — Bluetooth 5.0                                | `vendor_id 0x3554 product_id 0xfa07`                                 | keyd                |
+| Aula F75 — Bluetooth 3.0                                | `vendor_id 0x3554 product_id 0xfa08`                                 | keyd                |
+
+The Aula's per-mode _name_ and _hash_ (needed for `macos-dev-names-include`) can only be read with
+it connected.
+
+**Differences that actually need handling** (most keys overlap; unmatched scancodes pass through via
+`process-unmapped-keys yes`):
+
+1. **fn<->lctl swap — the one same-scancode/different-action conflict.** The MacBook maps physical
+   Control to `@fnl` (tap fn / hold fnrow) and physical fn to Control. The Aula has no OS-visible fn
+   (firmware-only); its bottom-left sends plain `lctl`. So the `lctl` scancode must mean Control on
+   the Aula but `@fnl` on the MacBook — one scancode, two behaviors. The rest of the Aula bottom row
+   is fine (super -> `lmet`/Command, alt -> `lalt`/Option, right-Control passthrough; the `fn`
+   defsrc slot is dormant on the Aula since it never sends `fn`).
+2. **ISO vs ANSI scancodes, and `deflocalkeys` is global.** `deflocalkeys-macos` renames the
+   MacBook's backtick (OsCode 86) and ISO `<>` (41) to `bktk`/`iso`. `deflocalkeys` is per-OS and
+   global (input+output), with **no per-device form in any kanata version**. Likely collision: the
+   MacBook's `<>` and the Aula's backtick probably both arrive as OsCode 41 (`iso`), so the Aula's
+   backtick would decode to `lsgt` (§). Partly resolvable (see option C), but the exact Aula codes
+   are an open empirical question.
+
+**Three options** (verified against installed kanata 1.11.0, the latest stable):
+
+- **A — single instance, `definputdevices` + `(device-history $id $recency)`.** The native
+  per-device action selector; the docs' stated use case is exactly swapped-modifier positions across
+  devices. Identify the MacBook and gate the `lctl` action: MacBook -> `@fnl`, default branch ->
+  plain `lctl` (the default covers the Aula and any unknown board, so the four Aula IDs need not be
+  enumerated). **Not in 1.11.0** (tested: "unknown configuration item"); it is in 1.12.0-prerelease
+  / `main`. Caveats even then: devices matched at startup only (Aula must be connected before kanata
+  starts; no hotplug, no re-read on live reload), press events only.
+- **B — two instances, `macos-dev-names-include`.** Present in 1.11.0. One instance grabs only the
+  MacBook with the current config; another grabs only the Aula with an ANSI-tailored config. Each
+  instance has its _own_ `deflocalkeys`, so this **fully sidesteps delta 2**. Costs: two processes
+  (launchd, kill switch), a shared single VHID to feed (confirm two instances coexist), `platform`
+  or two files to stay DRY.
+- **C — single instance, manual mode toggle (works on 1.11.0 today).** A virtual key is a mode flag;
+  one key toggles it; conflicting actions read it via `switch` — the same `capsvk` pattern already
+  in the config. Gate only the slots that differ:
+  ```
+  (defvirtualkeys aulavk nop0)
+  (defalias
+    mode (on-press toggle-virtualkey aulavk)
+    lc   (switch ((input virtual aulavk)) lctl break () @fnl break))
+  ```
+  Then the default-layer `lctl` slot becomes `@lc`, and a `mode` key lives somewhere out of the way.
+  **Verified valid in 1.11.0.** It can also reach into delta 2 — not by toggling `deflocalkeys`
+  (impossible), but by mode-gating what a shared `defsrc` slot _emits_: e.g. `iso` (OsCode 41) ->
+  `lsgt` in Mac mode, `grv` (backtick) in Aula mode, since both keyboards likely send 41 there.
+  Cons: it is manual (flip on swap, and flip back); virtual-key state resets to off on every config
+  reload (same gotcha as `capsvk`); the scancode-gating depends on the Aula's real codes.
+
+**Recommendation.** On 1.11.0 today, **C** is the best single-instance choice: minimal, fully shared
+nav/symbols/accents, reuses a proven pattern, and the scancode-gating trick lets it handle delta 2
+too. It is also a clean stepping stone to **A** — when 1.12.0 ships, swap the
+`(input virtual
+aulavk)` checks for `(device-history $id-mba 1)` and the manual toggle disappears;
+the structure is otherwise identical. Reach for **B** only if the ISO/ANSI collision proves annoying
+and you want it gone with zero manual steps, accepting the second process.
+
+**Still needs the Aula connected:** its per-mode name/hash (`kanata --list`) and the actual
+scancodes it emits on macOS for backtick and any relocated keys (to settle delta 2). Revisit then.
 
 ---
 
@@ -332,13 +410,13 @@ In rough priority order:
      - **Dropped the Shift+nav selection sublayers** (`w`/`e`/`r`, keyd's
        `nav-mods-shift-{meta,alt,control}`): redundant once `spc`=Shift is a real held modifier
        composing onto the d/f movement — selection is just `spc`, a movement mod, and an arrow.
-     - **Cross-platform** branches within one config via `(environment ...)`/`defaliasenvcond`
-       selecting per-OS `defalias` definitions behind this single `deflayer` (see the General
-       decision on `environment`), not hand-edited swaps: `d` -> `lctl` (Ctrl+arrows give word and
-       paragraph) is trivial; `f` is not, since Linux/Win line=Home/End and doc=Ctrl+Home/End are
-       dedicated keys, not a modifier, so `f` must become a `navline` `layer-while-held` (h->home,
-       l->end, k->C-home, j->C-end) with `spc`=Shift composing for free (S-home/S-end). Full note in
-       the nav-layer comment in `kanata.kbd`.
+     - **Cross-platform** branches within one config via `(platform ...)` blocks (see the General
+       decision on cross-platform conditionals) selecting per-OS definitions behind this single
+       `deflayer`, not hand-edited swaps: `d` -> `lctl` (Ctrl+arrows give word and paragraph) is
+       trivial; `f` is not, since Linux/Win line=Home/End and doc=Ctrl+Home/End are dedicated keys,
+       not a modifier, so `f` must become a `navline` `layer-while-held` (h->home, l->end,
+       k->C-home, j->C-end) with `spc`=Shift composing for free (S-home/S-end). Full note in the
+       nav-layer comment in `kanata.kbd`.
    - **Belongs with item 3 (resolved):** `rightshift` = `capslock` (keyd put Caps here; this doc
      floated `nav[lsft]`). Decided in favor of `nav[rsft]` = `caps` (right Shift within the nav
      layer, echoing keyd); see item 3.
@@ -419,8 +497,8 @@ Wanted later, explicitly out of scope for now (noted 2026-06-06):
     above.
   - So on macOS both motivations land on `s` = `lctl` (no conflict); on Linux pick one, since
     kitty_mod wants plain Ctrl and workspace nav wants Ctrl+Alt. Either way the per-OS definition
-    can branch within one config via `(environment ...)`/`defaliasenvcond` (see the General decision
-    on `environment`), not a hand-edited swap.
+    can branch within one config via `(platform ...)` (see the General decision on cross-platform
+    conditionals), not a hand-edited swap.
 
 ## Operational Setup (not from keyd)
 

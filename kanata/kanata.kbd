@@ -222,11 +222,10 @@
 ;;
 ;; CROSS-PLATFORM. The d/f/space key CHOICE is platform-independent; only their emitted actions
 ;; change, because Linux/Windows put line/document on dedicated keys, not a modifier. kanata CAN
-;; branch per OS within one config: define the per-OS actions as defalias blocks wrapped in
-;; (environment (KANATA_OS macos|linux|windows) ...) -- or the older defaliasenvcond -- have this
-;; single deflayer reference those aliases, and set the env var at launch. kanata reads it at
-;; startup; sudo scrubs the env, so use "sudo KANATA_OS=... kanata", sudo -E, or the launchd plist.
-;; The per-OS deltas each branch would emit:
+;; branch per OS within one config: wrap the per-OS actions in (platform (macos) ...) /
+;; (platform (linux) ...) blocks (kanata knows its own OS -- no env var, no sudo dance; the older
+;; (environment ...)/defaliasenvcond key on an env var instead, for non-OS distinctions). The single
+;; deflayer references the per-OS aliases. The per-OS deltas each branch would emit:
 ;;   - d (word + paragraph): lalt -> lctl. Ctrl+arrows give word (h/l) and paragraph (j/k), so d
 ;;     stays a single held modifier, same shape as macOS.
 ;;   - f (line + document): not a modifier swap. There line edge = Home/End and document edge =
