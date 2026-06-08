@@ -564,6 +564,59 @@ here.
   for the `(unicode)` accents) must be granted to the binary at `/opt/homebrew/bin/kanata`, not to
   kitty. A daemon can't raise the prompt, so add both by hand in System Settings > Privacy &
   Security. See `launchd/README.md` for the re-add-to-fix and brew-upgrade-voids-grant gotchas.
+- **Startup flags**: the plist runs kanata with `--no-wait` (a clean exit must not block the
+  KeepAlive relaunch), `--quiet`, and `--nodelay`. `--quiet` is errors-only logging — see "Logs"
+  below. `--nodelay` skips the 2s "release all keys" startup sleep, which guards an _interactive_
+  launch against held keys sticking and is pointless for a boot daemon; kanata warns it can rarely
+  cause cold-start keyboard issues, so drop it if a boot ever misbehaves.
+
+### Logs
+
+kanata writes stdout+stderr to `/var/log/kanata.log` (set in `local.kanata.plist`). Two things to
+know: how much it logs, and why the file is hard to rotate safely. **The log contains config/layer
+and status text, not keystrokes** (key events are debug/trace only), so its world-readable `0644` is
+not a secrets concern.
+
+- **Volume — handled by `--quiet`.** At the default Info level kanata logs the _entire_ `deflayer`
+  block on every layer switch ("Entered layer: ..."), so a normal typing session piles up thousands
+  of lines and the file grows without bound. `--quiet` (in the plist) drops to errors-only, keeping
+  the diagnostics that matter — config-load failures, device/permission errors — and dropping the
+  per-switch noise. The infamous 450 MB kanata log (discussion #1537) was `--debug` _plus_ a
+  crash/restart loop re-emitting startup banners on every relaunch; `ThrottleInterval 10` bounds the
+  restart rate, and we don't pass `--debug`. To debug, swap `--quiet` for `--debug` and
+  `just kanata reload local.kanata`. A config-level middle ground exists if Info is ever wanted back
+  without the spam: `log-layer-changes no` in `defcfg` silences just the layer dumps.
+- **Rotation — deliberately NOT done, because the obvious way is worse than nothing.** launchd opens
+  `StandardOutPath` once at spawn and the child inherits the fd; launchd never reopens it. So a
+  rename-based rotator (newsyslog, the macOS default) leaves kanata writing to the renamed/unlinked
+  inode while `/var/log/kanata.log` sits frozen and stale — a _misleading_ log, worse than an honest
+  unbounded one. macOS newsyslog also can't run a command post-rotate (FreeBSD/OpenBSD can; Darwin's
+  fork never gained it) and has no copytruncate, so it cannot even kick the daemon to reopen.
+  Confirmed by an open apple-opensource/launchd bug report. `--quiet` makes growth slow enough that
+  rotation is unnecessary for now; if it's ever needed, the paths forward (researched 2026-06-08;
+  applies to any non-reopening daemon, so likely reused elsewhere) are, in order:
+  - **copytruncate** (copy the live file aside, then truncate it _in place_) on a
+    `StartCalendarInterval` launchd timer — via Homebrew `logrotate` with `copytruncate`, or a ~10-
+    line script. The fd stays valid (same inode) so the log never freezes, the plist and the
+    kill-switch/relaunch semantics are untouched, and no daemon restart is needed. It works because
+    launchd opens std paths with `O_APPEND` (verified in launchd `src/core.c`:
+    `O_WRONLY|O_CREAT|O_APPEND`), so a truncate-to-zero genuinely shrinks the file instead of
+    leaving a growing sparse hole — `O_APPEND` is the prerequisite for _any_ copytruncate. Cost: a
+    tiny lossy race at the truncate instant, negligible at this volume. **This is the recommended
+    option if rotation is added.**
+  - **Pipe through a file-owning rotator** (`rotatelogs`/`svlogd`/`multilog`) via a wrapper script.
+    Most robust in the abstract, but launchd would then supervise the shell/pipeline, not kanata,
+    muddying the `KeepAlive { SuccessfulExit = false }` exit-code gating that the kill switch
+    depends on (needs `pipefail`/process-substitution care). Poor fit _here_ precisely because the
+    exit code is load-bearing.
+  - **Rename + create + scheduled `launchctl kickstart -k`** to force kanata to reopen. Works, but
+    restarts the keyboard daemon on every rotation (a brief drop to the stock layout) — user-hostile
+    for an input device.
+
+  The Linux model that sidesteps all of this — daemon writes to stderr, journald owns capture, size
+  caps, and rotation, so the daemon never touches a file — has no macOS equivalent (`os_log` needs
+  the in-process API; an unset `StandardOutPath` just discards output). When kanata goes
+  cross-platform under systemd, prefer that: no file, no rotation, `journalctl` to read.
 
 The manual fallback still works if a daemon is uninstalled (`uninstall`) or for debugging — VHID
 daemon first, then `sudo kanata --cfg ~/dotfiles/kanata/kanata.kbd` (the repo source, fine for a
