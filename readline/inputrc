@@ -1,11 +1,20 @@
 $include /etc/inputrc
 
-# Delete the word before the cursor with nav[backspace] -- which outputs Control+Backspace (Linux)
-# or Alt+Backspace (macOS) in kitty with my keyd/kanata setups, in line with each platform's
-# conventions.
+# Delete the word before the cursor with keyd/kanata nav[backspace] -- which emits
+# Ctrl+Backspace (Linux) or Alt+Backspace (macOS), in line with each platform's conventions.
 #
 # Kitty sends those to readline apps as ^H (\C-h) and ESC-DEL (\e\x7f) respectively; \e\x7f is
 # already readline's default backward-kill-word, but bind it explicitly alongside \C-h so both
 # platforms work regardless of the inherited keymap.
 "\C-h": backward-kill-word
 "\e\x7f": backward-kill-word
+
+# Similarly, move by word with kanata nav[d]+h/l.
+#
+# The macOS nav layer emits Option+Left/Right, which kitty sends to readline apps as the CSI
+# sequences below. readline binds word motion to M-b/M-f but not to Alt+arrow, so add it here,
+# matching the macOS Option+arrow convention.
+#
+# The Linux nav layer will eventually emit Ctrl+arrow, which may need their own bindings.
+"\e[1;3D": backward-word
+"\e[1;3C": forward-word

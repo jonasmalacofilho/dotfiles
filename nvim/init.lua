@@ -146,12 +146,27 @@ vim.keymap.set('', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = 'Smar
 vim.keymap.set('n', '<S-ScrollWheelDown>', 'z6l')
 vim.keymap.set('n', '<S-ScrollWheelUp>', 'z6h')
 
--- Delete the word before the cursor with nav[backspace] -- which outputs Control+Backspace (Linux)
--- or Alt+Backspace (macOS) in kitty with my keyd/kanata setups, in line with each platform's
--- conventions.
+-- Delete the word before the cursor with keyd/kanata nav[backspace] -- which emits
+-- Ctrl+Backspace (Linux) or Alt+Backspace (macOS), in line with each platform's conventions.
 for _, lhs in ipairs { '<C-BS>', '<A-BS>' } do
   vim.keymap.set({ 'i', 'c' }, lhs, '<C-w>', { desc = 'Delete the word before the cursor' })
 end
+
+-- Move by word and paragraph with kanata nav[d]+h/j/k/l.
+--
+-- On macOS, kanata emits Option+Left/Right for word and Option+Up/Down for paragraph,
+-- which kitty (macos_option_as_alt left) delivers as <M-arrow>. Nvim moves by word on
+-- <C-arrow>/<S-arrow> but binds nothing to <M-arrow>, so wire these up. Word reuses the built-in
+-- <C-Left>/<C-Right>, which already work in insert mode; paragraph has no <C-Up>/<C-Down>
+-- equivalent, so it maps to { } (via <C-o> for one normal-mode motion in insert).
+--
+-- The Linux nav layer will eventually emit Ctrl+arrow, already native to nvim.
+vim.keymap.set({ 'n', 'i', 'x' }, '<M-Left>', '<C-Left>', { desc = 'Move a word backward' })
+vim.keymap.set({ 'n', 'i', 'x' }, '<M-Right>', '<C-Right>', { desc = 'Move a word forward' })
+vim.keymap.set({ 'n', 'x' }, '<M-Up>', '{', { desc = 'Move a paragraph backward' })
+vim.keymap.set({ 'n', 'x' }, '<M-Down>', '}', { desc = 'Move a paragraph forward' })
+vim.keymap.set('i', '<M-Up>', '<C-o>{', { desc = 'Move a paragraph backward' })
+vim.keymap.set('i', '<M-Down>', '<C-o>}', { desc = 'Move a paragraph forward' })
 
 -- Trim trailing whitespace.
 vim.keymap.set('n', '<leader>$', [[:%s/\s\+$//<CR>]], { desc = 'Trim trailing whitespace' })

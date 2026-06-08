@@ -10,11 +10,17 @@ if status is-interactive
 
     fish_config theme choose "Catppuccin Mocha"
 
-    # Delete the word before the cursor with nav[backspace] -- which outputs Control+Backspace
-    # (Linux) or Alt+Backspace (macOS) in kitty with my keyd/kanata setups, in line with each
-    # platform's conventions. Rebinds Alt+Backspace to word (not token) deletion.
-    bind ctrl-backspace backward-kill-word
-    bind alt-backspace backward-kill-word
+    # Kanata nav layer's word operations need no bindings here.
+    #
+    # nav[d]+h/l (word motion) and nav[backspace] (delete word back) both use each platform's native
+    # modifier -- Option on macOS, Ctrl on Linux -- and fish already binds that modifier to the
+    # word-wise action per OS: on macOS alt-left/right and alt-backspace, on Linux ctrl-left/right
+    # and ctrl-backspace.
+    #
+    # Binding them ourselves would only affect the other, non-native modifier (e.g. real/physical
+    # Ctrl+Backspace on macOS), pulling it away from its native token-wise feel -- and for motion it
+    # would also possibly drop fish's prevd/nextd directory history on an empty line. Neither helps
+    # the keys the nav layer actually emits.
 
     # Find the default command runner in the current directory.
     function find_cmd_runner
