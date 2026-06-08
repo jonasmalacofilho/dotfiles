@@ -16,8 +16,13 @@
     <array>
         <string>/opt/homebrew/bin/kanata</string>
         <string>--cfg</string>
-        <!-- FIXME: should be in a location only writable by root -->
-        <string>/Users/jonas/.config/kanata/kanata.kbd</string>
+        <!--
+            Root-owned copy (root:wheel 0644), not a user-writable file: kanata runs as
+            root, so a config the login user could write would let any process running as
+            that user escalate to root (the more so with `danger-enable-cmd`). Staged from
+            the repo by `just kanata sync-config`.
+        -->
+        <string>/Library/Application Support/kanata/kanata.kbd</string>
         <!-- Don't wait for user input on exit, which would block automatic restart. -->
         <string>--no-wait</string>
     </array>

@@ -5,7 +5,6 @@ dotfiles_dir = "dotfiles"
 # Folders that go into ~/.config/
 btop = { direct = true, source = "btop", target = ".config/btop" }
 fish = { direct = true, source = "fish", target = ".config/fish" }
-kanata = { direct = true, source = "kanata", target = ".config/kanata" }
 kitty = { direct = true, source = "kitty", target = ".config/kitty" }
 nvim = { direct = true, source = "nvim", target = ".config/nvim" }
 pnpm = { direct = true, source = "pnpm", target = ".config/pnpm" }

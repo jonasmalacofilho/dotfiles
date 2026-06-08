@@ -11,7 +11,8 @@ itself now **autostart as system LaunchDaemons** (installed via `just kanata ins
 Relevant paths:
 
 - source keyd config (but consider "Decisions Made"): `~/Code/etcfiles/keyd/`
-- kanata config: this directory, in dotfiles repo managed with toml-bombadil
+- kanata config: this directory in the dotfiles repo. The daemon does not read it directly — it
+  reads a root-owned copy staged from here (see "Operational Setup").
 
 ---
 
@@ -133,7 +134,10 @@ The config follows a few formatting and naming conventions; keep edits consisten
   vol- / vol+), plus Mission Control (F3) and Spotlight (F4). keyd's equivalent layer was empty, so
   this is new; the macOS-specific Mission Control/Spotlight usages (mctl/sls) work here.
 - control-layer F5 = live config reload (kanata `lrld`); an invalid reload is rejected and the
-  running config is kept. Workflow: edit source, `bombadil link`, then esc+F5 (no restart).
+  running config is kept. Since the daemon reads a root-owned copy (see "Operational Setup"), the
+  workflow is: edit source, `just kanata sync-config` (re-stages the copy and restarts kanata).
+  esc+F5 still rereads kanata's `--cfg`, but that is now the root-owned copy, so it only reflects an
+  edit once `sync-config` has staged it.
 - moved fn key (the physical Control-labelled key) tap = fn, hold = a real held fn modifier PLUS the
   fnrow overlay, via `(multi fn (layer-while-held fnrow))`. Phase-0 testing split the fn shortcuts
   in two (see "Function keys / media keys"): the held fn drives the macOS **global hotkeys**
@@ -221,7 +225,8 @@ The config follows a few formatting and naming conventions; keep edits consisten
 - no home row mods (not in use on Linux, can be added at a later point)
 - `tap-hold-press` is the right variant for overload-style behavior (hold triggers on next key
   press, not just timeout) — matches keyd's `overload`
-- for now, kanata is run as: `sudo kanata --cfg ~/.config/kanata/kanata.kbd`
+- kanata runs as a root LaunchDaemon reading a root-owned config copy (see "Operational Setup"); the
+  earlier `sudo kanata --cfg <path>` foreground invocation is now only the manual-debug fallback
 
 ### ISO scancode swap (deflocalkeys)
 
@@ -540,8 +545,16 @@ The source plists, the install/manage justfile, the relaunch policy, and the TCC
 here.
 
 - **Install/manage**: `just kanata <recipe>` from the repo root (`install`, `uninstall`, `status`,
-  `logs`, `reload <label>`, `lint`). The recipes are sudo-gated (they touch `/Library/LaunchDaemons`
-  and the system launchd domain).
+  `logs`, `reload <label>`, `lint`, `check-config`, `sync-config`). The sudo-gated recipes touch
+  `/Library/LaunchDaemons`, `/Library/Application Support/kanata`, and the system launchd domain.
+- **Config is root-owned, not user-writable.** kanata runs as root, so the daemon reads a
+  `root:wheel 0644` copy at `/Library/Application Support/kanata/kanata.kbd`, staged from the repo
+  source (`kanata.kbd` in this directory). A config the login user could write would be a
+  root-escalation path (moot for `cmd` since Homebrew's kanata is compiled to forbid it, but a root
+  process driving the keyboard warrants it anyway). Editing `kanata.kbd` reaches the daemon via
+  `just kanata sync-config` (`--check`, copy to the root-owned path, restart kanata). Cross-platform
+  note: Linux will mirror this with kanata under a dedicated low-privilege `kanata` user and an
+  equally root-owned config. See `launchd/README.md` → "Config file".
 - **Relaunch policy**: the Karabiner daemon uses plain `KeepAlive`; kanata uses
   `KeepAlive { SuccessfulExit = false }`, so the kill switch (clean exit 0 since 1.11.0) drops you
   to the stock layout and stays down, while crashes (e.g. sleep/wake) self-heal. Relaunch kanata
@@ -553,8 +566,8 @@ here.
   Security. See `launchd/README.md` for the re-add-to-fix and brew-upgrade-voids-grant gotchas.
 
 The manual fallback still works if a daemon is uninstalled (`uninstall`) or for debugging — VHID
-daemon first, then `sudo kanata --cfg ~/.config/kanata/kanata.kbd` in a foreground terminal that
-doubles as a kill switch.
+daemon first, then `sudo kanata --cfg ~/dotfiles/kanata/kanata.kbd` (the repo source, fine for a
+one-off run) in a foreground terminal that doubles as a kill switch.
 
 ---
 

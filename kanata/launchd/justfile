@@ -12,6 +12,16 @@ manager  := "local.karabiner-vhid-manager"
 daemon   := "local.karabiner-vhid-daemon"
 kanata   := "local.kanata"
 
+# kanata reads a root-owned copy of the config, NOT a user-writable file: kanata runs as
+# root, so a --cfg the login user could write would let any process running as that user
+# escalate to root (the more so with `danger-enable-cmd`). The source lives in the repo one
+# level up; `sync-config` stages it at cfgdest as root:wheel 0644 (the --cfg path in
+# local.kanata.plist).
+kanata_bin := "/opt/homebrew/bin/kanata"
+cfgsrc     := parent_directory(src) + "/kanata.kbd"
+cfgdir     := "/Library/Application Support/kanata"
+cfgdest    := cfgdir + "/kanata.kbd"
+
 # Load order: manager (activate the dext), then daemon, then kanata. Reverse to unload.
 # kanata also retries the VHID connection itself, so strict ordering isn't essential.
 order    := manager + " " + daemon + " " + kanata
@@ -24,8 +34,32 @@ default:
 lint:
     plutil -lint {{src}}/{{manager}}.plist {{src}}/{{daemon}}.plist {{src}}/{{kanata}}.plist
 
-# Copy all three plists into place, fix ownership/permissions, and load them in order.
-install: lint
+# Validate the config offline against the installed kanata (no sudo, no system changes).
+check-config:
+    {{kanata_bin}} --check --cfg "{{cfgsrc}}"
+
+# Stage the repo config into its root-owned location as root:wheel 0644 (no reload).
+# Private: used by `install` and `sync-config`; run those, not this.
+[private]
+_put-config:
+    sudo mkdir -p "{{cfgdir}}"
+    sudo cp "{{cfgsrc}}" "{{cfgdest}}"
+    sudo chown root:wheel "{{cfgdir}}" "{{cfgdest}}"
+    sudo chmod 755 "{{cfgdir}}"
+    sudo chmod 644 "{{cfgdest}}"
+
+# The sudo-gated replacement for the old edit loop: because the daemon now reads the
+# root-owned copy (not the repo symlink), editing kanata.kbd needs this to reach the
+# running daemon. The restart is a brief drop to the default layout; `--check` runs first
+# (via the dependency) so a broken config is caught before kanata is touched.
+
+# Stage the config and restart kanata to load the edit (sudo).
+sync-config: check-config _put-config
+    sudo launchctl kickstart -k system/{{kanata}}
+    @echo "Config synced to {{cfgdest}}; kanata restarted."
+
+# Install plists + config, fix ownership/permissions, and load in order (sudo).
+install: lint check-config _put-config
     #!/usr/bin/env bash
     set -euo pipefail
     for label in {{order}}; do
@@ -46,6 +80,8 @@ uninstall:
         sudo launchctl bootout "system/$label" || true
         sudo rm -f "{{dest}}/$label.plist"
     done
+    sudo rm -f "{{cfgdest}}"
+    sudo rmdir "{{cfgdir}}" 2>/dev/null || true
     echo "Removed."
 
 # Reload after editing a plist: bootout, recopy, bootstrap. Pass the label, e.g.

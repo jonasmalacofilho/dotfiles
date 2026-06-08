@@ -4,14 +4,14 @@ Source copies of three LaunchDaemon property lists that autostart the Karabiner 
 its VHID daemon, and kanata at boot, replacing the manual two-step in the main `CLAUDE.md`
 ("Operational Setup").
 
-**Nothing here is managed by bombadil or otherwise automatically installed.** Installing them is the
-manual, sudo-gated procedure below, to run only after the config is trusted. Until then the manual
-foreground-terminal method still works and doubles as a kill-switch fallback.
+**Nothing here is automatically installed.** Installing it is the manual, sudo-gated procedure
+below, to run only after the config is trusted. Until then the manual foreground-terminal method
+still works and doubles as a kill-switch fallback.
 
 All three run as **root** (kanata needs to grab the keyboard; the Karabiner pieces ship as
 `root:wheel`), so they are LaunchDaemons in `/Library/LaunchDaemons/`, not per-user LaunchAgents.
-That directory is root-owned and outside `$HOME`, so bombadil can't manage it — the plists are kept
-here as source and copied out by hand.
+That directory is root-owned and outside `$HOME`, so it can't be symlinked from the repo — the
+plists are kept here as source and copied out by hand.
 
 ## Files
 
@@ -22,12 +22,44 @@ here as source and copied out by hand.
   extension on its own regardless. First-time approval is a manual GUI step, already done on turing.
 - `local.karabiner-vhid-daemon.plist` — the Karabiner DriverKit VirtualHIDDevice daemon.
   Prerequisite: it must be up before kanata can open the virtual keyboard.
-- `local.kanata.plist` — kanata, reading `~/.config/kanata/kanata.kbd` (the bombadil symlink into
-  this repo). Equivalent to the manual `sudo kanata --cfg ~/.config/kanata/kanata.kbd`.
+- `local.kanata.plist` — kanata, reading `/Library/Application Support/kanata/kanata.kbd`, a
+  root-owned copy of the repo config staged by `just kanata sync-config` (see "Config file" below).
+  kanata runs as root, so a user-writable `--cfg` would be a root-escalation path.
 
 Load order is manager -> daemon -> kanata (the `install`/`uninstall` recipes handle it). launchd
 doesn't enforce ordering, and it isn't essential here: kanata retries the VHID connection on its own
 and `KeepAlive` relaunches it, so it tolerates starting before the other two are ready.
+
+## Config file (root-owned)
+
+kanata runs as root, so the config it loads must not be writable by the login user. A user-writable
+`--cfg` would let any process running as `jonas` rewrite what a root process executes — a privilege
+escalation, sharpest if the build allows `cmd` (it doesn't: Homebrew's kanata is "compiled to never
+allow cmd", so `danger-enable-cmd` is inert here; but a root process driving the keyboard is reason
+enough on its own).
+
+So the daemon reads a root-owned copy at `/Library/Application Support/kanata/kanata.kbd`
+(`root:wheel`, `0644`), staged from the repo source (`../kanata.kbd`) by `just kanata sync-config`,
+exactly as the plists are copied into `/Library/LaunchDaemons`. Edit the source in the repo and
+validate it offline with `just kanata check-config` (`kanata --check`); the repo file is no longer
+what the daemon loads.
+
+The cost is the edit loop: an edit reaches the daemon only after it is re-staged.
+
+```sh
+# edit kanata/kanata.kbd in the repo, then:
+just kanata sync-config   # --check, copy to the root-owned path, restart kanata
+```
+
+`sync-config` restarts kanata (a brief drop to the default layout), so the reload is deterministic
+and `--check`-gated. esc+F5 still triggers kanata's own live reload, but it rereads the root-owned
+copy, so it only reflects an edit once `sync-config` has staged it.
+
+> [!NOTE]
+>
+> This is the macOS half. On Linux the plan is to run kanata as a dedicated, less-privileged
+> `kanata` user (not `jonas`), with the config likewise root-owned and only readable by that user —
+> same principle, staged into a Linux path when that setup lands.
 
 ## Relaunch policy (the two `KeepAlive`s differ on purpose)
 
@@ -91,25 +123,29 @@ The sudo-gated steps live in `justfile` here. The root `justfile` imports them v
 `/Library/LaunchDaemons` and the system launchd domain, so it prompts for a sudo password.
 
 ```sh
-just kanata lint        # validate plist syntax — no sudo, no system changes
-just kanata install     # copy all three out, chown root:wheel + chmod 644, bootstrap in order
-just kanata status      # show whether each job is loaded and running
-just kanata logs        # tail /var/log/kanata.log
-just kanata uninstall   # bootout all three and remove the installed plists
+just kanata lint          # validate plist syntax — no sudo, no system changes
+just kanata check-config  # validate kanata.kbd offline (kanata --check) — no sudo
+just kanata install       # copy plists + config out, chown root:wheel + chmod, bootstrap in order
+just kanata sync-config   # re-stage the config and restart kanata after editing kanata.kbd
+just kanata status        # show whether each job is loaded and running
+just kanata logs          # tail /var/log/kanata.log
+just kanata uninstall     # bootout all three, remove the plists and the staged config
 just kanata reload local.kanata   # re-read one plist after editing it
 ```
 
-`install` runs `lint` first, then copies because launchd refuses to load a plist that isn't
-root-owned and non-writable by group/other. `RunAtLoad` starts all immediately, and at every boot
-thereafter.
+`install` runs `lint` and `check-config` first, then copies (launchd refuses to load a plist that
+isn't root-owned and non-writable by group/other) and stages the config to its root-owned path
+before bootstrapping kanata. `RunAtLoad` starts all immediately, and at every boot thereafter.
 
 The kill switch (Left Control + Space + Escape) still terminates kanata, and per the relaunch policy
 above it stays down (clean exit 0), dropping you to the default layout; relaunch it with
 `just kanata reload local.kanata` or `sudo launchctl kickstart system/local.kanata`.
 
-Live reload (esc + F5) still works — it rereads the same `--cfg` path, so editing `kanata.kbd` needs
-none of the recipes above. Only editing a _plist_ needs `just kanata reload <label>` (a bootstrapped
-plist is not re-read live).
+Editing `kanata.kbd` now needs `just kanata sync-config` to reach the daemon (it reads the
+root-owned copy, not the repo symlink — see "Config file" above). esc + F5 still triggers kanata's
+live reload, but it rereads that root-owned copy, so it only picks up an edit after `sync-config`
+has staged it. Editing a _plist_ needs `just kanata reload <label>` (a bootstrapped plist is not
+re-read live).
 
 ## Useful links
 
