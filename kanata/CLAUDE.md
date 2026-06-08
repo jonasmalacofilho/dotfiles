@@ -4,8 +4,9 @@
 
 Porting a keyd keyboard layout (Linux) to kanata (macOS) for a MacBook Air M5 (hostname: turing,
 Apple Silicon, ISO keyboard). kanata is already installed via Homebrew. The Karabiner DriverKit
-VirtualHIDDevice v6.x driver is installed and activated, but its **daemon must currently be started
-manually** before kanata, and nothing is set to autostart yet (see "Operational Setup").
+VirtualHIDDevice v6.x driver is installed and activated; the VHID manager, VHID daemon, and kanata
+itself now **autostart as system LaunchDaemons** (installed via `just kanata install`, see
+"Operational Setup").
 
 Relevant paths:
 
@@ -510,19 +511,28 @@ Wanted later, explicitly out of scope for now (noted 2026-06-06):
 
 ## Operational Setup (not from keyd)
 
-Two processes must be running, both currently started **manually** and neither autostarted yet:
+Three things must be running: the Karabiner VHID activation (one-shot), its VHID daemon, and kanata.
+As of 2026-06-08 all three **autostart as root LaunchDaemons** installed via `just kanata install`.
+The source plists, the install/manage justfile, the relaunch policy, and the TCC steps all live in
+`./launchd/` — read `launchd/README.md` for the full detail; only the essentials are summarized
+here.
 
-1. **Karabiner VHID daemon** (prerequisite — must be up before kanata):
-   ```
-   sudo '/Library/Application Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice/Applications/Karabiner-VirtualHIDDevice-Daemon.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Daemon'
-   ```
-   (The driver itself is activated via the `Karabiner-VirtualHIDDevice-Manager.app ... activate`
-   manager binary; that part is already done.)
-2. **kanata**: `sudo kanata --cfg ~/.config/kanata/kanata.kbd`
+- **Install/manage**: `just kanata <recipe>` from the repo root (`install`, `uninstall`, `status`,
+  `logs`, `reload <label>`, `lint`). The recipes are sudo-gated (they touch `/Library/LaunchDaemons`
+  and the system launchd domain).
+- **Relaunch policy**: the Karabiner daemon uses plain `KeepAlive`; kanata uses
+  `KeepAlive { SuccessfulExit = false }`, so the kill switch (clean exit 0 since 1.11.0) drops you
+  to the stock layout and stays down, while crashes (e.g. sleep/wake) self-heal. Relaunch kanata
+  with `just kanata reload local.kanata` or `sudo launchctl kickstart system/local.kanata`.
+- **TCC, manual and required** (the one thing the move off the terminal changes): as a daemon kanata
+  is its own responsible process, so **Input Monitoring** (mandatory) and **Accessibility** (only
+  for the `(unicode)` accents) must be granted to the binary at `/opt/homebrew/bin/kanata`, not to
+  kitty. A daemon can't raise the prompt, so add both by hand in System Settings > Privacy &
+  Security. See `launchd/README.md` for the re-add-to-fix and brew-upgrade-voids-grant gotchas.
 
-- **Autostart**: still to do — set both to start automatically (e.g. launchd LaunchDaemons, since
-  they need root). Hold off until the config is trusted; for now manual runs are preferred so the
-  foreground terminal doubles as a fallback kill switch.
+The manual fallback still works if a daemon is uninstalled (`uninstall`) or for debugging — VHID
+daemon first, then `sudo kanata --cfg ~/.config/kanata/kanata.kbd` in a foreground terminal that
+doubles as a kill switch.
 
 ---
 

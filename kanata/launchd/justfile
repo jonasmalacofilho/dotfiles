@@ -36,7 +36,7 @@ install: lint
     for label in {{order}}; do
         sudo launchctl bootstrap system "{{dest}}/$label.plist"
     done
-    @echo "Loaded. Verify with: just status"
+    echo "Loaded. Verify with: just status"
 
 # Unload all three (reverse order) and remove the installed plists.
 uninstall:
@@ -46,7 +46,7 @@ uninstall:
         sudo launchctl bootout "system/$label" || true
         sudo rm -f "{{dest}}/$label.plist"
     done
-    @echo "Removed."
+    echo "Removed."
 
 # Reload after editing a plist: bootout, recopy, bootstrap. Pass the label, e.g.
 #   just reload local.kanata
