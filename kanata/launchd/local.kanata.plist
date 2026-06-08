@@ -25,6 +25,22 @@
         <string>/Library/Application Support/kanata/kanata.kbd</string>
         <!-- Don't wait for user input on exit, which would block automatic restart. -->
         <string>--no-wait</string>
+        <!--
+            Errors-only logging. At the default Info level kanata dumps the entire deflayer
+            block on every layer switch, so /var/log/kanata.log grows without bound (and
+            launchd has no log rotation; see "Logs" in ../CLAUDE.md for why naive rotation is
+            worse than none). --quiet keeps config-load failures and other errors, which is
+            what the log is actually for here, and drops the per-switch noise. To debug, swap
+            for --debug (or remove this) and `just kanata reload local.kanata`.
+        -->
+        <string>--quiet</string>
+        <!--
+            Skip the 2s "release all keys" startup sleep. It guards against keys held during
+            an interactive launch sticking; as a boot-time daemon there's no such launch, and
+            ThrottleInterval already paces relaunches. kanata warns it "may cause keyboard
+            issues on startup" in rare cases; drop this flag if a cold start ever misbehaves.
+        -->
+        <string>--nodelay</string>
     </array>
 
     <key>RunAtLoad</key>
