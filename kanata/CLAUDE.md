@@ -2,7 +2,7 @@
 
 ## Context
 
-Porting a keyd keyboard layout (Linux) to kanata (macOS) for a MacBook Air M5 (hostname: turing,
+Porting a keyd keyboard layout (Linux) to kanata (macOS) for a MacBook Pro M5 (hostname: turing,
 Apple Silicon, ISO keyboard). kanata is already installed via Homebrew. The Karabiner DriverKit
 VirtualHIDDevice v6.x driver is installed and activated; the VHID manager, VHID daemon, and kanata
 itself now **autostart as system LaunchDaemons** (installed via `just kanata install`, see
@@ -19,7 +19,7 @@ Relevant paths:
 
 Two physical keyboards in play; one kanata config is meant to serve both (see "Multiple keyboards").
 
-### MacBook Air M5 (turing) — primary
+### MacBook Pro M5 (turing) — primary
 
 - ISO physical layout, Austrian (a few extra alphas/symbols over US ANSI).
 - Bottom row, left to right: `fn` `control` `option` `command` `space` `command` `option`, then the
@@ -134,11 +134,18 @@ The config follows a few formatting and naming conventions; keep edits consisten
   this is new; the macOS-specific Mission Control/Spotlight usages (mctl/sls) work here.
 - control-layer F5 = live config reload (kanata `lrld`); an invalid reload is rejected and the
   running config is kept. Workflow: edit source, `bombadil link`, then esc+F5 (no restart).
-- moved fn key (the physical Control-labelled key) tap = fn, hold = fnrow layer reproducing the
-  MacBook's native function row: F1/F2 brightness, F3 Mission Control, F4 Spotlight, F5 Dictation,
-  F6 Do Not Disturb, F7-F12 media/volume. For the MacBook's own keyboard; other keyboards use the
-  control layer instead. F5/F6 assume the modern layout (else `bldn`/`blup` for keyboard backlight).
-  All the macOS-specific actions confirmed working through the VHID on turing.
+- moved fn key (the physical Control-labelled key) tap = fn, hold = a real held fn modifier PLUS the
+  fnrow overlay, via `(multi fn (layer-while-held fnrow))`. Phase-0 testing split the fn shortcuts
+  in two (see "Function keys / media keys"): the held fn drives the macOS **global hotkeys**
+  straight through the VHID (fn+A Dock, fn+C Control Center, fn+N Notification Center, fn+Q Quick
+  Note, fn+H show desktop, fn+Shift+A Apps, fn+Ctrl+F window fill — all confirmed), while the fnrow
+  overlay reproduces the fn **key-transforms** the VHID-emitted fn can't drive: F1/F2 brightness, F3
+  Mission Control, F4 Spotlight, F5 Dictation, F6 Do Not Disturb, F7-F12 media/volume; arrows ->
+  PageUp/PageDown/Home/End (fn+arrow); bspc -> del (fn+Delete); e -> Ctrl+Cmd+Space (fn+E emoji, via
+  `@emoji`). Keys the held fn handles stay passthrough in fnrow so the OS sees fn+<key>; the
+  overridden keys carry a harmless extra fn flag (confirmed not to disturb them). For the MacBook's
+  own keyboard; other keyboards use the control layer instead. F5/F6 assume the modern layout (else
+  `bldn`/`blup` for keyboard backlight). All confirmed working through the VHID on turing.
 - symbols layer (held or oneshot via right Command), step 1 = programming symbols. Ports keyd's
   `[symbols]` without relying on an AltGr OS layout; each key outputs directly: 1-5 give the shifted
   number symbols, and the letter block gives the brackets, parens, math/shell punctuation, backtick,
@@ -298,11 +305,26 @@ macOS too.
 
 ### Function keys / media keys
 
-- Known limitation: Karabiner virtual keyboard breaks fn+Fkey media control behavior — fn key state
-  is lost through the virtual HID device
-- Solution: map media keys (brightness, volume) explicitly rather than relying on fn+Fkey. Volume
-  and playback are on F7-F12 in both the control and fnrow layers; brightness is on F1/F2 in the
-  fnrow layer (the control layer omits it, since that layer targets non-Mac keyboards).
+- The fn/Globe key splits in two over the Karabiner VHID (Phase-0 tested on turing, MacBook Pro M5,
+  Tahoe 26). kanata maps `fn` to the AppleVendor top-case usage (page `0xFF`, code `0x03`) — the
+  same usage Karabiner-Elements uses — so a VHID-emitted fn:
+  - **works as the Globe modifier flag** for macOS **global hotkeys**: fn+A (Dock), fn+C (Control
+    Center), fn+N (Notification Center), fn+Q (Quick Note), fn+H (show desktop), fn+Shift+A (Apps),
+    fn+Ctrl+F (window fill). The held fn from `@fnl` covers these for free, no per-key mapping.
+  - **does NOT drive the low-level fn key-transforms** the OS does for the built-in keyboard:
+    fn+Fkey -> media, fn+arrow -> PageUp/Home/End, fn+Delete -> forward delete, and fn+E -> emoji
+    all arrive untransformed. This corrects the earlier blanket "fn state is lost through the VHID"
+    note: it is lost only for this transform class, not the modifier-flag class. F7/F8 are the
+    starkest case — they emit nothing usable, having no consumer-page equivalent.
+- Solution: the `fnrow` overlay reproduces the dead transforms explicitly — brightness on F1/F2,
+  Mission Control/Spotlight/Dictation/DND on F3-F6, media/volume on F7-F12, arrows -> nav, bspc ->
+  del, e -> Ctrl+Cmd+Space — while the global-hotkey keys ride the held fn. Volume and playback are
+  also on F7-F12 in the control layer (the non-Mac-keyboard path); brightness is fnrow-only, since
+  the control layer targets boards with no fn key.
+- Window tiling: fn+Ctrl+F (fill) works, but the **halves/quarters** (fn+Ctrl+arrow) cannot — the
+  arrow loses its fn flag in the same transform gap, so WindowServer sees a bare Ctrl+arrow. Getting
+  them would mean assigning custom non-fn shortcuts to the Window-menu items (System Settings >
+  Keyboard > Keyboard Shortcuts > App Shortcuts) and binding those; not done.
 
 ### Multiple keyboards
 

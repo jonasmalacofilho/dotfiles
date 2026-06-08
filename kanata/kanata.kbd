@@ -41,9 +41,25 @@
   esctl (tap-hold-press 200 200 esc (layer-while-held control))
 
   ;; Moved fn key (the physical Control-labelled key, which the fn<->lctl swap turns into fn): tap =
-  ;; fn, hold = fnrow layer. fnrow reproduces the MacBook's native function row, which the Karabiner
-  ;; VHID otherwise drops for fn+Fkey. Only useful on the MacBook's own keyboard.
-  fnl (tap-hold-press 200 200 fn (layer-while-held fnrow))
+  ;; fn, hold = a real HELD fn modifier AND the fnrow overlay at once. Phase-0 testing (turing, a
+  ;; MacBook Pro M5 on Tahoe 26) split the fn shortcuts in two:
+  ;;   - A VHID-emitted fn (AppleVendor usage 0xFF/0x03) DOES act as the Globe MODIFIER FLAG for
+  ;;     macOS global hotkeys: fn+A (Dock), fn+C (Control Center), fn+N (Notification Center),
+  ;;     fn+Q (Quick Note), fn+H (show desktop), fn+Ctrl+F (window fill) all fired. The held fn alone
+  ;;     covers these -- fnrow leaves their keys as passthrough, so the OS sees fn+<key>.
+  ;;   - It does NOT drive the low-level fn KEY-TRANSFORMS the OS does for the built-in keyboard:
+  ;;     fn+Fkey -> media, fn+arrow -> PageUp/Home/End, fn+Delete -> forward delete, fn+E -> emoji
+  ;;     all came through untransformed (corrects the old "fn state lost" note -- it's lost only for
+  ;;     this class). The fnrow overlay reproduces these directly (media/brightness on the F-row, nav
+  ;;     on the arrows, del on bspc, emoji on e); the simultaneously-held fn is a harmless extra flag.
+  ;; Tiling HALVES (fn+Ctrl+arrow) can't be had this way -- the arrow never keeps its fn flag -- so
+  ;; they'd need custom Window-menu App Shortcuts instead. Mac-keyboard only.
+  fnl (tap-hold-press 200 200 fn (multi fn (layer-while-held fnrow)))
+
+  ;; Emoji / Character Viewer. fn+E (the native Globe trigger) is one of the dead key-transforms over
+  ;; the VHID, so the fnrow overlay puts its non-fn equivalent (Ctrl+Cmd+Space) on e instead. Aliased
+  ;; to keep the literal `C-M-spc` (7 chars) from widening the grid stride.
+  emoji C-M-spc
 
   ;; Oneshot modifiers: tap applies the mod to the next key, hold acts as a normal modifier. Mirrors
   ;; keyd's oneshot(...) at oneshot_timeout 200. NOTE: the symbols layer overrides lsft/rsft back to
@@ -257,17 +273,19 @@
   _      _      _      _      _      _      _      _      _      _      _
 )
 
-;; fn-row layer (held via the moved fn key): the MacBook's native function row, for use on the
-;; MacBook's own keyboard. F5/F6 assume the modern layout (Dictation, Do Not Disturb). The
-;; macOS-specific actions (brightness, mission control, spotlight, dictation, dnd) are confirmed
-;; working via the VHID on turing.
+;; fn-row layer (held via the moved fn key, alongside a real held fn -- see @fnl). It overlays the
+;; fn KEY-TRANSFORMS the VHID-emitted fn can't drive (the global-hotkey shortcuts ride the held fn
+;; directly and stay passthrough here): the MacBook's native function row (brightness/media + Mission
+;; Control/Spotlight/Dictation/DND), forward delete on bspc (fn+Delete), arrow nav (fn+arrow ->
+;; PageUp/Down/Home/End), and emoji on e (fn+E -> @emoji). F5/F6 assume the modern layout (Dictation,
+;; Do Not Disturb). The macOS-specific actions are confirmed working via the VHID on turing.
 (deflayer fnrow
   _      brdown brup   mctl   sls    dtn    dnd    prev   pp     next   mute   vold   volu
   _      _      _      _      _      _      _      _      _      _      _      _      _      del
-  _      _      _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      @emoji _      _      _      _      _      _      _      _      _
   _      _      _      _      _      _      _      _      _      _      _      _      _      _
   _      _      _      _      _      _      _      _      _      _      _      _      _
-  _      _      _      _      _      _      _      _      _      _      _
+  _      _      _      _      _      _      _      home   pgup   pgdn   end
 )
 
 ;; Symbols layer (held/oneshot via right Command): programming symbols plus Portuguese accents.
