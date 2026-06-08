@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    LaunchDaemon for kanata.
+
+    Kanata needs root because the Karabiner-DriverKit-VirtualHIDDevice daemon exposes its IPC
+    under `/Library/Application Support/org.pqrs/tmp/rootonly/`, which is mode 700 owned by
+    root.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>local.kanata</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/kanata</string>
+        <string>--cfg</string>
+        <!-- FIXME: should be in a location only writable by root -->
+        <string>/Users/jonas/.config/kanata/kanata.kbd</string>
+        <!-- Don't wait for user input on exit, which would block automatic restart. -->
+        <string>--no-wait</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!--
+        Restart kanata ONLY on a non-zero exit (a crash); let a clean exit stay down.
+
+        This is launchd's equivalent of systemd's Restart=on-failure. Two payoffs:
+
+        - The kill switch (LCtrl+Space+Esc) exits 0 by default since kanata 1.11.0
+        (configurable via --emergency-exit-code; fixes #1902/#1904), so it now really
+        disables kanata and drops you to the default macOS layout for diagnosis, instead of
+        being relaunched within milliseconds.
+
+        - A sleep/wake crash (known open macOS bug #1357 on 1.11.0) exits non-zero and IS
+        relaunched, so the keyboard recovers on its own after waking.
+
+        ThrottleInterval caps relaunches to one per 10s, so a config that fails at load
+        retries calmly (visible in the log) rather than thrashing. kanata also retries the
+        Karabiner VHID connection itself, tolerating a cold start.
+    -->
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <key>StandardOutPath</key>
+    <string>/var/log/kanata.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/var/log/kanata.log</string>
+</dict>
+</plist>

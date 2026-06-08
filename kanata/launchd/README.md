@@ -1,29 +1,29 @@
-# Autostart (launchd LaunchDaemons)
+# Autostart kanata on macOS with launchd LaunchDaemons
 
 Source copies of three LaunchDaemon property lists that autostart the Karabiner driver activation,
 its VHID daemon, and kanata at boot, replacing the manual two-step in the main `CLAUDE.md`
 ("Operational Setup").
 
-**Nothing here is installed or loaded yet.** These files just live in the repo for review.
-Installing them is the manual, sudo-gated procedure below, to run only after the config is trusted.
-Until then the manual foreground-terminal method still works and doubles as a kill-switch fallback.
+**Nothing here is managed by bombadil or otherwise automatically installed.** Installing them is the
+manual, sudo-gated procedure below, to run only after the config is trusted. Until then the manual
+foreground-terminal method still works and doubles as a kill-switch fallback.
 
 All three run as **root** (kanata needs to grab the keyboard; the Karabiner pieces ship as
-root:wheel), so they are LaunchDaemons in `/Library/LaunchDaemons/`, not per-user LaunchAgents. That
-directory is root-owned and outside `$HOME`, so bombadil can't manage it — the plists are kept here
-as source and copied out by hand.
+`root:wheel`), so they are LaunchDaemons in `/Library/LaunchDaemons/`, not per-user LaunchAgents.
+That directory is root-owned and outside `$HOME`, so bombadil can't manage it — the plists are kept
+here as source and copied out by hand.
 
 ## Files
 
-- `com.jonasmalaco.karabiner-vhid-manager.plist` — runs the Karabiner Manager's `activate` once at
-  boot to (re)register the DriverKit system extension. One-shot (`RunAtLoad`, no `KeepAlive`): it
-  submits the activation request and exits. Cheap insurance that re-stages the dext after a macOS or
+- `local.karabiner-vhid-manager.plist` — runs the Karabiner Manager's `activate` once at boot to
+  (re)register the DriverKit system extension. One-shot (`RunAtLoad`, no `KeepAlive`): it submits
+  the activation request and exits. Cheap insurance that re-stages the dext after a macOS or
   Karabiner update (the usual "driver_version mismatched" cause); the OS reloads an already-approved
   extension on its own regardless. First-time approval is a manual GUI step, already done on turing.
-- `com.jonasmalaco.karabiner-vhid-daemon.plist` — the Karabiner DriverKit VirtualHIDDevice daemon.
+- `local.karabiner-vhid-daemon.plist` — the Karabiner DriverKit VirtualHIDDevice daemon.
   Prerequisite: it must be up before kanata can open the virtual keyboard.
-- `com.jonasmalaco.kanata.plist` — kanata, reading `~/.config/kanata/kanata.kbd` (the bombadil
-  symlink into this repo). Equivalent to the manual `sudo kanata --cfg ~/.config/kanata/kanata.kbd`.
+- `local.kanata.plist` — kanata, reading `~/.config/kanata/kanata.kbd` (the bombadil symlink into
+  this repo). Equivalent to the manual `sudo kanata --cfg ~/.config/kanata/kanata.kbd`.
 
 Load order is manager -> daemon -> kanata (the `install`/`uninstall` recipes handle it). launchd
 doesn't enforce ordering, and it isn't essential here: kanata retries the VHID connection on its own
@@ -65,6 +65,10 @@ to the kanata binary itself, at `/opt/homebrew/bin/kanata`:
   via `CGEventPost`; see the unicode note in `CLAUDE.md`). Without it every other remap still works
   and only the direct-unicode accents fail.
 
+> [!TIP]
+>
+> To reach `/opt/homebrew/` either show hidden files with ⌘⇧. or Go to Folder with ⌘⇧G.
+
 A background daemon can't raise the GUI permission prompt, so both must be added by hand in **System
 Settings > Privacy & Security**, under each list: click `+`, then in the file picker press
 `Cmd+Shift+G` and enter `/opt/homebrew/bin/kanata`. A logout/reboot may be needed for the grant to
@@ -92,16 +96,26 @@ just kanata install     # copy all three out, chown root:wheel + chmod 644, boot
 just kanata status      # show whether each job is loaded and running
 just kanata logs        # tail /var/log/kanata.log
 just kanata uninstall   # bootout all three and remove the installed plists
-just kanata reload com.jonasmalaco.kanata   # re-read one plist after editing it
+just kanata reload local.kanata   # re-read one plist after editing it
 ```
 
 `install` runs `lint` first, then copies because launchd refuses to load a plist that isn't
-root-owned and non-writable by group/other. `RunAtLoad` starts both immediately, and at every boot
+root-owned and non-writable by group/other. `RunAtLoad` starts all immediately, and at every boot
 thereafter.
 
 The kill switch (Left Control + Space + Escape) still terminates kanata, and per the relaunch policy
 above it stays down (clean exit 0), dropping you to the default layout; relaunch it with
-`just kanata reload com.jonasmalaco.kanata` or
-`sudo launchctl kickstart system/com.jonasmalaco.kanata`. Live reload (esc + F5) still works — it
-rereads the same `--cfg` path, so editing `kanata.kbd` needs none of the recipes above. Only editing
-a _plist_ needs `just kanata reload <label>` (a bootstrapped plist is not re-read live).
+`just kanata reload local.kanata` or `sudo launchctl kickstart system/local.kanata`.
+
+Live reload (esc + F5) still works — it rereads the same `--cfg` path, so editing `kanata.kbd` needs
+none of the recipes above. Only editing a _plist_ needs `just kanata reload <label>` (a bootstrapped
+plist is not re-read live).
+
+## Useful links
+
+- [Instructions for macOS](https://github.com/jtroo/kanata/blob/45be1c2fe15b/docs/setup-macos.md)
+- [Instructions for Linux](https://github.com/jtroo/kanata/blob/45be1c2fe15b/docs/setup-linux.md)
+- [Known issues on macOS](https://github.com/jtroo/kanata/blob/45be1c2fe15b/docs/platform-known-issues.adoc#macos)
+- [sample kanata.plist](https://github.com/jtroo/kanata/blob/45be1c2fe15b/cfg_samples/kanata.plist)
+- [sample karabiner-vhid-daemon.plist](https://github.com/jtroo/kanata/blob/45be1c2fe15b/cfg_samples/karabiner-vhid-daemon.plist)
+- [How to use Kanata from Homebrew and LaunchCtl for macOS (#1537)](https://github.com/jtroo/kanata/discussions/1537)

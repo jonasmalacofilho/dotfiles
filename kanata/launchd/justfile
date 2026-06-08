@@ -8,9 +8,9 @@
 # when these recipes are invoked through the root justfile's `mod kanata` import.
 src      := source_directory()
 dest     := "/Library/LaunchDaemons"
-manager  := "com.jonasmalaco.karabiner-vhid-manager"
-daemon   := "com.jonasmalaco.karabiner-vhid-daemon"
-kanata   := "com.jonasmalaco.kanata"
+manager  := "local.karabiner-vhid-manager"
+daemon   := "local.karabiner-vhid-daemon"
+kanata   := "local.kanata"
 
 # Load order: manager (activate the dext), then daemon, then kanata. Reverse to unload.
 # kanata also retries the VHID connection itself, so strict ordering isn't essential.
@@ -49,7 +49,7 @@ uninstall:
     @echo "Removed."
 
 # Reload after editing a plist: bootout, recopy, bootstrap. Pass the label, e.g.
-#   just reload com.jonasmalaco.kanata
+#   just reload local.kanata
 reload label:
     #!/usr/bin/env bash
     set -euo pipefail
