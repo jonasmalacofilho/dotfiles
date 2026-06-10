@@ -1,0 +1,7 @@
+/// Example. ▀ ▄ █ · × ----
+fn test(x: &mut [i32; 4]) -> impl Iterator<Item=u8> {
+    let x = x.as_ptr();
+    todo!()
+}
+
+/* More ... ::<T> -> <- => ~> <> =~ <$> <*> >>= *ptr == != && || mm ⣀⣤⣶⣿ |-| */

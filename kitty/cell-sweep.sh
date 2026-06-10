@@ -1,27 +1,33 @@
 #!/usr/bin/env bash
+
 # kitty font_size -> cell-size sweep.
 #
 # **Important**: must be executed from within a kitty window with remote control enabled:
 #
 #   kitty -o allow_remote_control=yes
 #
-# Application:
+# First:
 #
-# - run `./cell-sweep.sh 40 80 1`
+# - run `./cell-sweep.sh 80 110 1`
+# - determinate the design `w / h` ratio of the font
 # - given:
-#   - `s0` = largest size with `w/h` matching the design value (usually 0.500)
+#   - `s0` = largest size with `w / h` matching the design value (usually 0.500)
 #   - `w0` = corresponding width for `s0`
-# - approximate `s/w` by `s0/w0`
-# - set half-step as `s/w`, full step as `2*s/w`
-# - set initial font size to any value from `seq s0 -s/w 0`
+# - approximate `s / w` by `s0 / w0`
+# - compute `si = s / w * 3.75` [^1]
 #
-# To double check:
+# Then:
+# - run `./cell-sweep.sh <si> 20 <s / w>`
+# - check that the (most of the) results match or are close to the design `w / h`
+# - pick any such size as `font_size`
+# - set `change_font_size` increment/decrement to `s / w`
 #
-# - do a sweep and save the results to a file:
-#   ./cell-sweep.sh 9 16 0.05 | tee out
-# - manually look for the design w/h ratio:
-#   ./cell-sweep.sh 40 80 1
-#
+# [^1] The rationale for `3.75` is that we want to start the next step with a size that results in a
+# cell height -- roughly twice the width, even if it somewhat varies per font -- that will
+# approximate to 8 px (i.e. height > 7 px, width > 3.5 px). To account for imprecision in the
+# subsequent steps, pick the midpoint between that and exactly 8 px (i.e. height > 7.5 px, width >
+# 3.75 px.
+
 set -u
 
 probe_cell() {                          # echoes "WIDTH HEIGHT" in device px
