@@ -118,8 +118,8 @@ if status is-interactive
     abbr -a glog git log --stat
     abbr -a glop git log --stat -p
 
-    abbr -a opus claude --model opus
-    abbr -a sonnet claude --model sonnet
+    abbr -a opus claude --model opus --effort high
+    abbr -a sonnet claude --model sonnet --effort high
 
     # Manual kitty integration, since from its (and the system's) perspective my default shell is
     # bash (so that /etc/profile.d/* gets sourced).
