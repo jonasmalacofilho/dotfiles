@@ -4,6 +4,10 @@ mod kanata 'kanata/launchd'
 # user systemd units (Linux/calvin); see systemd/justfile
 mod systemd 'systemd'
 
+# List recipes (default).
+default:
+    @just --list
+
 link:
     bombadil link -p macos
 
