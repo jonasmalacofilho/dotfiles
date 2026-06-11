@@ -1,0 +1,233 @@
+#!/usr/bin/env bash
+# calvin-health-check -- report and alarm on calvin's stability-critical
+# hardware: the unstable GTX 1080 PCIe link, the ragnut UPS, the Kraken X62
+# cooling loop, and the CPU package temperature.
+#
+# Modes:
+#   boot    At graphical-session start, emit one not-too-intrusive "system
+#           state" summary (normal urgency) covering every subsystem, plus a
+#           critical alarm for each subsystem already in a failure state.
+#   check   Periodic watch (the default). Stay silent while healthy; raise a
+#           focused alarm per failing subsystem.
+#
+# The GTX 1080 is stable at x8 but unstable at x16: from a fresh x16 link it
+# degrades and eventually crashes the kernel driver, taking the whole system
+# down with it. So we want it to boot at x8 and stay there. x8 is healthy;
+# anything above x8 is the dangerous state and always critical; dipping below x8
+# after boot is merely unexpected and gets a softer alarm.
+#
+# Pass --dry-run (or set HEALTH_CHECK_DRY_RUN=1) to print notifications to
+# stdout instead of sending them, which is handy for testing.
+
+set -uo pipefail
+
+# --- configuration -----------------------------------------------------------
+
+# All thresholds are env-overridable, mostly to make failure paths testable.
+GPU_TARGET_LANES=${GPU_TARGET_LANES:-8}     # stable PCIe width; above x8 precedes a crash
+CPU_MAX_TEMP=${CPU_MAX_TEMP:-90}            # degC package; sustained heat hints dried liquid metal
+COOLANT_MAX_TEMP=${COOLANT_MAX_TEMP:-45}    # degC
+PUMP_MIN_RPM=${PUMP_MIN_RPM:-1500}          # rpm
+UPS_NAME=${UPS_NAME:-ragnut}
+UPS_MIN_CHARGE=${UPS_MIN_CHARGE:-50}        # percent; only an alarm at boot (else it is just recharging)
+UPS_MAX_TEMP=${UPS_MAX_TEMP:-60}            # degC; ragnut hides its overtemp bit, so we threshold ups.temperature
+
+# --- arguments ---------------------------------------------------------------
+
+mode=check
+dry_run=${HEALTH_CHECK_DRY_RUN:-0}
+
+usage() {
+  sed -n '2,21p' "$0" | sed 's/^# \{0,1\}//'
+}
+
+for arg in "$@"; do
+  case $arg in
+    boot|check) mode=$arg ;;
+    --dry-run)  dry_run=1 ;;
+    -h|--help)  usage; exit 0 ;;
+    *) printf 'calvin-health-check: unknown argument: %s\n' "$arg" >&2; exit 2 ;;
+  esac
+done
+
+# This check pokes calvin-specific devices (the ragnut UPS, this Kraken, this
+# GPU). The name is the main guard against running it elsewhere; this is the
+# backstop. Override with HEALTH_CHECK_FORCE=1.
+host=${HOSTNAME:-$(hostname)}
+if [[ $host != calvin && ${HEALTH_CHECK_FORCE:-0} != 1 ]]; then
+  printf 'calvin-health-check: meant for calvin, not %s (set HEALTH_CHECK_FORCE=1 to override)\n' "$host" >&2
+  exit 3
+fi
+
+# --- notifications -----------------------------------------------------------
+
+# notify <urgency> <tag> <title> [body]
+# The tag lets repeat alarms replace rather than stack (honored by dunst and
+# GNOME via the x-canonical-private-synchronous hint).
+notify() {
+  local urgency=$1 tag=$2 title=$3 body=${4:-}
+  if [[ $dry_run == 1 ]]; then
+    printf '  notify[%-8s %-8s] %s%s\n' "$urgency" "$tag" "$title" "${body:+ -- $body}"
+    return
+  fi
+  notify-send --app-name=calvin-health-check --urgency="$urgency" \
+    --hint="string:x-canonical-private-synchronous:health-$tag" \
+    -- "$title" "$body"
+}
+
+# Join the remaining arguments with the first as separator, which "${a[*]}"
+# cannot do for a multi-character separator (it only uses IFS's first char).
+join() {
+  local sep=$1; shift
+  local first=${1-}; shift || true
+  printf '%s' "$first" "${@/#/$sep}"
+}
+
+# --- subsystem checks --------------------------------------------------------
+#
+# Each check prints one tab-separated record: <severity><TAB><label><TAB><short>
+# <TAB><long>, where severity is ok, warn, or crit. "short" is the compact
+# reading for the at-a-glance boot summary; "long" is the detail for a focused
+# alarm. They differ because GNOME collapses a notification body to one line.
+
+gpu_check() {
+  local lanes
+  lanes=$(nvidia-settings -tq PCIECurrentLinkWidth 2>/dev/null)
+  if [[ -z $lanes ]]; then
+    printf 'crit\tGPU\tlink?\tPCIe link width unavailable (nvidia-settings failed)\n'
+  elif (( lanes == GPU_TARGET_LANES )); then
+    printf 'ok\tGPU\tx%d\tPCIe x%d (stable target)\n' "$lanes" "$lanes"
+  elif [[ $mode == check ]] && (( lanes < GPU_TARGET_LANES )); then
+    printf 'warn\tGPU\tx%d\tPCIe dipped to x%d, under the x%d target\n' "$lanes" "$lanes" "$GPU_TARGET_LANES"
+  else
+    printf 'crit\tGPU\tx%d\tPCIe at x%d, expected x%d -- driver-crash risk\n' "$lanes" "$lanes" "$GPU_TARGET_LANES"
+  fi
+}
+
+ups_check() {
+  local status charge temp alarm short sev=ok issues=()
+  status=$(upsc "$UPS_NAME" ups.status 2>/dev/null)
+  if [[ -z $status ]]; then
+    printf 'crit\tUPS\tunreachable\t%s unreachable\n' "$UPS_NAME"
+    return
+  fi
+  charge=$(upsc "$UPS_NAME" battery.charge 2>/dev/null)
+  temp=$(upsc "$UPS_NAME" ups.temperature 2>/dev/null)
+  alarm=$(upsc "$UPS_NAME" ups.alarm 2>/dev/null)
+  short="$status ${charge:-?}% ${temp:-?}°C"
+
+  if [[ $status != *OL* && $status != *OB* ]]; then sev=crit; issues+=("status $status"); fi
+  [[ $status == *OB* ]]   && { sev=crit; issues+=("on battery"); }
+  [[ $status == *LB* ]]   && { sev=crit; issues+=("low battery"); }
+  [[ $status == *RB* ]]   && { sev=crit; issues+=("replace battery"); }
+  [[ $status == *OVER* ]] && { sev=crit; issues+=("overload"); }
+  [[ $status == *FSD* ]]  && { sev=crit; issues+=("forced shutdown"); }
+  # On mains a low charge just means it is recharging; only flag it at boot.
+  if [[ $mode == boot && -n $charge ]] && (( charge < UPS_MIN_CHARGE )); then sev=crit; issues+=("charge ${charge}%"); fi
+  # TODO: ragnut decodes F_FOVERTEMP and the inverter-fault bit but only prints
+  # them under --debug. If it ever publishes them (a fault token in ups.status, or
+  # ups.alarm), prefer those over this ups.temperature proxy -- ups.alarm already
+  # gets picked up below.
+  [[ -n $temp ]] && (( ${temp%.*} >= UPS_MAX_TEMP )) && { sev=crit; issues+=("temperature ${temp}°C"); }
+  # ragnut does not expose ups.alarm, but include it for UPSes that do.
+  [[ -n $alarm ]] && { sev=crit; issues+=("alarm: $alarm"); }
+
+  if [[ $sev == ok ]]; then
+    printf 'ok\tUPS\t%s\t%s\n' "$short" "$short"
+  else
+    printf 'crit\tUPS\t%s\t%s (%s)\n' "$short" "$status" "$(join '; ' "${issues[@]}")"
+  fi
+}
+
+# Coolant and pump are two readings off the one Kraken AIO, so report them as a
+# single subsystem (like the UPS line aggregates its own).
+cooling_check() {
+  local json coolant pump short sev=ok issues=()
+  json=$(liquidctl --match kraken --json status 2>/dev/null)
+  if [[ -z $json ]]; then
+    printf 'crit\tKraken\tunavailable\tstatus unavailable (liquidctl failed)\n'
+    return
+  fi
+  coolant=$(jq -r 'first(.[].status[] | select(.key=="Liquid temperature").value) | round' <<<"$json")
+  pump=$(jq -r 'first(.[].status[] | select(.key=="Pump speed").value) | round' <<<"$json")
+  short="${coolant:-?}°C ${pump:-?}rpm"
+
+  if [[ -z $coolant || $coolant == null ]]; then
+    sev=crit; issues+=("coolant temperature missing")
+  elif (( coolant >= COOLANT_MAX_TEMP )); then
+    sev=crit; issues+=("coolant ${coolant}°C (limit ${COOLANT_MAX_TEMP})")
+  fi
+  if [[ -z $pump || $pump == null ]]; then
+    sev=crit; issues+=("pump speed missing")
+  elif (( pump <= PUMP_MIN_RPM )); then
+    sev=crit; issues+=("pump ${pump} rpm (floor ${PUMP_MIN_RPM})")
+  fi
+
+  if [[ $sev == ok ]]; then
+    printf 'ok\tKraken\t%s\t%s\n' "$short" "$short"
+  else
+    printf 'crit\tKraken\t%s\t%s\n' "$short" "$(join '; ' "${issues[@]}")"
+  fi
+}
+
+cpu_check() {
+  local temp
+  temp=$(sensors -j coretemp-isa-0000 2>/dev/null | jq -r \
+    'first(.[] | objects | to_entries[] | select(.key|test("Package")) | .value
+      | to_entries[] | select(.key|endswith("_input")).value) | round')
+  if [[ -z $temp || $temp == null ]]; then
+    printf 'crit\tCPU\t?°C\tpackage temperature unavailable\n'
+  elif (( temp < CPU_MAX_TEMP )); then
+    printf 'ok\tCPU\t%d°C\t%d°C package\n' "$temp" "$temp"
+  else
+    printf 'crit\tCPU\t%d°C\t%d°C package, at/above %d°C -- liquid metal may have dried\n' "$temp" "$temp" "$CPU_MAX_TEMP"
+  fi
+}
+
+# --- run & report ------------------------------------------------------------
+
+records=$(gpu_check; ups_check; cooling_check; cpu_check)
+
+declare -a summary=()
+declare -a failures=()   # "sev<TAB>label<TAB>long"
+worst=ok
+
+# GNOME collapses a notification body to a single wrapped line, so the summary
+# is one compact "Label reading" cell per subsystem, joined by " · ", with only
+# the failing cells flagged. The detailed reasons go to the per-subsystem alarm.
+while IFS=$'\t' read -r sev label short long; do
+  [[ -z $sev ]] && continue
+  case $sev in
+    ok)   mark='' ;;
+    warn) mark='⚠ '; [[ $worst == ok ]] && worst=warn ;;
+    crit) mark='⚠ '; worst=crit ;;
+  esac
+  summary+=("${mark}${label} ${short}")
+  [[ $sev != ok ]] && failures+=("$sev"$'\t'"$label"$'\t'"$long")
+done <<<"$records"
+
+# Always leave a one-line trail in the journal, readings included.
+printf '%s mode=%s worst=%s failures=%d | %s\n' \
+  "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$mode" "$worst" "${#failures[@]}" "$(join ' · ' "${summary[@]}")"
+
+if [[ $mode == boot ]]; then
+  case $worst in
+    ok)   headline='Health check: all nominal' ;;
+    warn) headline='Health check: minor issue' ;;
+    crit) headline='Health check: needs attention' ;;
+  esac
+  notify normal summary "$headline" "$(join ' · ' "${summary[@]}")"
+fi
+
+for failure in "${failures[@]}"; do
+  IFS=$'\t' read -r sev label long <<<"$failure"
+  # At boot every failure is critical; during the periodic watch a GPU dip
+  # below x8 (warn) stays soft, while everything else is critical.
+  if [[ $mode == boot || $sev == crit ]]; then
+    notify critical "$label" "Health check ALARM: $label needs attention" "$long"
+  else
+    notify normal "$label" "Health check: $label needs attention" "$long"
+  fi
+done
+
+exit 0

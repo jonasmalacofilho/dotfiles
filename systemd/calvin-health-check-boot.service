@@ -1,0 +1,12 @@
+[Unit]
+Description=Report calvin's hardware health at graphical-session start
+After=graphical-session.target
+
+[Service]
+Type=oneshot
+# Let the session, the NVIDIA driver and the devices settle before reading them.
+ExecStartPre=/usr/bin/sleep 5
+ExecStart=%h/dotfiles/bin/calvin-health-check boot
+
+[Install]
+WantedBy=graphical-session.target

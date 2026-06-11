@@ -1,0 +1,14 @@
+[Unit]
+Description=Periodic calvin hardware health check
+# Bound to the graphical session so the checks only run while there is a session
+# to read devices from and a bus to notify on; the boot service covers session
+# start, so the timer just keeps the watch going afterwards.
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Timer]
+OnActiveSec=30min
+OnUnitActiveSec=30min
+
+[Install]
+WantedBy=graphical-session.target
