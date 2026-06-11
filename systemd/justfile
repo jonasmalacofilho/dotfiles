@@ -1,0 +1,36 @@
+# Install user systemd units into ~/.config/systemd/user and reload the user
+# manager. Linux/calvin only; these drive calvin-health-check and the legacy
+# faulty-GPU link-width check. Invoked through the root justfile's `mod systemd`.
+
+# source_directory() (not justfile_directory()) so the unit paths resolve to this
+# folder even when these recipes run via the root justfile's `mod systemd` import.
+src  := source_directory()
+dest := env('HOME') / ".config/systemd/user"
+
+# List recipes (default).
+default:
+    @just --list
+
+# Reload the user manager after editing an installed unit.
+reload:
+    systemctl --user daemon-reload
+
+# Install the Haxe compilation-server unit.
+haxe: (_install "haxe.service")
+
+# Install the legacy faulty-GPU link-width check (superseded by calvin-health-check).
+check-gtx1080: (_install "check-gtx1080.service")
+
+# Install all three calvin-health-check units (boot + check services, timer).
+calvin-health-check: (_install "calvin-health-check-boot.service" "calvin-health-check.service" "calvin-health-check.timer")
+
+# Copy the named unit files from this dir into the user unit dir, then reload.
+[private]
+_install +units:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p "{{dest}}"
+    for u in {{units}}; do
+        cp "{{src}}/$u" "{{dest}}/$u"
+    done
+    systemctl --user daemon-reload

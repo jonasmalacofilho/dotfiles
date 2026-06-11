@@ -1,6 +1,9 @@
 # kanata autostart (launchd LaunchDaemons); see kanata/launchd/README.md
 mod kanata 'kanata/launchd'
 
+# user systemd units (Linux/calvin); see systemd/justfile
+mod systemd 'systemd'
+
 link:
     bombadil link -p macos
 
