@@ -4,3 +4,7 @@
 .local/
 tags
 venv/
+
+# Canary file created by vim that can prematurely trigger inotify watchers.
+# - https://github.com/neovim/neovim/blob/16549f2f4037/src/nvim/bufwrite.c#L746-L753
+4913
