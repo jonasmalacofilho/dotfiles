@@ -17,10 +17,10 @@
 # - compute `si = s / w * 3.75` [^1]
 #
 # Then:
-# - run `./cell-sweep.sh <si> 20 <s / w>`
+# - run `./cell-sweep.sh <si> 20 <2 * s / w>`
 # - check that the (most of the) results match or are close to the design `w / h`
 # - pick any such size as `font_size`
-# - set `change_font_size` increment/decrement to `s / w`
+# - set `change_font_size` increment/decrement to `s / w * 2`
 #
 # [^1] The rationale for `3.75` is that we want to start the next step with a size that results in a
 # cell height -- roughly twice the width, even if it somewhat varies per font -- that will
