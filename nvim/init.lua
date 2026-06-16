@@ -375,6 +375,9 @@ require('lazy').setup({
           --  the definition of its *type*, not where it was *defined*.
           map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
 
+          -- NOTE: another default mapping, `<C-Space>` to refine, requires disabling macOS
+          -- swallowing of that chord as a shorcut to switch input sources.
+
           -- Custom mappings.
 
           -- Jump to the declaration of the word under your cursor.
