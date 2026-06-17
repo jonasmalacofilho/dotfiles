@@ -37,8 +37,10 @@ options:
                   already available locally to verify against
   -h, --help      show this help
 
-By default the prunable branches are listed and a single y/N confirmation is
-requested before anything is deleted.
+By default, on an interactive terminal with `gum` installed, the prunable
+branches are offered as a multi-select with every one pre-selected, so
+deselecting is how you spare a branch. Without gum they are listed and a single
+y/N confirmation covers the whole set. -y skips selection and deletes them all.
 EOF
 }
 
@@ -236,42 +238,79 @@ if [ "${#pend_names[@]}" -gt 0 ]; then
     fi
 fi
 
-if [ "${#del_names[@]}" -eq 0 ]; then
-    echo "No prunable branches."
-else
-    echo "${bold}Prunable branches:${reset}"
-    for i in "${!del_names[@]}"; do
-        printf '  %s%-30s%s  %s%s%s\n' \
-            "$bold" "${del_names[$i]}" "$reset" "$dim" "${del_reasons[$i]}" "$reset"
-    done
-fi
-
+# Informational: branches that matched a merged PR by name but whose tip is not
+# contained in it, so they are kept rather than deleted.
 if [ "${#skip_names[@]}" -gt 0 ]; then
-    echo
     echo "${bold}Kept (matched a merged PR, tip not contained in it):${reset}"
     for i in "${!skip_names[@]}"; do
         printf '  %s%-30s%s  %s%s%s\n' \
             "$bold" "${skip_names[$i]}" "$reset" "$dim" "${skip_reasons[$i]}" "$reset"
     done
+    echo
 fi
 
-[ "${#del_names[@]}" -gt 0 ] || exit 0
-
-if [ "$dry_run" -eq 1 ]; then
+if [ "${#del_names[@]}" -eq 0 ]; then
+    echo "No prunable branches."
     exit 0
 fi
 
-if [ "$assume_yes" -ne 1 ]; then
-    printf 'Delete these %d branch(es)? (y/N) ' "${#del_names[@]}"
-    read -r response </dev/tty || { echo; exit 1; }
-    case "$response" in
-        y|Y) ;;
-        *) echo "Aborted."; exit 2 ;;
-    esac
+print_prunable() {
+    echo "${bold}Prunable branches:${reset}"
+    for i in "${!del_names[@]}"; do
+        printf '  %s%-30s%s  %s%s%s\n' \
+            "$bold" "${del_names[$i]}" "$reset" "$dim" "${del_reasons[$i]}" "$reset"
+    done
+}
+
+if [ "$dry_run" -eq 1 ]; then
+    print_prunable
+    exit 0
+fi
+
+# Choose which branches to actually delete. With gum on an interactive terminal,
+# offer a multi-select of all prunable branches, every one pre-selected, so
+# deselecting is how you keep a branch. Otherwise fall back to listing them and
+# asking for a single y/N over the whole set.
+deletes=()
+if [ "$assume_yes" -ne 1 ] && [ -t 1 ] && command -v gum >/dev/null 2>&1; then
+    options=""
+    for i in "${!del_names[@]}"; do
+        options+="${del_names[$i]} -- ${del_reasons[$i]}"$'\t'"${del_names[$i]}"$'\n'
+    done
+    selected=$(printf '%s' "$options" | gum choose --no-limit --selected='*' \
+        --label-delimiter=$'\t' --height=20 \
+        --header="Branches to delete (space toggles, enter confirms, esc aborts):") \
+        || { echo "Aborted."; exit 2; }
+    while IFS= read -r name; do
+        [ -n "$name" ] || continue
+        for i in "${!del_names[@]}"; do
+            if [ "${del_names[$i]}" = "$name" ]; then
+                deletes+=("$i")
+                break
+            fi
+        done
+    done <<<"$selected"
+    if [ "${#deletes[@]}" -eq 0 ]; then
+        echo "Nothing selected; aborted."
+        exit 2
+    fi
+else
+    print_prunable
+    if [ "$assume_yes" -ne 1 ]; then
+        printf 'Delete these %d branch(es)? (y/N) ' "${#del_names[@]}"
+        read -r response </dev/tty || { echo; exit 1; }
+        case "$response" in
+            y|Y) ;;
+            *) echo "Aborted."; exit 2 ;;
+        esac
+    fi
+    for i in "${!del_names[@]}"; do
+        deletes+=("$i")
+    done
 fi
 
 status=0
-for i in "${!del_names[@]}"; do
+for i in "${deletes[@]}"; do
     if ! git branch "${del_modes[$i]}" "${del_names[$i]}"; then
         echo "${red}failed to delete ${del_names[$i]}${reset}" >&2
         status=1
