@@ -1,0 +1,280 @@
+#!/bin/bash
+# git-prune-merged -- delete local branches that have already landed.
+#
+# A branch is considered prunable when, in this order:
+#   1. its tip is an ancestor of the principal remote's head (upstream, else
+#      origin) -- a real merge or fast-forward landed there;
+#   2. its tip is an ancestor of the local main branch (main/master/trunk);
+#   3. it backs a pull request that GitHub reports as merged, AND its tip is the
+#      PR's head commit or an ancestor of it. This catches squash- and
+#      rebase-merges, which leave no ancestry in main, while refusing to drop a
+#      branch carrying local commits that never made it into the PR.
+#
+# Cases 1 and 2 delete with `git branch -d`, which refuses to drop a branch that
+# isn't actually merged, so an ancestry mistake can't lose work. Case 3 deletes
+# with `git branch -D`, justified by having verified the tip against the merged
+# PR's head commit -- fetching refs/pull/<n>/head when that commit isn't already
+# present locally (suppress the network with --offline, which keeps such a
+# branch instead).
+#
+# Usage: git prune-merged [-n|--dry-run] [-y|--yes] [--fetch] [--offline]
+
+set -uo pipefail
+
+usage() {
+    cat <<'EOF'
+usage: git prune-merged [options]
+
+Delete local branches already merged upstream, into local main, or via a
+merged/rebase-merged/squash-merged pull request whose head commit the local
+branch tip matches or precedes.
+
+options:
+  -n, --dry-run   list prunable branches and reasons, delete nothing
+  -y, --yes       delete without the confirmation prompt
+      --fetch     run `git fetch --all --prune` first to refresh remote refs
+      --offline   no network; skip (keep) PR matches whose head commit isn't
+                  already available locally to verify against
+  -h, --help      show this help
+
+By default the prunable branches are listed and a single y/N confirmation is
+requested before anything is deleted.
+EOF
+}
+
+dry_run=0
+assume_yes=0
+do_fetch=0
+offline=0
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -n|--dry-run) dry_run=1 ;;
+        -y|--yes) assume_yes=1 ;;
+        --fetch) do_fetch=1 ;;
+        --offline) offline=1 ;;
+        -h|--help) usage; exit 0 ;;
+        *) echo "error: unknown argument: $1" >&2; usage >&2; exit 2 ;;
+    esac
+    shift
+done
+
+git rev-parse --git-dir >/dev/null 2>&1 || {
+    echo "error: not a git repository" >&2
+    exit 2
+}
+
+if [ -t 1 ]; then
+    bold=$(tput bold) dim=$(tput dim) red=$(tput setaf 1) reset=$(tput sgr0)
+else
+    bold="" dim="" red="" reset=""
+fi
+
+# Temp refs used to verify PR matches are cleaned up on exit no matter what.
+# shellcheck disable=SC2329  # invoked indirectly via the EXIT trap below
+cleanup_verify_refs() {
+    git for-each-ref --format='delete %(refname)' refs/prune-merged/verify 2>/dev/null \
+        | git update-ref --stdin 2>/dev/null
+}
+trap cleanup_verify_refs EXIT
+
+if [ "$do_fetch" -eq 1 ] && [ "$offline" -eq 0 ]; then
+    echo "${dim}fetching...${reset}"
+    git fetch --all --prune
+fi
+
+# Principal remote: upstream if it exists, else origin.
+remote=""
+for r in upstream origin; do
+    if git remote get-url "$r" >/dev/null 2>&1; then
+        remote="$r"
+        break
+    fi
+done
+
+# That remote's head ref, e.g. upstream/main; fall back to <remote>/<main name>.
+remote_ref=""
+if [ -n "$remote" ]; then
+    rh=$(git rev-parse --abbrev-ref "$remote/HEAD" 2>/dev/null)
+    if [ -n "$rh" ] && git rev-parse --verify --quiet "refs/remotes/$rh" >/dev/null; then
+        remote_ref="$rh"
+    fi
+fi
+
+# Local main branch, by the same heuristic as the git_main_branch fish helper.
+main_branch=""
+for b in main master trunk; do
+    if git show-ref -q --verify "refs/heads/$b"; then
+        main_branch="$b"
+        break
+    fi
+done
+if [ -z "$remote_ref" ] && [ -n "$remote" ] && [ -n "$main_branch" ] \
+    && git rev-parse --verify --quiet "refs/remotes/$remote/$main_branch" >/dev/null; then
+    remote_ref="$remote/$main_branch"
+fi
+
+current=$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)
+
+# Branches checked out in any worktree cannot be deleted; collect them to skip.
+checked_out=$(git worktree list --porcelain 2>/dev/null \
+    | sed -n 's#^branch refs/heads/##p')
+
+# Merged PRs, as "<headRefName>\t<number>\t<headRefOid>" lines, one gh call.
+merged_prs=""
+if command -v gh >/dev/null 2>&1; then
+    merged_prs=$(gh pr list --state merged --limit 500 \
+        --json number,headRefName,headRefOid \
+        --jq '.[] | "\(.headRefName)\t\(.number)\t\(.headRefOid)"' 2>/dev/null) || {
+        echo "${dim}note: gh unavailable here; skipping pull-request detection${reset}" >&2
+        merged_prs=""
+    }
+fi
+
+is_checked_out() {
+    local name
+    while IFS= read -r name; do
+        [ "$name" = "$1" ] && return 0
+    done <<<"$checked_out"
+    return 1
+}
+
+# "<number>\t<headRefOid>" of the merged PR whose head ref matches $1, or empty.
+merged_pr_for() {
+    [ -n "$merged_prs" ] || return 0
+    awk -F'\t' -v ref="$1" '$1 == ref { print $2 "\t" $3; exit }' <<<"$merged_prs"
+}
+
+del_names=()
+del_modes=()
+del_reasons=()
+skip_names=()
+skip_reasons=()
+pend_names=()
+pend_nums=()
+
+while IFS= read -r branch; do
+    [ -n "$branch" ] || continue
+    [ "$branch" = "$main_branch" ] && continue
+    [ "$branch" = "$current" ] && continue
+    is_checked_out "$branch" && continue
+
+    if [ -n "$remote_ref" ] \
+        && git merge-base --is-ancestor "$branch" "refs/remotes/$remote_ref" 2>/dev/null; then
+        del_names+=("$branch"); del_modes+=("-d"); del_reasons+=("merged into $remote_ref")
+        continue
+    fi
+    if [ -n "$main_branch" ] \
+        && git merge-base --is-ancestor "$branch" "refs/heads/$main_branch" 2>/dev/null; then
+        del_names+=("$branch"); del_modes+=("-d"); del_reasons+=("merged into $main_branch")
+        continue
+    fi
+
+    # Match by the branch's pushed upstream name, falling back to its own.
+    # `rev-parse @{upstream}` prints the literal arg on stdout even when it
+    # fails (no upstream configured), so gate on its exit status.
+    if head_ref=$(git rev-parse --abbrev-ref "$branch@{upstream}" 2>/dev/null); then
+        head_ref="${head_ref#*/}"
+    else
+        head_ref="$branch"
+    fi
+    match=$(merged_pr_for "$head_ref")
+    [ -n "$match" ] || continue
+    pr="${match%%$'\t'*}"
+    oid="${match#*$'\t'}"
+
+    # A name match is only a candidate: verify the tip really landed in the PR,
+    # i.e. it is the PR's head commit or an ancestor of it. Anything else means
+    # the local branch carries work the PR never had, so it must be kept.
+    tip=$(git rev-parse --verify --quiet "$branch") || continue
+    if [ "$tip" = "$oid" ]; then
+        del_names+=("$branch"); del_modes+=("-D"); del_reasons+=("PR #$pr merged")
+        continue
+    fi
+    if git cat-file -e "$oid^{commit}" 2>/dev/null; then
+        # PR head commit is known locally, so this is a definitive answer.
+        if git merge-base --is-ancestor "$branch" "$oid" 2>/dev/null; then
+            del_names+=("$branch"); del_modes+=("-D"); del_reasons+=("PR #$pr merged")
+        else
+            skip_names+=("$branch")
+            skip_reasons+=("PR #$pr merged, but local tip diverged from PR head -- kept")
+        fi
+        continue
+    fi
+    # The PR head commit isn't available locally; defer to a batched fetch.
+    pend_names+=("$branch"); pend_nums+=("$pr")
+done < <(git for-each-ref --format='%(refname:short)' refs/heads)
+
+# Resolve deferred PR matches by fetching their head commits in one round trip.
+if [ "${#pend_names[@]}" -gt 0 ]; then
+    if [ "$offline" -eq 1 ] || [ -z "$remote" ]; then
+        for i in "${!pend_names[@]}"; do
+            skip_names+=("${pend_names[$i]}")
+            skip_reasons+=("PR #${pend_nums[$i]} merged; PR head not local, not verified (no network)")
+        done
+    else
+        specs=()
+        for i in "${!pend_names[@]}"; do
+            specs+=("+refs/pull/${pend_nums[$i]}/head:refs/prune-merged/verify/${pend_nums[$i]}")
+        done
+        echo "${dim}verifying ${#pend_names[@]} branch(es) against their PR heads...${reset}" >&2
+        if git fetch --quiet "$remote" "${specs[@]}" 2>/dev/null; then
+            for i in "${!pend_names[@]}"; do
+                b="${pend_names[$i]}"; n="${pend_nums[$i]}"
+                if git merge-base --is-ancestor "$b" "refs/prune-merged/verify/$n" 2>/dev/null; then
+                    del_names+=("$b"); del_modes+=("-D"); del_reasons+=("PR #$n merged")
+                else
+                    skip_names+=("$b")
+                    skip_reasons+=("PR #$n merged, but local tip diverged from PR head -- kept")
+                fi
+            done
+        else
+            for i in "${!pend_names[@]}"; do
+                skip_names+=("${pend_names[$i]}")
+                skip_reasons+=("PR #${pend_nums[$i]} merged; couldn't fetch PR head to verify -- kept")
+            done
+        fi
+    fi
+fi
+
+if [ "${#del_names[@]}" -eq 0 ]; then
+    echo "No prunable branches."
+else
+    echo "${bold}Prunable branches:${reset}"
+    for i in "${!del_names[@]}"; do
+        printf '  %s%-30s%s  %s%s%s\n' \
+            "$bold" "${del_names[$i]}" "$reset" "$dim" "${del_reasons[$i]}" "$reset"
+    done
+fi
+
+if [ "${#skip_names[@]}" -gt 0 ]; then
+    echo
+    echo "${bold}Kept (matched a merged PR, tip not contained in it):${reset}"
+    for i in "${!skip_names[@]}"; do
+        printf '  %s%-30s%s  %s%s%s\n' \
+            "$bold" "${skip_names[$i]}" "$reset" "$dim" "${skip_reasons[$i]}" "$reset"
+    done
+fi
+
+[ "${#del_names[@]}" -gt 0 ] || exit 0
+
+if [ "$dry_run" -eq 1 ]; then
+    exit 0
+fi
+
+if [ "$assume_yes" -ne 1 ]; then
+    printf 'Delete these %d branch(es)? (y/N) ' "${#del_names[@]}"
+    read -r response </dev/tty || { echo; exit 1; }
+    case "$response" in
+        y|Y) ;;
+        *) echo "Aborted."; exit 2 ;;
+    esac
+fi
+
+status=0
+for i in "${!del_names[@]}"; do
+    if ! git branch "${del_modes[$i]}" "${del_names[$i]}"; then
+        echo "${red}failed to delete ${del_names[$i]}${reset}" >&2
+        status=1
+    fi
+done
+exit $status
