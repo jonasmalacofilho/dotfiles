@@ -3,5 +3,5 @@ function mano --description 'Open man page jumping to where an option is defined
         echo "Usage: mano <page> <option>" >&2
         return 1
     end
-    man -P "less '+/^ *$argv[2][^a-zA-Z0-9-]?'" $argv[1]
+    man -P "less '+/^ *(-[^,]*, )*$argv[2][^a-zA-Z0-9-]?'" $argv[1]
 end
