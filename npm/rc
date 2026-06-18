@@ -1,1 +1,3 @@
+allow-git=none
+allow-remote=none
 ignore-scripts=true
