@@ -1,4 +1,4 @@
-function confirm2 -d "Summarize \$argv with Claude, then confirm before executing it"
+function confirm2 -d "Summarize \$argv with Claude, discuss it, then confirm before executing"
     argparse --ignore-unknown "accept-no" "prompt=" -- $argv
     or return
 
@@ -14,17 +14,35 @@ function confirm2 -d "Summarize \$argv with Claude, then confirm before executin
         "$cmd")"
 
     set -l dim (set_color brblack)
+    set -l bold (set_color --bold)
     set -l normal (set_color normal)
+
+    # Pin a session id so the summary can be resumed for an interactive discussion.
+    set -l sid (uuidgen)
 
     echo $dim"Asking Claude what this would do..."$normal
     echo
-    claude --model opus --effort high --allowed-tools "Bash(man:*)" -p $prompt </dev/null
+    claude --model opus --effort high --allowed-tools "Bash(man:*)" \
+        --session-id $sid -p $prompt </dev/null
     echo
 
-    echo "Command: "(set_color --bold)$cmd$normal
-    # Delegate to confirm for the y/N prompt and execution, forwarding flags.
-    set -l fwd
-    set -q _flag_accept_no; and set -a fwd --accept-no
-    set -q _flag_prompt; and set -a fwd --prompt $_flag_prompt
-    confirm $fwd -- $argv
+    set -l header "$_flag_prompt"
+    test -z "$header"; and set header "Run this command?"
+
+    while true
+        echo "Command: "$bold$cmd$normal
+        switch (gum choose run discuss abort --header "$header")
+            case run
+                $argv
+                return
+            case discuss
+                # Resume the summary session interactively to talk it over,
+                # then return to the menu to decide.
+                claude --model opus --effort high --resume $sid
+            case abort '*'
+                test -n "$_flag_accept_no"; and return
+                echo "Aborted"
+                return 2
+        end
+    end
 end
