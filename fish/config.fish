@@ -52,6 +52,7 @@ if status is-interactive
     abbr -a b btop
     abbr -a bl bombadil link
     abbr -a con confirm
+    abbr -a con2 confirm2
     abbr -a f fg
     abbr -a h htop
     abbr -a icat kitten icat
