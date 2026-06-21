@@ -21,8 +21,8 @@ haxe: (_install "haxe.service")
 # Install the legacy faulty-GPU link-width check (superseded by calvin-health-check).
 check-gtx1080: (_install "check-gtx1080.service")
 
-# Install all three calvin-health-check units (boot + check services, timer).
-calvin-health-check: (_install "calvin-health-check-boot.service" "calvin-health-check.service" "calvin-health-check.timer")
+# Install all calvin-health-check units (boot + check services, both timers).
+calvin-health-check: (_install "calvin-health-check-boot.service" "calvin-health-check-boot.timer" "calvin-health-check.service" "calvin-health-check.timer")
 
 # Copy the named unit files from this dir into the user unit dir, then reload.
 [private]
