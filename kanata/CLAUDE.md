@@ -37,16 +37,23 @@ Two physical keyboards in play; one kanata config is meant to serve both (see "M
 - The Aula `fn` key is firmware-only: it never reaches the OS and can only be reassigned with Aula's
   proprietary (Windows) software, and even then only to keyboard-scope functions — it can never be
   sent to the OS as an ordinary key.
-- The keyd setup assumed the Aula was firmware-remapped: fn-labelled key -> Right Alt, Esc-labelled
-  key -> Fn. The Mac port needs a different scheme (see open decision below).
+- **Firmware remap (current).** The Aula's firmware-fn is now triggered by a **short hold of F1**; a
+  short tap on F1 just sends `F1`. At the firmware level `esc` and `caps` are left as plain `esc`
+  and `caps` — no firmware remap on either. Keeping Esc plain in firmware is deliberate: it frees
+  the Esc key for the config to overload, and **overloading `esc` is reserved for the macOS fn**,
+  which (unlike the Aula firmware-fn) does reach the OS. This supersedes the old keyd assumption
+  that the Aula was firmware-remapped fn-labelled key -> Right Alt, Esc-labelled key -> Fn.
 - The Aula has a "mac mode" but it has other issues; decision: **not using it**.
 
-#### OPEN DECISION: where Mac's fn lands on the Aula
+#### DECISION: where Mac's fn lands on the Aula
 
-Mac's config leans on a real `fn` key, but the Aula can't send fn to the OS. Leaning toward using
-the Esc-labelled key position to stand in for Mac's fn, which implies relocating the Aula's own fn
-functionality elsewhere and adjusting the firmware remaps accordingly. Not yet settled — revisit
-when the Aula is actually wired into this config.
+Mac's config leans on a real `fn` key, but the Aula can't send fn to the OS. Settled on the firmware
+side: the Aula's own firmware-fn was relocated to a short hold of F1, freeing Esc, and `esc`/`caps`
+are kept plain in firmware. So the **Esc-labelled key position stands in for Mac's fn** — its
+config-level overload is reserved for emitting the macOS fn, the one fn that does reach the OS (the
+firmware-fn stays keyboard-scope, which is all it can ever be). What remains is wiring that overload
+into the kanata config when the Aula is actually connected; note it collides with the current
+default-layer `@esctl` (esc tap = Esc, hold = control layer), so reconcile the two then.
 
 ---
 
