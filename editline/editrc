@@ -1,0 +1,10 @@
+# libedit init file, a macOS/BSD counterpart to ../readline/inputrc.
+#
+# See the latter for the reasoning behind each mapping. Only the vocabulary should differ.
+#
+# IMPORTANT: keep the two files in sync.
+
+bind "^H"     ed-delete-prev-word
+bind "\e\x7f" ed-delete-prev-word
+bind "\e[1;3D" ed-prev-word
+bind "\e[1;3C" em-next-word

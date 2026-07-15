@@ -17,6 +17,7 @@ ripgrep = { direct = true, source = "ripgrep/rc", target = ".config/ripgreprc" }
 
 # Single-file configs that go directly into ~/
 readline = { direct = true, source = "readline/inputrc", target = ".inputrc" }
+editrc = { direct = true, source = "editline/editrc", target = ".editrc" }
 npm = { direct = true, source = "npm/rc", target = ".npmrc" }
 
 # Shell profile (POSIX sh, shared)

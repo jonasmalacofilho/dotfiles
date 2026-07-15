@@ -1,3 +1,8 @@
+# GNU readline init file; its libedit counterpart is ../editline/editrc.
+#
+# IMPORTANT: keep the two files in sync.
+
+# readline only loads *one* config file, so explicitly start by including /etc/inputrc (if present).
 $include /etc/inputrc
 
 # Delete the word before the cursor with keyd/kanata nav[backspace] -- which emits
