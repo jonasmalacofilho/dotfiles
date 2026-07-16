@@ -1,5 +1,5 @@
 return {
-  match = { '/Code/stout$', '/Code/stout%-' },
+  match = { '/Code/stout$', '/Code/stout%-', '/Code/stout/.claude/worktrees/' },
   setup = function()
     vim.lsp.config('rust_analyzer', {
       settings = {
