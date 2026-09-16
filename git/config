@@ -28,7 +28,8 @@
 [diff]
 	algorithm = histogram
 	colorMoved = plain
-	mnemonicPrefix = true
+	# workaround for https://github.com/anthropics/claude-code/issues/93073
+	mnemonicPrefix = false
 	renames = true
 	submodule = log
 
