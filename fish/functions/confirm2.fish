@@ -38,7 +38,7 @@ function confirm2 -d "Summarize \$argv with Claude, discuss it, then confirm bef
             case discuss
                 # Resume the summary session interactively to talk it over,
                 # then return to the menu to decide.
-                claude --model opus --effort high --resume $sid
+                claude --model sonnet --effort medium --resume $sid
             case abort '*'
                 test -n "$_flag_accept_no"; and return
                 echo "Aborted"
